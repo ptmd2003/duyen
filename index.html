@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Duyên, một buổi sáng có nắng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Mynerve&family=Lora:ital@0;1&family=Playfair+Display:ital@0;1&family=Josefin+Sans:wght@400;600&family=Quicksand:wght@500&family=Prata&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Spectral:ital@0;1&family=Shippori+Mincho:wght@500&display=swap">
+<style>
+/* layout: one screen, five surfaces (water, wall, paper, garden, window); one light falls on all of them */
+:root{
+  --ink:#1F3323; --paper:#F6F1E1; --paper-2:#FBF8EC; --leaf:#3F5C3B; --grass:#74A659; --water:#A8CDB2;
+  --sun:#FFF7C2; --lilac:#B9A8E6; --pink:#F7BECB; --cream:#F4F7E8;
+  --f-display:"EB Garamond",Georgia,"Times New Roman",serif;
+  --f-ui:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-hand:"Mynerve","Be Vietnam Pro",system-ui,sans-serif;
+  --fg:var(--ink);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;overflow:hidden;background:#A8CDB2;color:var(--ink);font-family:var(--f-ui);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+h1,h2,h3,p{margin:0}
+em{font-style:italic}
+
+body[data-scene="sach"],body[data-scene="vuon"],body[data-light="toi"]{--fg:var(--cream)}
+body[data-scene="vuon"]{--fg:var(--sun)}
+
+.scene{position:absolute;inset:0;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .7s ease,visibility 0s .7s}
+.scene.on{opacity:1;visibility:visible;transition:opacity .7s ease}
+.deco{position:absolute;inset:0;pointer-events:none}
+
+/* header */
+.top{position:absolute;z-index:30;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px clamp(18px,5vw,72px);color:var(--fg);transition:color .6s}
+.brand{font-family:var(--f-display);font-size:34px;letter-spacing:-.01em;text-decoration:none;line-height:1}
+.top nav{display:flex;gap:2px}
+.top nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 clamp(10px,1.6vw,18px);font-size:16px;text-decoration:none;text-underline-offset:6px}
+.top nav a[aria-current="page"]{text-decoration:underline}
+.top nav a[hidden]{display:none}
+
+h1.big{font-family:var(--f-display);font-weight:400;font-size:clamp(44px,7vw,92px);line-height:.96;letter-spacing:-.025em;text-wrap:balance;color:var(--fg);transition:color .6s}
+
+/* light */
+#anhsang{position:absolute;inset:0;z-index:20;pointer-events:none;opacity:0;transition:opacity 1.2s}
+body[data-light="chieu"] #anhsang{opacity:1;background:radial-gradient(120% 90% at 88% 6%,rgba(255,206,120,.34),rgba(255,190,120,.12) 55%,rgba(255,170,100,.06))}
+body[data-light="toi"]:not([data-scene="nuoc"]) #anhsang{opacity:1;background:radial-gradient(62% 58% at 50% 54%,rgba(8,20,24,0) 0%,rgba(8,20,24,.5) 58%,rgba(6,16,20,.84) 100%)}
+#doi{position:absolute;z-index:31;left:clamp(14px,4vw,56px);bottom:22px;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--fg);background:transparent;cursor:pointer;display:grid;place-items:center;transition:border-color .6s}
+#doi i{display:block;width:16px;height:16px;border-radius:50%;background:var(--fg);transition:box-shadow .6s,background .6s}
+body[data-light="chieu"] #doi i{box-shadow:inset -6px 0 0 0 rgba(31,51,35,.45)}
+body[data-light="toi"] #doi i{background:transparent;box-shadow:inset 5px -2px 0 0 var(--fg)}
+#wash{position:absolute;inset:0;z-index:40;pointer-events:none;opacity:0;background:radial-gradient(90% 90% at 70% 20%,#FFFDF0 0%,#F1F7DF 55%,#DDEBCB 100%)}
+
+/* water */
+#s-nuoc{background:linear-gradient(165deg,#CFE5D3 0%,#A8CDB2 52%,#C4E0CF 100%)}
+#water{position:absolute;inset:0;width:100%;height:100%;display:block}
+.chao{position:absolute;left:clamp(18px,5vw,72px);top:clamp(120px,27vh,270px);width:min(600px,84vw);display:flex;flex-direction:column;gap:20px;pointer-events:none}
+.chao::before{content:"";position:absolute;inset:-70px -90px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.55),rgba(255,255,255,0));z-index:-1;transition:opacity .8s}
+body[data-light="toi"] .chao::before{opacity:0}
+.eyebrow{font-size:14px;letter-spacing:.14em;color:var(--fg);transition:color .6s}
+.hoa{position:absolute;display:block;text-decoration:none;color:var(--ink);will-change:transform}
+.hoa .be{position:relative;display:block;flex:none}
+.hoa .la-sen{position:absolute;left:0;bottom:0;width:100%;height:62%;border-radius:50%;background:#86B777;box-shadow:inset 0 -6px 10px rgba(60,110,60,.45),0 6px 14px rgba(60,110,80,.3)}
+.hoa svg{position:absolute;left:50%;top:0;filter:drop-shadow(0 5px 5px rgba(40,90,50,.35))}
+.nhan{position:absolute;left:100%;top:50%;display:flex;flex-direction:column;gap:3px;justify-content:center;min-height:44px;width:max-content;max-width:min(300px,52vw);padding:10px 16px;background:var(--paper-2);border-radius:3px;box-shadow:0 10px 24px rgba(50,95,70,.28);opacity:0;transform:translateY(calc(-50% + 6px));transition:opacity .5s ease,transform .5s ease}
+.hoa.trai .nhan{left:auto;right:100%}
+.nhan small{font-size:12px;letter-spacing:.08em;color:#4C5A41}
+.nhan b{font-family:var(--f-display);font-weight:400;font-size:22px;line-height:1.15}
+.hoa:hover .nhan,.hoa:focus-visible .nhan,.hoa.gan .nhan{opacity:1;transform:translateY(-50%)}
+@media (hover:none){.nhan,.hoa.trai .nhan{opacity:1;left:0;right:auto;top:100%;transform:none;max-width:44vw;padding:6px 10px;min-height:0}.hoa:hover .nhan,.hoa:focus-visible .nhan,.hoa.gan .nhan{transform:none}.nhan b{font-size:16px}.nhan small{font-size:11px}}
+.canh{position:absolute;pointer-events:none;filter:drop-shadow(0 3px 3px rgba(50,95,70,.3))}
+.lieu{position:absolute;top:-12px;width:2px;background:#5E8E4E;opacity:.8;transform-origin:top center;animation:du 7s ease-in-out infinite alternate}
+.lieu i{position:absolute;left:-4px;width:9px;border-radius:50%;transform-origin:top center}
+@keyframes du{from{transform:rotate(var(--a,-3deg))}to{transform:rotate(var(--b,4deg))}}
+
+/* leaf shadows, shared */
+.bong{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;overflow:hidden}
+.bong i{position:absolute;border-radius:50%;background:var(--bc,#7C936A);animation:lay 8s ease-in-out infinite alternate}
+@keyframes lay{from{transform:translate(0,0) rotate(var(--r,0deg))}to{transform:translate(var(--dx,14px),var(--dy,8px)) rotate(calc(var(--r,0deg) + var(--dr,6deg)))}}
+.dom{position:absolute;border-radius:50%;pointer-events:none}
+
+/* shelf */
+#s-ke-sach{background:linear-gradient(180deg,#E6EAD6 0%,#D9E0C6 100%)}
+#s-ke-sach .nang{position:absolute;left:52%;top:-6%;width:42%;height:76%;background:#FFF7D6;opacity:.6;filter:blur(40px);transform:skewX(-16deg)}
+#s-ke-sach h1{position:absolute;left:clamp(18px,5vw,72px);top:clamp(96px,17vh,150px);max-width:min(520px,80vw)}
+.ke{position:absolute;left:0;right:0;bottom:0;height:17%;background:linear-gradient(180deg,#EEF2DF 0%,#C8D5B5 12%,#B9C9A5 100%);box-shadow:0 -10px 24px rgba(60,80,50,.18)}
+.nha{margin:18px 0 0;font-family:var(--f-display);font-size:clamp(22px,2.7vw,36px);line-height:1.15;letter-spacing:-.01em}
+#rem{position:fixed;inset:0;z-index:90;pointer-events:none}
+#rem .canh{position:absolute;top:0;bottom:0;width:50.5%;overflow:hidden;background:rgba(214,234,208,.5);backdrop-filter:blur(16px) saturate(1.1);-webkit-backdrop-filter:blur(16px) saturate(1.1);transition:transform 3.4s cubic-bezier(.5,0,.15,1),opacity 2.6s ease 1s}
+#rem .canh.t{left:0}#rem .canh.p{right:0}
+#rem.mo .canh.t{transform:translateX(-104%) skewX(3deg);opacity:.2}#rem.mo .canh.p{transform:translateX(104%) skewX(-3deg);opacity:.2}
+#rem .day{position:absolute;top:-30px;width:2px;background:#4F7F45;transform-origin:top center;animation:du 6s ease-in-out infinite alternate}
+#rem .day i{position:absolute;left:-7px;width:15px;border-radius:50% 50% 50% 50%/70% 70% 30% 30%;transform-origin:top center}
+body.mo-dau .chao h1{animation:hien-chu 1.8s ease 2.3s both}
+body.mo-dau .chao .nha{animation:hien-chu 1.8s ease 3.5s both}
+body.mo-dau #hoa,body.mo-dau .top{animation:hien-mo 1.6s ease 4.4s both}
+@keyframes hien-chu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes hien-mo{from{opacity:0}to{opacity:1}}
+.gay-hang{position:absolute;left:50%;bottom:17%;transform:translateX(-36%);display:flex;align-items:flex-end;gap:calc(6px*var(--k,1))}
+@media (max-width:820px){.gay-hang{transform:translateX(-50%)}}
+.gay{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(30px*var(--k,1)) 6px calc(22px*var(--k,1));border-radius:3px;text-decoration:none;box-shadow:8px 0 14px rgba(40,60,35,.25);transition:transform .45s cubic-bezier(.2,.8,.2,1);cursor:pointer}
+.gay:hover,.gay:focus-visible{transform:translateY(calc(-26px*var(--k,1)))}
+.gay.ra{transform:translateY(calc(-120px*var(--k,1))) scale(1.04);transition-duration:.6s}
+.gay .ten{font-family:var(--f-display);font-size:calc(19px*var(--k,1));letter-spacing:.18em;text-align:center;line-height:1.35}
+.gay .ten.doc{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;letter-spacing:.14em;font-size:calc(21px*var(--k,1));padding:calc(8px*var(--k,1)) calc(4px*var(--k,1))}
+.gay .ten.doc.nhan-giay{background:#FBF8EC;border-radius:2px}
+.gay .vach{display:block;width:70%;height:calc(7px*var(--k,1));border-top:1px solid var(--fg);border-bottom:1px solid var(--fg);opacity:.45}
+.gay{box-shadow:5px 0 10px rgba(90,80,55,.16),inset 0 0 0 1px rgba(255,255,255,.25)}
+.gay .nam{font-family:var(--f-display);font-size:calc(32px*var(--k,1));line-height:1}
+.gay .dang{font-size:calc(12px*var(--k,1));text-align:center;line-height:1.4}
+.gay .ruy{position:absolute;top:-4px;right:18%;width:calc(12px*var(--k,1));height:calc(46px*var(--k,1));background:#C96F82;clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%);transform:translateY(-60%)}
+
+/* book */
+#s-sach{background:radial-gradient(760px 520px at 82% 8%,#B7D27E 0%,rgba(183,210,126,0) 62%),linear-gradient(170deg,#6E9450 0%,#4C7340 55%,#3E6238 100%)}
+.ve{position:absolute;z-index:6;left:clamp(18px,5vw,56px);top:74px;display:inline-flex;align-items:center;min-height:44px;font-size:15px;text-decoration:none;color:var(--cream)}
+.book{position:absolute;left:50%;top:50%;transform:translate(-50%,-48%) rotate(-1deg);perspective:2400px;width:calc(var(--pw)*var(--n));height:var(--ph)}
+.book .bia{position:absolute;inset:-9px -14px -15px;background:var(--leaf);border-radius:6px;box-shadow:0 34px 60px rgba(20,40,15,.5)}
+.book .ruot{position:absolute;inset:4px -5px -6px;background:#E3DBC2;border-radius:3px}
+.trang{position:absolute;inset:0;overflow:hidden;background:var(--paper)}
+.trang::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(120,105,60,0) 44%,rgba(120,105,60,.16) 50%,rgba(120,105,60,0) 56%)}
+.book[data-n="1"] .trang::after{background:linear-gradient(90deg,rgba(120,105,60,.14),rgba(120,105,60,0) 9%)}
+.flow{position:relative;width:var(--pw);height:var(--ph);padding:var(--pv) var(--pad);column-width:calc(var(--pw) - 2*var(--pad));column-gap:calc(2*var(--pad));column-fill:auto;font-family:var(--f-display);font-size:var(--fs,18.5px);line-height:1.55;color:#26301F}
+.flow p{margin:0 0 .72em;orphans:2;widows:2;overflow-wrap:break-word}
+.bai{break-before:column}
+.bai h2{font-family:var(--f-display);font-weight:400;font-size:1.95em;line-height:1.06;letter-spacing:-.015em;margin:.5em 0 .55em;text-wrap:balance;break-after:avoid}
+.dau{display:flex;align-items:center;gap:12px;font-family:var(--f-ui);font-size:12px;letter-spacing:.14em;color:#4C5A41;break-after:avoid}
+.dau span:first-child{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border:1.5px solid #6B7C5E;border-radius:50%;font-size:11px;line-height:1.2;text-align:center;letter-spacing:.06em;transform:rotate(-10deg)}
+mark.hl{color:inherit;background:linear-gradient(180deg,rgba(0,0,0,0) 14%,var(--hc,#F7BECB) 14%,var(--hc,#F7BECB) 90%,rgba(0,0,0,0) 90%) no-repeat 0 0/0% 100%;transition:background-size 1.4s cubic-bezier(.3,.6,.2,1) .35s;padding:0 2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+mark.hl.on{background-size:100% 100%}
+.anh{break-inside:avoid;position:relative;width:64%;margin:1.1em auto 1.4em;transform:rotate(var(--r,2deg))}
+.anh::before{content:"";position:absolute;left:34%;top:-13px;width:34%;height:24px;background:rgba(185,168,230,.8);transform:rotate(-5deg)}
+.anh div{display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;border:8px solid #fff;background:#C6D4B6;box-shadow:0 8px 18px rgba(50,60,30,.3);font-family:var(--f-ui);font-size:12px;letter-spacing:.1em;color:#33402B}
+.nhanh{display:block;margin:.6em 0 0;break-before:avoid}
+.ep{float:right;margin:-6px -8px 4px 12px;transform:rotate(var(--r,12deg));filter:drop-shadow(0 5px 4px rgba(40,50,25,.3))}
+.bia-trong{display:block}
+.bia-trong .so{font-size:5.2em;line-height:.9;letter-spacing:-.03em}
+.bia-trong .ky{font-family:var(--f-ui);font-size:12px;letter-spacing:.2em;color:#4C5A41;margin:.9em 0 1.6em}
+.muc{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none}
+.muc button{display:flex;align-items:baseline;gap:10px;width:100%;min-height:40px;padding:4px 0;border:0;background:none;text-align:left;cursor:pointer;font-family:var(--f-display);font-size:1.06em;line-height:1.2;color:#26301F}
+.muc button small{flex:none;font-family:var(--f-ui);font-size:11px;letter-spacing:.08em;color:#4C5A41;width:44px}
+.muc button:hover span{text-decoration:underline;text-underline-offset:4px}
+.flip{position:absolute;top:0;width:var(--pw);height:var(--ph);display:none;background:linear-gradient(90deg,#EDE6CF,var(--paper) 30%,#FBF8EC);box-shadow:0 0 30px rgba(40,50,25,.25);z-index:4}
+.che-trang{position:absolute;top:0;width:var(--pw);height:var(--ph);overflow:hidden;background:var(--paper);z-index:4}
+.che-trang .toi{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(70,58,24,.5),rgba(70,58,24,.12) 50%,rgba(70,58,24,.5));opacity:0}
+.la{position:absolute;top:0;width:var(--pw);height:var(--ph);z-index:7;transform-style:preserve-3d;will-change:transform}
+.dai{position:absolute;top:0;height:var(--ph);transform-style:preserve-3d;will-change:transform}
+.mat{position:absolute;inset:0;overflow:hidden;background:var(--paper);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.mat.sau{transform:rotateY(180deg)}
+.mat .toi{position:absolute;inset:0;pointer-events:none;background:rgb(74,62,28);opacity:0}
+.mat.sau{background:#F1EBD8}
+.the[hidden]{display:none}
+.goc{position:absolute;z-index:5;bottom:0;width:22%;height:100%;border:0;background:none;cursor:pointer}
+.goc.sau{right:0}.goc.truoc{left:0}
+.goc::after{content:"";position:absolute;bottom:0;width:0;height:0;border-style:solid;transition:border-width .3s}
+.goc.sau::after{right:0;border-width:0 0 0 0;border-color:transparent transparent #D9D0B4 transparent}
+.goc.sau:hover::after,.goc.sau:focus-visible::after{border-width:0 0 34px 34px}
+.goc.truoc::after{left:0;border-width:0 0 0 0;border-color:transparent transparent #D9D0B4 transparent}
+.goc.truoc:hover::after,.goc.truoc:focus-visible::after{border-width:0 34px 34px 0}
+.goc[disabled]{display:none}
+.giay{position:absolute;z-index:7;width:190px;padding:14px 16px;background:#FFFDF2;box-shadow:0 10px 20px rgba(30,45,20,.35);font-family:var(--f-hand);font-size:17px;line-height:1.35;color:#26301F;transform:rotate(var(--r,-4deg));animation:roi .7s cubic-bezier(.2,.8,.2,1) both;overflow-wrap:break-word}
+.giay:nth-child(even){background:#EAF2DA}
+.giay small{display:block;margin-top:8px;font-family:var(--f-ui);font-size:11px;letter-spacing:.08em;color:#4C5A41}
+@keyframes roi{from{opacity:0;transform:translateY(-30px) rotate(calc(var(--r,-4deg) - 10deg))}}
+.duoi{position:absolute;z-index:8;left:clamp(74px,9vw,120px);right:clamp(14px,4vw,56px);bottom:22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.nut{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border:0;border-radius:999px;background:var(--paper-2);color:#26301F;font-size:15px;cursor:pointer;text-decoration:none}
+.nut.dam{background:#26301F;color:var(--paper-2);font-weight:500}
+.nut[hidden]{display:none}
+#so-trang{font-size:13px;letter-spacing:.12em;color:var(--cream);margin-right:auto}
+#form{position:absolute;z-index:9;right:clamp(14px,4vw,56px);bottom:84px;width:min(340px,calc(100vw - 28px));padding:20px;background:#FFFDF2;box-shadow:0 20px 40px rgba(20,40,15,.45);display:flex;flex-direction:column;gap:10px;transform:rotate(1deg)}
+#form[hidden]{display:none}
+#form label{font-size:13px;font-weight:500}
+#form input[type=text],#form textarea{width:100%;padding:10px 12px;border:1px solid #6B7C5E;background:#fff;color:#26301F;font-family:var(--f-ui);font-size:16px}
+#form textarea{font-family:var(--f-hand);font-size:17px;resize:none}
+#form .chon{display:flex;align-items:center;gap:10px;min-height:40px;font-size:14px;font-weight:400}
+#form p{font-size:13px;line-height:1.45;color:#4C5A41}
+#form p[role=alert]{color:#8A2E3C}
+
+/* garden */
+#s-vuon{background:radial-gradient(700px 420px at 70% 55%,#C9E29A 0%,rgba(201,226,154,0) 64%),linear-gradient(180deg,#8FBB6C 0%,#74A659 45%,#568A4A 100%)}
+#s-vuon .tan{position:absolute;left:-6%;top:-6%;width:62%;height:36%;border-radius:40%;background:#274527;opacity:.86;filter:blur(34px)}
+#s-vuon .than{position:absolute;border-radius:40px;background:#3B2E22;filter:blur(1.5px)}
+.vuon-trong{position:absolute;inset:0;overflow-y:auto;padding:clamp(96px,15vh,120px) clamp(18px,5vw,72px) 110px}
+.gia-hang{display:flex;flex-wrap:wrap;gap:34px 26px;align-items:flex-start;margin-top:clamp(28px,6vh,60px);max-width:1180px}
+.gia{position:relative;width:236px;padding:0 0 120px;border:0;background:none;text-align:left;cursor:pointer;transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.gia:nth-child(even){margin-top:46px}
+.gia:hover,.gia:focus-visible{transform:translateY(-8px) rotate(-.6deg)}
+.gia::before,.gia::after{content:"";position:absolute;top:190px;width:7px;height:150px;background:#9C7647;z-index:0}
+.gia::before{left:30%;transform:rotate(9deg)}.gia::after{right:30%;transform:rotate(-9deg)}
+.khung{position:relative;z-index:1;display:flex;flex-direction:column;gap:9px;min-height:214px;padding:16px 18px;background:var(--paper-2);border:7px solid #C9A56B;box-shadow:0 16px 26px rgba(30,60,25,.38);transform:rotate(var(--r,-1deg));color:#26301F}
+.khung h3{font-family:var(--f-display);font-weight:400;font-size:27px;line-height:1.04}
+.khung p{font-size:14px;line-height:1.5;color:#3A4633}
+.the{align-self:flex-start;padding:3px 9px;border:1.5px solid #26301F;font-size:12px;font-weight:500}
+.the.dung{background:#26301F;color:var(--paper-2)}
+.gia.uom .khung{background:#F3F6E4;border:2px dashed #56704A}
+.gia.uom .the{border-style:dashed}
+.gia.uom::after{display:none}.gia.uom::before{left:50%;transform:none;height:110px}
+.cam{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;max-width:1180px}
+.cam li{list-style:none;position:relative;padding:10px 14px 10px 14px;background:#F3F6E4;color:#26301F;font-size:13px;line-height:1.4;box-shadow:0 8px 14px rgba(30,60,25,.3);transform:rotate(var(--r,-1deg));margin-bottom:34px}
+.cam li::after{content:"";position:absolute;left:18px;bottom:-30px;width:5px;height:30px;background:#9C7647}
+.cam b{display:block;font-weight:600;font-size:14px}
+.cam{padding:0}
+#lua{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+#khep{position:absolute;inset:0;z-index:4;display:none;place-items:center;text-align:center;padding:24px}
+#khep p{font-family:var(--f-display);font-size:clamp(34px,5vw,56px);line-height:1.05;letter-spacing:-.02em;color:#26301F}
+#s-vuon[data-lua="dong"] #khep{display:grid}
+.keo{position:absolute;z-index:5;right:clamp(18px,5vw,72px);top:74px;display:flex;gap:6px;align-items:center}
+.keo button{min-height:40px;padding:0 12px;border:1.5px solid #26301F;background:var(--paper-2);color:#26301F;font-size:14px;cursor:pointer}
+.keo button[aria-pressed="true"]{background:#26301F;color:var(--paper-2)}
+#to{position:absolute;z-index:10;inset:0;display:none;place-items:center;padding:20px;background:rgba(30,50,25,.45)}
+#to.on{display:grid}
+#to .to-giay{position:relative;width:min(520px,100%);max-height:86%;overflow:auto;padding:34px 34px 30px;background:var(--paper-2);color:#26301F;box-shadow:0 30px 60px rgba(20,40,15,.5);transform:rotate(-.6deg);animation:roi .5s cubic-bezier(.2,.8,.2,1) both;--r:-.6deg}
+#to h3{font-family:var(--f-display);font-weight:400;font-size:40px;line-height:1.02;letter-spacing:-.015em;margin:10px 0 6px}
+#to .vai{font-size:13px;letter-spacing:.06em;color:#4C5A41;margin-bottom:16px}
+#to ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:8px;font-family:var(--f-display);font-size:19px;line-height:1.4}
+#to .dong{position:absolute;right:8px;top:8px;width:44px;height:44px;border:0;background:none;font-size:24px;cursor:pointer}
+
+/* about */
+#s-ve-minh{background:linear-gradient(180deg,#EEF0DE 0%,#E3E8D0 100%)}
+#s-ve-minh .cua{position:absolute;right:-4%;top:-8%;width:46%;height:118%;background:linear-gradient(100deg,rgba(255,250,222,.0),rgba(255,250,222,.9) 30%,#FFFBE6 60%,rgba(214,236,196,.75));filter:blur(18px);transform:skewX(-10deg)}
+.ve-trong{position:absolute;inset:0;overflow-y:auto;padding:clamp(100px,17vh,150px) clamp(18px,5vw,72px) 110px}
+.ve-trong .cot{max-width:600px;display:flex;flex-direction:column;gap:22px}
+.ve-trong p{font-family:var(--f-display);font-size:21px;line-height:1.5;max-width:34em;color:var(--fg);transition:color .6s}
+.ve-trong .nho{font-family:var(--f-ui);font-size:14px;letter-spacing:.06em;line-height:1.7}
+.ve-trong a{text-underline-offset:5px}
+
+/* bookshelf furniture + things on it */
+.gay-hang{padding:calc(54px*var(--k,1)) calc(16px*var(--k,1)) 0;background:#EFE6D6;border:calc(13px*var(--k,1)) solid #F6EFE2;border-radius:calc(30px*var(--k,1)) calc(30px*var(--k,1)) 4px 4px;box-shadow:0 18px 30px rgba(70,80,50,.22),inset 0 14px 22px rgba(120,105,70,.16)}
+.do{position:absolute;bottom:calc(100% + 13px*var(--k,1));pointer-events:none}
+.do.cay{left:4%;width:calc(120px*var(--k,1))}
+.do.cay svg{display:block;width:100%;height:auto;transform-origin:50% 100%;animation:lac-cay 6s ease-in-out infinite alternate}
+@keyframes lac-cay{from{transform:rotate(-1.5deg)}to{transform:rotate(2deg)}}
+.do.den{left:36%;width:calc(54px*var(--k,1));height:calc(46px*var(--k,1));border-radius:calc(12px*var(--k,1));background:#FFF4D2;box-shadow:0 0 calc(34px*var(--k,1)) calc(10px*var(--k,1)) rgba(255,226,150,.75);animation:den 4s ease-in-out infinite alternate}
+@keyframes den{from{opacity:.86}to{opacity:1}}
+body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
+.do.khung-nho{right:8%;width:calc(74px*var(--k,1));height:calc(92px*var(--k,1));background:#F3F6E4;border:calc(6px*var(--k,1)) solid #D9B978;display:grid;place-items:center}
+.tuong{position:absolute;right:clamp(18px,5vw,72px);top:clamp(96px,17vh,150px);display:flex;flex-direction:column;gap:22px;align-items:flex-end}
+.tuong div{position:relative;padding:14px 16px;background:var(--paper-2);box-shadow:0 8px 16px rgba(70,80,50,.22);font-family:var(--f-display);font-size:17px;line-height:1.25;color:#26301F;transform:rotate(var(--r,2deg));max-width:170px}
+.tuong div::before{content:"";position:absolute;left:50%;top:-9px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--pin,#E3AEB4);box-shadow:0 2px 3px rgba(0,0,0,.2)}
+@media (max-width:980px){.tuong{display:none}}
+/* things kept between pages, ribbon, rain */
+.ve-xe{break-inside:avoid;width:62%;margin:1.1em auto 1.3em;padding:10px 14px;background:#F3E7C4;border:1px dashed #9A8552;transform:rotate(var(--r,-2deg));box-shadow:0 6px 12px rgba(50,60,30,.22);font-family:var(--f-ui);font-size:11px;letter-spacing:.16em;color:#5A4A22;display:flex;justify-content:space-between;gap:10px}
+.la-ep{break-inside:avoid;display:block;margin:.6em auto 1em;transform:rotate(var(--r,8deg));filter:drop-shadow(0 4px 3px rgba(40,50,25,.28))}
+.de-tu{font-style:italic;color:#4C5A41;margin-bottom:1.4em!important}
+#ruy-sach{position:absolute;z-index:8;top:-14px;right:calc(var(--pw)*.16);width:18px;height:74px;border:0;padding:0;background:#C96F82;clip-path:polygon(0 0,100% 0,100% 100%,50% 84%,0 100%);cursor:pointer;transition:height .4s cubic-bezier(.2,.8,.2,1)}
+#ruy-sach:hover,#ruy-sach:focus-visible{height:96px}
+#ruy-sach[hidden]{display:none}
+#mua{position:absolute;inset:0;z-index:9;pointer-events:none;opacity:0;transition:opacity 2s ease;background:repeating-linear-gradient(102deg,rgba(255,255,255,0) 0 26px,rgba(236,244,248,.34) 26px 27px,rgba(255,255,255,0) 27px 64px),rgba(96,120,130,.2);background-size:128px 300px,auto;animation:mua .55s linear infinite}
+#s-sach.mua #mua{opacity:1}
+@keyframes mua{to{background-position:-64px 300px,0 0}}
+/* sound, about */
+#dan{display:inline-grid;place-items:center;min-width:44px;min-height:44px;border:0;border-radius:999px;background:none;cursor:pointer;color:inherit;opacity:.7}
+#dan[aria-pressed="true"]{opacity:1}
+#dan[aria-pressed="true"] rect{animation:phim 1.2s ease-in-out infinite alternate}
+#dan rect:nth-child(2){animation-delay:.3s}#dan rect:nth-child(3){animation-delay:.6s}
+@keyframes phim{to{transform:translateY(3px)}}
+#wash .troi{position:absolute;left:50%;top:50%;margin:-60px 0 0 -60px;filter:drop-shadow(0 10px 14px rgba(60,100,70,.3))}
+#s-ve-minh .o-cua{position:absolute;right:clamp(18px,6vw,90px);top:clamp(90px,14vh,130px);width:min(38vw,460px);aspect-ratio:3/4;border:14px solid #F6EFE2;background:linear-gradient(180deg,#CFE6EE 0%,#E4F1E2 70%);box-shadow:0 20px 40px rgba(70,80,50,.25),inset 0 0 0 2px rgba(120,105,70,.2);overflow:hidden}
+#s-ve-minh .o-cua::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:10px;margin-left:-5px;background:#F6EFE2;box-shadow:0 0 0 1px rgba(120,105,70,.18)}
+#s-ve-minh .o-cua .than-cay{position:absolute;left:58%;bottom:-6%;width:9%;height:92%;background:#6B5A44;border-radius:30px;transform:rotate(7deg)}
+#s-ve-minh .o-cua i{position:absolute;border-radius:50%;animation:du 6s ease-in-out infinite alternate;transform-origin:50% 100%}
+.ve-trong .cot{max-width:min(600px,50vw)}
+.ve-trong h2{font-family:var(--f-display);font-weight:400;font-size:30px;line-height:1.1;margin-top:22px;color:var(--fg)}
+.ve-trong ul.gach{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-family:var(--f-display);font-size:20px;line-height:1.4;color:var(--fg)}
+.ve-trong ul.gach li::before{content:"– "}
+.thich{display:flex;flex-wrap:wrap;gap:10px}
+.thich span{padding:6px 12px;background:var(--paper-2);color:#26301F;font-family:var(--f-hand);font-size:19px;transform:rotate(var(--r,-2deg));box-shadow:0 5px 10px rgba(70,80,50,.2)}
+.ve-trong .cam{margin-top:0}.ve-trong .cam li{margin-bottom:0}.ve-trong .cam li::after{display:none}
+#hop-thu{display:flex;flex-direction:column;gap:10px;max-width:440px;padding:20px;background:var(--paper-2);color:#26301F;box-shadow:0 12px 24px rgba(70,80,50,.22);transform:rotate(-.6deg)}
+#hop-thu label{font-size:13px;font-weight:500}
+#hop-thu textarea{width:100%;padding:10px 12px;border:1px solid #6B7C5E;background:#fff;font-family:var(--f-hand);font-size:19px;color:#26301F;resize:none}
+#hop-thu button{align-self:flex-start;min-height:46px;padding:0 20px;border:0;border-radius:999px;background:#26301F;color:var(--paper-2);cursor:pointer}
+#hop-thu p{font-family:var(--f-ui);font-size:13px;max-width:none;color:#26301F}
+@media (max-width:860px){#s-ve-minh .o-cua{position:relative;right:auto;top:auto;width:100%;aspect-ratio:16/10;margin-bottom:26px}.ve-trong .cot{max-width:none}}
+
+.gay-hang{transform:translateX(-22%)}
+.tuong{right:auto;left:clamp(18px,5vw,72px);top:calc(clamp(96px,17vh,150px) + 250px);flex-direction:row;align-items:flex-start}
+@media (max-width:1180px){.tuong{display:none}}
+.anh{padding-top:16px}.anh::before{top:3px;z-index:1}
+.chao{max-width:calc(100vw - 36px)}.nha{max-width:100%}
+.top nav a{white-space:nowrap}
+@media (max-width:820px){.gay-hang{transform:translateX(-50%)}}
+@media (max-width:520px){.top{padding-left:14px;padding-right:10px;gap:8px}.top nav a{font-size:14px;padding-left:7px;padding-right:7px}.top .brand,.top>a:first-child{font-size:27px}#dan{min-width:36px}}
+
+/* shelf v3: tiers, real-looking spines */
+.gay-hang{flex-direction:column;align-items:stretch;gap:0;padding:0 calc(14px*var(--k,1));transform:translateX(-18%)}
+.tang{display:flex;align-items:flex-end;gap:calc(5px*var(--k,1));min-height:calc(540px*var(--k,1));padding-top:calc(26px*var(--k,1));border-bottom:calc(13px*var(--k,1)) solid #F6EFE2;box-shadow:inset 0 14px 20px rgba(120,105,70,.14),0 6px 8px -4px rgba(90,75,45,.3)}
+.tang:last-child{border-bottom:0}
+.vat{flex:none;margin-left:auto;align-self:flex-end;display:block;filter:drop-shadow(0 4px 4px rgba(80,70,40,.2))}
+.vat svg{display:block;width:100%;height:auto}
+.gay{justify-content:flex-start;gap:calc(12px*var(--k,1));padding-left:3px;padding-right:3px;border-radius:5px 5px 1px 1px;transform:rotate(var(--tilt,0deg));transform-origin:50% 100%;box-shadow:inset 0 2px 0 rgba(255,255,255,.55),inset 0 -5px 6px rgba(70,55,30,.1),inset 5px 0 7px -4px rgba(70,55,30,.25),inset -5px 0 7px -4px rgba(70,55,30,.22),3px 0 6px rgba(90,80,55,.18)}
+.gay:hover,.gay:focus-visible{transform:translateY(calc(-22px*var(--k,1))) rotate(var(--tilt,0deg))}
+.gay.ra{transform:translateY(calc(-110px*var(--k,1))) scale(1.04)}
+.gay .gan{position:absolute;left:0;right:0;height:calc(7px*var(--k,1));background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0) 45%,rgba(60,45,20,.22));pointer-events:none}
+.gay .ten.ngang{font-size:calc(15px*var(--k,1));letter-spacing:.16em;line-height:1.5;text-align:center}
+.gay .ten.doc.xuoi{transform:none}
+.gay .nam{margin-top:auto;font-size:calc(26px*var(--k,1))}
+.gay .cham{display:block;width:calc(7px*var(--k,1));height:calc(7px*var(--k,1));border-radius:50%;border:1px solid var(--fg);opacity:.6}
+.gay .cham.day{margin-top:auto}
+.do.cay{left:6%}.do.den{left:44%}
+@media (max-width:820px){
+  #s-ke-sach{overflow-y:auto}
+  #s-ke-sach h1{position:relative;left:auto;top:auto;padding:96px clamp(18px,5vw,72px) 0}
+  .gay-hang{position:relative;left:auto;bottom:auto;transform:none;width:max-content;max-width:calc(100vw - 28px);margin:calc(140px*var(--k,1)) auto 90px}
+  #s-ke-sach .ke{display:none}
+}
+/* rain v2 */
+#mua{position:absolute;inset:0;width:100%;height:100%;z-index:9;pointer-events:none;opacity:0;transition:opacity 2.2s ease;background:none;animation:none}
+#s-sach.mua #mua{opacity:.2}
+/* phone polish */
+#doi{background:rgba(251,248,236,.0)}
+@media (max-width:820px){#doi{background:var(--paper-2);border-color:#26301F;box-shadow:0 6px 14px rgba(40,60,40,.25)}#doi i{background:#26301F}body[data-light="toi"] #doi i{background:transparent;box-shadow:inset 5px -2px 0 0 #26301F}
+  .vuon-trong,.ve-trong{padding-bottom:130px}.ve{top:64px}}
+.che-bong{position:absolute;top:0;width:var(--pw);height:var(--ph);z-index:6;pointer-events:none;opacity:0}
+
+.gay .ten{align-self:center;text-align:center;max-width:100%}
+.gay .ten.ngang{font-size:calc(14px*var(--k,1));letter-spacing:.12em;line-height:1.45;text-transform:uppercase;overflow-wrap:normal}
+.gay .ten.doc{letter-spacing:.06em;font-size:calc(20px*var(--k,1))}
+.gay{align-items:center}
+.gay-hang[data-rows="1"]{transform:translateX(-30%)}
+.gay-hang[data-rows="1"] .tang{min-height:calc(560px*var(--k,1))}
+
+/* ---- realistic cabinet: light oak frame, recessed back panel, shelf boards with front edge, contact + cast shadows ---- */
+.gay-hang{--oak:#DDBF93;--oak2:#D2B183;--oak3:#C7A474;--sau:#F1E6D2;
+  border:calc(15px*var(--k,1)) solid var(--oak);border-top-width:calc(17px*var(--k,1));border-radius:calc(6px*var(--k,1)) calc(6px*var(--k,1)) 3px 3px;
+  border-image:repeating-linear-gradient(90deg,var(--oak) 0 7px,var(--oak2) 7px 8px,var(--oak) 8px 15px,#E3C79E 15px 17px,var(--oak) 17px 26px,var(--oak3) 26px 27px) 17;
+  background:
+    linear-gradient(180deg,rgba(90,65,30,.22),rgba(90,65,30,0) calc(60px*var(--k,1))),
+    linear-gradient(90deg,rgba(90,65,30,.16),rgba(90,65,30,0) calc(40px*var(--k,1)),rgba(90,65,30,0) calc(100% - 40px*var(--k,1)),rgba(90,65,30,.18)),
+    radial-gradient(70% 60% at 30% 0%,rgba(255,250,230,.6),rgba(255,250,230,0) 70%),
+    repeating-linear-gradient(90deg,rgba(150,120,80,0) 0 calc(118px*var(--k,1)),rgba(150,120,80,.12) calc(118px*var(--k,1)) calc(119px*var(--k,1))),
+    var(--sau);
+  box-shadow:0 calc(26px*var(--k,1)) calc(30px*var(--k,1)) calc(-12px*var(--k,1)) rgba(70,55,30,.45),0 2px 0 rgba(255,255,255,.4),calc(18px*var(--k,1)) calc(10px*var(--k,1)) calc(40px*var(--k,1)) rgba(70,80,50,.16)}
+.gay-hang::before,.gay-hang::after{content:"";position:absolute;bottom:calc(-15px*var(--k,1));width:calc(15px*var(--k,1));height:calc(100% + 15px*var(--k,1) + 46px*var(--k,1));border-radius:calc(30px*var(--k,1)) calc(30px*var(--k,1)) 2px 2px;
+  background:linear-gradient(90deg,#E3C79E,var(--oak) 40%,var(--oak2));box-shadow:inset 0 2px 0 rgba(255,255,255,.45)}
+.gay-hang::before{left:calc(-15px*var(--k,1))}.gay-hang::after{right:calc(-15px*var(--k,1));background:linear-gradient(90deg,var(--oak2),var(--oak) 60%,#E3C79E)}
+.tang{position:relative;border-bottom:0;box-shadow:none;padding-bottom:calc(16px*var(--k,1));gap:calc(3px*var(--k,1))}
+.tang::after{content:"";position:absolute;left:calc(-14px*var(--k,1));right:calc(-14px*var(--k,1));bottom:0;height:calc(16px*var(--k,1));
+  background:linear-gradient(180deg,#C9A87A 0,#EBD3AE 2px,#E2C599 35%,var(--oak) 60%,var(--oak2) 100%),repeating-linear-gradient(90deg,rgba(0,0,0,0) 0 9px,rgba(150,110,60,.18) 9px 10px);
+  background-blend-mode:multiply;box-shadow:0 calc(8px*var(--k,1)) calc(10px*var(--k,1)) calc(-4px*var(--k,1)) rgba(80,60,30,.35);z-index:2}
+.tang:last-child::after{display:none}
+.tang:last-child{padding-bottom:0}
+.tang::before{content:"";position:absolute;left:0;right:0;bottom:calc(16px*var(--k,1));height:calc(8px*var(--k,1));background:linear-gradient(180deg,rgba(90,65,30,0),rgba(90,65,30,.22));pointer-events:none}
+.tang:last-child::before{bottom:0}
+.gay{box-shadow:inset 0 2px 0 rgba(255,255,255,.55),inset 0 -5px 6px rgba(70,55,30,.12),calc(7px*var(--k,1)) calc(-3px*var(--k,1)) calc(9px*var(--k,1)) rgba(95,70,35,.24),1px 0 0 rgba(80,60,30,.25)}
+.gay::after{content:"";position:absolute;left:-2px;right:-2px;bottom:-3px;height:5px;border-radius:50%;background:rgba(60,45,20,.38);filter:blur(2px);z-index:-1}
+.gay .gan{box-shadow:0 1px 0 rgba(255,255,255,.35)}
+.vat{position:relative;z-index:1}
+.do{bottom:calc(100% + 17px*var(--k,1))}
+.do.den{box-shadow:0 0 calc(34px*var(--k,1)) calc(10px*var(--k,1)) rgba(255,226,150,.75),0 calc(4px*var(--k,1)) calc(6px*var(--k,1)) rgba(90,70,30,.3)}
+.do.cay svg{filter:drop-shadow(0 calc(5px*var(--k,1)) calc(5px*var(--k,1)) rgba(80,60,30,.28))}
+#s-ke-sach .ke{background:linear-gradient(180deg,#F3EEE0 0%,#E6DFCB 8%,#DCD4BE 100%);box-shadow:0 -1px 0 rgba(255,255,255,.6)}
+
+/* shelf v4: low oak bookcase, mixed books */
+.gay-hang[data-rows="1"]{left:auto;right:calc(3vw + 88px*var(--k,1));transform:none}
+.gay-hang .tang,.gay-hang[data-rows="1"] .tang{min-height:calc(470px*var(--k,1));gap:calc(3px*var(--k,1));padding-left:calc(6px*var(--k,1));padding-right:calc(6px*var(--k,1))}
+.gay-hang::before,.gay-hang::after{height:calc(100% + 15px*var(--k,1) + 22px*var(--k,1));border-radius:calc(8px*var(--k,1)) calc(8px*var(--k,1)) 2px 2px}
+.bia{position:relative;flex:none;width:calc(var(--w)*.86px*var(--k,1));height:calc(var(--h)*1px*var(--k,1));display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:calc(10px*var(--k,1));padding:calc(34px*var(--k,1)) 2px calc(16px*var(--k,1));text-decoration:none;border-radius:4px 4px 1px 1px;overflow:hidden;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.5),inset 4px 0 6px -3px rgba(70,55,30,.25),inset -4px 0 6px -3px rgba(70,55,30,.25),calc(7px*var(--k,1)) calc(-3px*var(--k,1)) calc(9px*var(--k,1)) rgba(95,70,35,.22),1px 0 0 rgba(80,60,30,.2)}
+.bia::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(60,45,20,.14),rgba(255,255,255,.18) 24%,rgba(255,255,255,.04) 52%,rgba(60,45,20,.16)),repeating-linear-gradient(0deg,rgba(255,255,255,.06) 0 1px,rgba(0,0,0,0) 1px 3px)}
+.bia::after{display:none}
+.bia .tieu{position:relative;writing-mode:vertical-rl;white-space:nowrap;font-size:calc(19px*var(--k,1));letter-spacing:.04em;line-height:1}
+.bia .tieu.nho{font-size:calc(13px*var(--k,1));letter-spacing:.14em;text-transform:uppercase}
+.bia .tieu.ngang{writing-mode:horizontal-tb;white-space:normal;text-align:center;font-size:calc(16px*var(--k,1));line-height:1.25;letter-spacing:0}
+.bia .tac{position:relative;margin-top:auto;writing-mode:vertical-rl;font-size:calc(11px*var(--k,1));letter-spacing:.12em;opacity:.8;font-family:var(--f-ui)}
+.bia .tac.jp{margin-top:0;font-size:calc(14px*var(--k,1));letter-spacing:.2em;font-family:'Shippori Mincho',Spectral,serif}
+.bia .tac.jp + .tac{margin-top:auto}
+.bia .gan{position:absolute;left:0;right:0;height:calc(5px*var(--k,1));border-top:1px solid currentColor;border-bottom:1px solid currentColor;opacity:.28}
+.bia.tinh{cursor:default}
+.gay.bia{transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.gay.bia:hover,.gay.bia:focus-visible{transform:translateY(calc(-18px*var(--k,1)))}
+.gay.bia.ra{transform:translateY(calc(-90px*var(--k,1))) scale(1.03)}
+.so-tay{padding:0;border-radius:3px}
+.so-tay .hoa-son{position:absolute;display:block;filter:drop-shadow(0 1px 1px rgba(40,50,30,.2))}
+.so-tay .hoa-son svg{width:calc(24px*var(--k,1));height:auto;display:block}
+.so-tay .than-son{position:absolute;left:30%;top:4%;width:40%;height:92%}
+.so-tay .theu{position:absolute;top:40%;left:50%;transform:translateX(-50%)}
+.so-tay .theu.giua{top:44%}
+.so-tay .theu svg{width:calc(26px*var(--k,1));height:auto;display:block}
+.so-tay .khau{position:absolute;inset:calc(8px*var(--k,1)) calc(6px*var(--k,1));border:1.4px dashed rgba(90,70,45,.45);border-radius:2px}
+.so-tay .day-ruy{position:absolute;bottom:calc(-2px*var(--k,1));left:62%;width:calc(5px*var(--k,1));height:calc(46px*var(--k,1));background:#D9A0A7;transform:translateY(55%)}
+.nhan-nam{position:absolute;left:50%;top:calc(10px*var(--k,1));transform:translate(-50%,-6px);padding:2px 6px;background:#FBF8EC;color:#3F4A38;font-family:var(--f-hand);font-size:calc(15px*var(--k,1));border-radius:2px;box-shadow:0 2px 5px rgba(60,50,30,.25);opacity:0;transition:opacity .3s,transform .3s;z-index:2}
+.so-tay:hover .nhan-nam,.so-tay:focus-visible .nhan-nam{opacity:1;transform:translate(-50%,0)}
+.gay-hang .do{display:none}
+.treo{position:absolute;z-index:6;left:-3%;top:calc(-101px*var(--k,1));width:calc(150px*var(--k,1));pointer-events:none;filter:drop-shadow(0 calc(6px*var(--k,1)) calc(6px*var(--k,1)) rgba(70,55,30,.28))}
+.treo svg,.meo svg,.nen svg,.ong-but svg{display:block;width:100%;height:auto}
+.treo svg{transform-origin:40% 12%;animation:lac-cay 7s ease-in-out infinite alternate}
+.meo{position:absolute;left:30%;filter:drop-shadow(0 3px 3px rgba(90,70,40,.3)) drop-shadow(0 0 1px rgba(120,95,60,.45));bottom:calc(100% + 17px*var(--k,1) - 4px*var(--k,1));width:calc(110px*var(--k,1))}
+.nen{position:absolute;right:16%;bottom:calc(100% + 17px*var(--k,1) - 4px*var(--k,1));width:calc(62px*var(--k,1))}
+.nen .lua{transform-origin:35px 28px;animation:lua 1.6s ease-in-out infinite alternate}
+@keyframes lua{from{transform:scale(1,1)}to{transform:scale(.88,1.08) skewX(3deg)}}
+.ong-but{position:absolute;right:calc(-96px*var(--k,1));bottom:calc(-15px*var(--k,1));width:calc(74px*var(--k,1));filter:drop-shadow(0 4px 4px rgba(80,70,40,.22))}
+.hoa-mo{position:absolute;inset:0;pointer-events:none;z-index:5}
+.hoa-mo span{position:absolute;opacity:.9}
+.hoa-mo i{position:absolute;border-radius:50%;background:#8DAE78;opacity:.55;filter:blur(6px)}
+@media (max-width:900px){.ong-but{display:none}.hoa-mo{display:none}}
+@media (max-width:820px){.treo{left:2%}}
+
+/* ===== refinement: materials + one light from the upper right ===== */
+.gay-hang{border-color:transparent;border-image:none;
+  background:
+    linear-gradient(180deg,rgba(80,58,28,.26),rgba(80,58,28,0) calc(46px*var(--k,1))) padding-box,
+    linear-gradient(90deg,rgba(80,58,28,.2),rgba(80,58,28,0) calc(60px*var(--k,1)),rgba(80,58,28,0) calc(100% - 30px*var(--k,1)),rgba(80,58,28,.1)) padding-box,
+    radial-gradient(60% 70% at 82% 0%,rgba(255,250,232,.55),rgba(255,250,232,0) 70%) padding-box,
+    repeating-linear-gradient(90deg,rgba(150,120,80,0) 0 calc(118px*var(--k,1)),rgba(150,120,80,.1) calc(118px*var(--k,1)) calc(119px*var(--k,1))) padding-box,
+    url(tex/paper.webp) padding-box,
+    linear-gradient(var(--sau),var(--sau)) padding-box,
+    linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 3px) border-box,
+    url(tex/oak-h.webp) 0 0/calc(900px*var(--k,1)) auto border-box;
+  background-blend-mode:normal,normal,normal,normal,multiply,normal,normal,normal;
+  box-shadow:0 calc(18px*var(--k,1)) calc(22px*var(--k,1)) calc(-14px*var(--k,1)) rgba(70,52,26,.42),calc(-22px*var(--k,1)) calc(12px*var(--k,1)) calc(40px*var(--k,1)) rgba(70,80,50,.12)}
+.gay-hang::before,.gay-hang::after{background:linear-gradient(90deg,rgba(80,58,28,.14),rgba(255,255,255,.12) 55%,rgba(80,58,28,.06)),url(tex/oak-v.webp) 0 0/auto calc(700px*var(--k,1))}
+.gay-hang::after{background:linear-gradient(90deg,rgba(80,58,28,.1),rgba(255,255,255,.22) 60%,rgba(255,255,255,.1)),url(tex/oak-v.webp) 40px 0/auto calc(700px*var(--k,1))}
+.tang::after{background:linear-gradient(180deg,rgba(255,250,235,.7) 0,rgba(255,250,235,.15) 2px,rgba(0,0,0,0) 45%,rgba(80,58,28,.18)),url(tex/oak-h.webp) 0 0/calc(900px*var(--k,1)) auto;background-blend-mode:normal,normal;box-shadow:0 calc(6px*var(--k,1)) calc(8px*var(--k,1)) calc(-4px*var(--k,1)) rgba(70,52,26,.3)}
+.tang::before{height:calc(12px*var(--k,1));background:linear-gradient(180deg,rgba(70,52,26,0),rgba(70,52,26,.2))}
+.bia{background:var(--van,linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))),url(tex/paper.webp),linear-gradient(var(--nen),var(--nen));background-size:auto,180px 180px,auto;background-blend-mode:normal,multiply,normal;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.45),inset 3px 0 5px -3px rgba(60,45,22,.3),inset -3px 0 5px -3px rgba(255,255,255,.35),calc(-5px*var(--k,1)) calc(-1px*var(--k,1)) calc(8px*var(--k,1)) rgba(80,60,30,.16),-1px 0 0 rgba(70,52,26,.18)}
+.bia.m-vai{background:var(--van,linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))),url(tex/linen.webp),linear-gradient(var(--nen),var(--nen));background-size:auto,calc(120px*var(--k,1)) auto,auto;background-blend-mode:normal,multiply,normal}
+.bia.m-caro{background:repeating-linear-gradient(0deg,rgba(255,255,255,.4) 0 calc(7px*var(--k,1)),rgba(0,0,0,0) calc(7px*var(--k,1)) calc(14px*var(--k,1))),repeating-linear-gradient(90deg,rgba(255,255,255,.4) 0 calc(7px*var(--k,1)),rgba(0,0,0,0) calc(7px*var(--k,1)) calc(14px*var(--k,1))),url(tex/linen.webp),linear-gradient(var(--nen),var(--nen));background-size:auto,auto,calc(120px*var(--k,1)) auto,auto;background-blend-mode:normal,normal,multiply,normal}
+.bia::before{background:linear-gradient(90deg,rgba(60,45,22,.2) 0,rgba(60,45,22,.04) 18%,rgba(255,255,255,.04) 46%,rgba(255,255,255,.22) 74%,rgba(255,255,255,.08) 90%,rgba(60,45,22,.12) 100%)}
+.bia .dinh{position:absolute;left:1px;right:1px;top:0;z-index:1;background:repeating-linear-gradient(90deg,#F6F0DF 0 1px,#E6DCC3 1px 2px);border-bottom:1px solid rgba(90,70,40,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}
+.bia.so-tay .dinh{left:2px;right:2px}
+.bia.m-noi .tieu,.bia.m-noi .tac{text-shadow:0 1px 0 rgba(255,255,255,.55),0 -1px 0 rgba(60,45,22,.22)}
+.bia.m-kim .tieu,.bia.m-kim .tac{color:#D9C38E;text-shadow:0 1px 0 rgba(0,0,0,.25),0 -.5px 0 rgba(255,240,200,.5)}
+.bia.nghieng{transform:rotate(-2.5deg);transform-origin:0 100%;margin-left:calc(10px*var(--k,1)) !important}
+.bia.vt-giua .tieu{margin-top:calc(40px*var(--k,1))}
+.so-tay .minh-hoa{position:absolute;inset:6% 0 3%;width:100%;height:91%}
+.bia .gan{opacity:.22}
+.nhan-nam{z-index:7}
+.treo{left:-2.5%;top:calc(-106px*var(--k,1));width:calc(160px*var(--k,1));filter:none}
+.meo{left:31%;width:calc(118px*var(--k,1));filter:none;bottom:calc(100% + 17px*var(--k,1) - 6px*var(--k,1))}
+.nen{width:calc(58px*var(--k,1));bottom:calc(100% + 17px*var(--k,1) - 6px*var(--k,1))}
+.ong-but{filter:none;width:calc(70px*var(--k,1));right:calc(-92px*var(--k,1));bottom:calc(-17px*var(--k,1))}
+.vat{filter:none}
+#s-ke-sach .nang{left:auto;right:-6%;width:46%;opacity:.5}
+
+/* spine artwork + bands that stay clear of titles */
+.bia .gan{top:auto !important}
+.bia .gan.tren{top:calc(13px*var(--k,1)) !important}
+.bia .gan.duoi{bottom:calc(14px*var(--k,1))}
+.bia{padding-top:calc(30px*var(--k,1));padding-bottom:calc(26px*var(--k,1))}
+.bia .tranh{position:absolute;left:calc(4px*var(--k,1));right:calc(4px*var(--k,1));bottom:calc(10px*var(--k,1));height:52%;background-size:cover;background-position:center;border-radius:1px;box-shadow:0 0 0 1px rgba(255,255,255,.55),0 0 0 2px rgba(90,70,40,.18),inset 0 0 6px rgba(70,55,30,.18)}
+.bia .tranh.day-du{top:calc(12px*var(--k,1));bottom:calc(12px*var(--k,1));height:auto;left:calc(5px*var(--k,1));right:calc(5px*var(--k,1))}
+.bia.co-tranh .tieu{font-size:calc(15px*var(--k,1))}
+.bia.co-tranh .tac.jp{margin-top:calc(6px*var(--k,1))}
+.bia .tranh.vua{height:auto;aspect-ratio:1/var(--ar);background-size:100% auto;top:auto;bottom:calc(16px*var(--k,1))}
+.so-tay .tranh.vua{bottom:auto;top:50%;transform:translateY(-50%);left:calc(9px*var(--k,1));right:calc(9px*var(--k,1))}
+.so-tay .khau{z-index:1;pointer-events:none}
+.bia .tieu.nho{white-space:normal;max-height:calc(var(--h)*1px*var(--k,1) - 120px*var(--k,1));font-size:calc(12px*var(--k,1));line-height:1.35;letter-spacing:.12em}
+.bia .tac{margin-bottom:calc(4px*var(--k,1))}
+
+@media (max-width:760px){
+  .chao{top:96px}
+  .duoi{left:66px}
+  .giay{position:relative;width:auto;flex:1 1 0;min-width:0;font-size:15px}
+  .gia{width:calc(50% - 13px)}.gia:nth-child(even){margin-top:30px}
+  .khung h3{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  .lieu,.bong i,.giay,#to .to-giay{animation:none}
+  .scene,.gay,.gia,.nhan,mark.hl{transition:none}
+}
+</style>
+</head>
+<body data-scene="nuoc" data-light="sang">
+
+<header class="top">
+  <a class="brand" href="#nuoc">duyên</a>
+  <nav aria-label="Chính">
+    <a href="#ke-sach" data-nav="viet">writings</a>
+    <a href="#vuon" data-nav="vuon">projects</a>
+    <a href="#ve-minh" data-nav="ve-minh">about me</a>
+    <button id="dan" type="button" aria-pressed="false" aria-label="Tiếng đàn"><svg width="24" height="20" viewBox="0 0 24 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="6" height="14" rx="1"/><rect x="9" y="3" width="6" height="14" rx="1"/><rect x="16" y="3" width="6" height="14" rx="1"/></svg></button>
+  </nav>
+</header>
+
+<main>
+<section class="scene on" id="s-nuoc" aria-label="Mặt nước">
+  <canvas id="water" aria-hidden="true"></canvas>
+  <div class="deco" id="petals" aria-hidden="true"></div>
+  <div class="chao">
+    <h1 class="big">Chào, mình <em>là</em> Duyên.</h1>
+    <p class="nha">và đây là nhà của mình, <em>hôm nay mình viết.</em></p>
+  </div>
+  <div class="deco" id="lieu" aria-hidden="true"></div>
+  <div id="hoa"></div>
+</section>
+
+<section class="scene" id="s-ke-sach" aria-label="Kệ sách">
+  <div class="nang" aria-hidden="true"></div>
+  <div class="bong" id="bong-ke" aria-hidden="true"></div>
+  <h1 class="big">Mỗi chuyện <em>một</em> cuốn.</h1>
+  <div class="tuong" aria-hidden="true"><div style="--r:3deg">hôm nay<br><em>mình viết</em><br>:)</div><div style="--r:-4deg;--pin:#A9C19A" id="the-nhanh"></div></div>
+  <div class="gay-hang" id="gay"></div>
+  <div class="hoa-mo" id="hoa-mo" aria-hidden="true"></div>
+  <div class="ke" aria-hidden="true"></div>
+</section>
+
+<section class="scene" id="s-sach" aria-label="Nhật ký">
+  <div class="deco" id="co" aria-hidden="true"></div>
+  <canvas id="mua" aria-hidden="true"></canvas>
+  <a class="ve" href="#ke-sach">← Kệ sách</a>
+  <div class="book" id="book" data-n="2">
+    <div class="bia" aria-hidden="true"></div>
+    <div class="ruot" aria-hidden="true"></div>
+    <div class="trang"><div class="flow" id="flow"></div></div>
+    <div class="bong" id="bong-sach" aria-hidden="true" style="--bc:#8A9C74"></div>
+    <div class="flip" id="flip" aria-hidden="true"></div>
+    <button id="ruy-sach" type="button" aria-label="Về trang đang đọc dở" hidden></button>
+    <button class="goc truoc" id="g-truoc" type="button" aria-label="Trang trước"></button>
+    <button class="goc sau" id="g-sau" type="button" aria-label="Trang sau"></button>
+    <div id="giay"></div>
+  </div>
+  <form id="form" hidden novalidate>
+    <label for="ten-ban">Tên bạn</label>
+    <input id="ten-ban" type="text" placeholder="Mai" maxlength="40" autocomplete="off">
+    <label for="loi-nhan">Lời nhắn</label>
+    <textarea id="loi-nhan" rows="3" maxlength="200" placeholder="Đọc xong muốn đi cà phê ngày mưa ghê."></textarea>
+    <label class="chon" for="chi-duyen"><input id="chi-duyen" type="radio" name="hien" value="rieng" checked> Chỉ Duyên đọc</label>
+    <label class="chon" for="dan-len"><input id="dan-len" type="radio" name="hien" value="chung"> Cho dán lên trang, sau khi Duyên duyệt</label>
+    <p id="form-msg" hidden></p>
+    <button class="nut dam" type="submit">Kẹp lời nhắn vào sách</button>
+  </form>
+  <div class="duoi">
+    <span id="so-trang"></span>
+    <button class="nut" id="b-an" type="button" hidden></button>
+    <button class="nut dam" id="b-nhan" type="button">Để lại lời nhắn</button>
+  </div>
+</section>
+
+<section class="scene" id="s-vuon" aria-label="Những việc mình làm" data-lua="mo">
+  <div class="deco" id="vuon-co" aria-hidden="true"></div>
+  <div class="tan" aria-hidden="true"></div>
+  <div class="than" aria-hidden="true" style="right:22%;top:-30%;width:90px;height:70%;transform:rotate(24deg)"></div>
+  <div class="than" aria-hidden="true" style="right:14%;top:-24%;width:46px;height:48%;transform:rotate(62deg)"></div>
+  <div class="vuon-trong">
+    <h1 class="big">Những việc <em>mình</em> làm.</h1>
+    <div class="gia-hang" id="gia"></div>
+  </div>
+  <div class="bong" id="bong-vuon" aria-hidden="true" style="--bc:#6F8F5E"></div>
+  <canvas id="lua" aria-hidden="true"></canvas>
+  <div id="khep"><p>Khu vườn này <em>đang khép.</em></p></div>
+  <div class="keo" role="group" aria-label="Tấm lụa, chỉ Duyên thấy">
+    <button type="button" data-lua="dong" aria-pressed="false">khép</button>
+    <button type="button" data-lua="he" aria-pressed="false">hé</button>
+    <button type="button" data-lua="mo" aria-pressed="true">mở</button>
+  </div>
+  <div id="to" role="dialog" aria-modal="true" aria-labelledby="to-ten"><div class="to-giay">
+    <button class="dong" type="button" aria-label="Đóng">×</button>
+    <span class="the" id="to-the"></span>
+    <h3 id="to-ten"></h3>
+    <p class="vai" id="to-vai"></p>
+    <ul id="to-chi"></ul>
+  </div></div>
+</section>
+
+<section class="scene" id="s-ve-minh" aria-label="Về mình">
+  <div class="cua" aria-hidden="true"></div>
+  <div class="bong" id="bong-ve" aria-hidden="true"></div>
+  <div class="ve-trong">
+    <div class="o-cua" id="o-cua" aria-hidden="true"><div class="than-cay"></div></div>
+    <div class="cot">
+    <h1 class="big">Mình là Duyên, <em>một người bình thường.</em></h1>
+    <p>Mọi người có thể gọi mình là Grace hoặc Gracie như một cách gọi thân mật nha.</p>
+    <p>Mình sinh ra và lớn lên tại Sài Gòn. Mình viết chủ yếu để ghi lại những cảm xúc, suy nghĩ và những bài học mà mình tích luỹ được trong hành trình trưởng thành.</p>
+    <p>Chỉ cần mỉm cười và sống hết mình, thế là đủ.</p>
+    <h2>Dạo này mình đang</h2>
+    <ul class="gach"><li>học tiếng Nhật buổi tối, nhắm tới N2</li><li>ươm cửa hàng template đầu tiên</li><li>dọn blog cũ về ngôi nhà mới này</li><li>tập đàn piano, chậm thôi</li></ul>
+    <h2>Mình thích</h2>
+    <div class="thich"><span style="--r:-2deg">piano</span><span style="--r:1.5deg">lịch sử Đông Á</span><span style="--r:-1deg">tiếng Nhật</span><span style="--r:2deg">sách</span><span style="--r:-2.5deg">light novel và anime</span><span style="--r:1deg">mùi hương</span><span style="--r:-1.5deg">chiều mưa</span></div>
+    <h2>Đường mình đã đi</h2>
+    <ul class="cam" id="cam"></ul>
+    <h2>Hộp thư</h2>
+    <form id="hop-thu" novalidate><label for="thu">Gửi mình vài dòng</label><textarea id="thu" rows="3"></textarea><p id="thu-bao" role="status"></p><button type="submit">Bỏ vào hộp thư</button></form>
+    <p class="nho">Marketing · tiếng Nhật · một chút code<br>Tiếng Việt, tiếng Anh, tiếng Nhật, một ít tiếng Trung<br><a href="https://www.linkedin.com/in/phanthimyduyen/">linkedin.com/in/phanthimyduyen</a></p>
+  </div></div>
+</section>
+</main>
+
+<div id="anhsang" aria-hidden="true"></div>
+<button id="doi" type="button" aria-label="Đổi ánh sáng: sáng, chiều, tối"><i></i></button>
+<div id="wash" aria-hidden="true"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const POSTS = [{"s":"cach-don-dung-luong-macbook","t":"cách dọn dung lượng macbook","d":"2026-02-20","c":"notes","p":["nhưng mà tui mới dọn được có 50gb system data thôi... toi vẫn không biết làm sao dọn hết 200gb còn lại :)"]},{"s":"thu-vien-sach-noi-danh-cho-nguoi-mu","t":"thư viện sách nói dành cho người mù","d":"2025-12-26","c":"notes","p":["vô tình tìm kiếm thư viện để đi hôm nay, mình gặp phải thư viện sách nói cho người mù và 1001 sách nói miễn phí. Mở mang tầm mắt, biết ơn cuộc đời 🙏","Nếu chỉ tìm sách nói chắc là mình chỉ thấy “sách nói” phiên bản tốn tiền, nhưng ở đây mọi thứ hoàn toàn thiện nguyện mình vô cùng cảm kích 🥹"]},{"s":"wordpress-icloud-books-epub-convert","t":"wordpress, icloud books & epub convert","d":"2025-12-13","c":"notes","p":["#1. file icloud books không thể convert sang PDF được vì nó đã là file hệ thống, dù đuôi file vẫn là .epub nhưng lúc cố gắng convert thì mặc định sẽ chỉ convert được sang file nén (zip, rar, 7z)","#2. muốn convert file epub thì dùng file gốc, epub tiếng Nhật khi convert sang pdf dễ bị lỗi - dùng calibre để convert là chuẩn nhất","#3. WP theme có setup sẵn blog home, nếu tạo trang A với design A, apply blog home sẽ bị thay thế setup từ theme chứ không phải design A. Có thể copy design A sang trang mẫu của theme trước, lưu mẫu của theme, sau đó quay về trang A set blog home."]},{"s":"cach-nha-ngheo-hoc-tieng-nhat","t":"Cách nhà nghèo học tiếng Nhật","d":"2025-03-16","c":"japanese","p":["Tui phải viết bài này bằng tất cả sự nghèo khó đáng tự hào của tui mọi người à =))","Chuyện là mình đang học tiếng Nhật, và với kinh nghiệm học ngoại ngữ trước đây, mình có một niềm tin mãnh liệt là việc luyện phim/show có thể giúp mình học nhanh hơn, giống như hồi mình luyện cả bộ series How I Met Your Mother và Friends vậy á.","Nhưng mà như mọi người theo học tiếng Nhật đều biết, cách nhanh nhất để xem phim Nhật HD có sub Nhật là dùng Netflix + extension. MÀ MÌNH NGHÈO MÀ MN :((((","Thật ra tiền Netflix thì cũng không đáng bao nhiêu, nhưng mình mua xong thì mình coi toàn những phim khác chứ không có học hành vì nghĩ tốn tiền mua rồi phải xài cho đáng :)","NHƯNG MÌNH ĐÃ TÌM RA MỘT CÁCH KHÔNG TỐN TIỀN!!!! (chỉ có xíu nhược điểm không đáng kể là hơi phức tạp, but worth it!!)","Vào việc!","1. Tải Utorrent tại đây","2. Truy cập https://nyaa.land/ để tìm phim/show cần xem (góc phải)","3. Tải file phim về, đuôi sẽ là đuôi .mkv (nên sẽ cần có bước 4 để xem được file này nhé)","4. Tải App xem được file .mkv. Mọi người có thể chọn app nào cũng được, riêng mình thì recommend dùng OmniPlayer nếu dùng Mac tại đây vì sẽ có sub song ngữ nếu file tải trên đã có 2 file sub nha (thường thì sẽ có á)","5. Main sub của mình sẽ là Sub Nhật, nhưng mọi người có thể chọn thêm Sub bổ sung (Tiếng Anh) theo ví dụ dưới đây nha.","Xong rồi thì mời bà con xem phim thôi ạ :>","Về sau mọi người cần coi phim nào thì chỉ cần lặp lại từ Buớc 2 đến bước 3 thôi là okk rồi.","Nhược điểm vì là file offline nên sẽ tốn dung lượng của mọi người, nhưng ưu điểm thì quá là xứng đáng với mình, thêm nữa do offline nên mình cũng có thể xem được mọi lúc nữa.","Thật ra nếu mọi người có điều kiện thì mua Netflix + dùng Language Reactor vẫn ổn áp quá trời á, và mình cũng khuyến khích mọi người nên dùng Netflix vì nhanh hơn, tiện hơn và còn support nhà sản xuất nữa.","Còn mình thì do vừa nghèo vừa bị cám dỗ bởi rất nhiều phim khác kể cả có mua Netflix nên là mới có cách tà ma ngoại đạo như thế này :< (một phần mình cũng tin rằng việc học không nên bị giới hạn bởi điều kiện kinh tế)","Cách này tui chưa thấy ở đâu hướng dẫn hết nên là note lại để không quên mất, mong là sau post này không bị bế sập page :|","Chúc mọi người học hành bội thu :>","Phần 2 mình sẽ cố gắng tìm thêm cách đọc được Manga/văn học Nhật bằng tiếng Nhật ~"],"q":"Tui phải viết bài này bằng tất cả sự nghèo khó đáng tự hào của tui mọi người à =))"},{"s":"khong-co-sau-do","t":"Không có sau đó","d":"2024-10-13","c":"diary","p":["\"Sau tất cả, điều quan trọng nhất còn lại là gì?\" đã là bài viết cuối của mình từ tháng 3/2024.","Nhiều thứ đã thay đổi. Rất nhiều.","Mình bắt đầu một công việc mới, sống tại một thành phố mới, gặp thêm những người bạn mới, và bắt đầu một hành trình mới.","Thế nhưng, không có sau đó.","Một khung cửa sổ đầy nắng, một căn hộ trung tâm, một tách cà phê mỗi sáng, và vẫn là một cô gái đầy những hoài nghi về con đường sắp tới.","Thở dài. Thật ra cũng chẳng có nhiều khác biệt.","Đọc lại những bài blog cũ, nhìn lại cô gái hào hứng những ngày đầu viết, và cô gái ủ dột với những bài viết đầy uncertainty 1 năm trở lại đây, khiến mình có chút buồn cười lại thấy bản thân hơi đáng thương. Chẳng ai làm gì nhưng suốt ngày cứ sầu não mãi.","Mình đã định tiếp theo sẽ tự chê mình thật thậm tệ một cách thẳng thắng, rồi chợt thấy à thì ra chính mình đã chẳng thật sự trân trọng bản thân mình. Thế nên mình cứ bất mãn, cứ hoài nghi, mà 90% là trách móc mình sao không chịu nỗ lực nhiều hơn, không chịu siêng năng lên, cày cuốc cật lực vào.","Nhưng mình lại không muốn cứ tiếp tục như thế.","Vẫn là những mâu thuẫn lo lắng chẳng đâu vào đâu. Vẫn là những câu hỏi hiện sinh luẩn quẩn trong đầu. Vẫn là những e ngại, những trì hoãn, những phân vân. Và nếu cứ thế thì sẽ mãi là mình, không có sau đó.","Thế thì tại sao lại không kết thúc mọi thứ ở hiện tại?","Kết thúc những vấn đề, những băn khoăn, những trăn trở không có lời giải đáp. Nếu đã không có lời giải rồi, thì cứ vứt mọi thứ sang một bên là được.","Không cần phải suy nghĩ nhiều về việc ngày mai làm gì, tương lai ra sao. Bởi vì ngay lúc này, mình có thể chọn sống một cuộc sống khác.","Để mình không còn phải cứ u uất mệt mỏi vì bản thân mình chưa đủ tốt, chưa đủ đầu tư cho tương lai.","Để mình sống một cuộc sống mà mình sống cho hiện tại, cho bản thân, cho mình của những ngày đã đi qua, chứ không phải là những ngày của sau đó.","Để mình chọn cách yêu thương bản thân mình đúng nghĩa, chọn cách quan tâm đến những điều nhỏ bé, dung dưỡng những thói quen tốt, và đầu tư vào những đam mê đã luôn tồn tại dù bao lần từ bỏ.","Để mình khiến đứa trẻ 7 tuổi, 10 tuổi, thậm chí 15 tuổi trong mình tự hào.","Để mình được sống cho mình. Được khao khát thức dậy mỗi buổi sáng.","Đằng nào thì tương lai cũng luôn là một ẩn số, nên thay vì đau đầu, mình cứ tập trung vào những điều khiến mình hạnh phúc thôi vậy.","Dù sao thì đó cũng là châm ngôn của chiếc blog này mà đúng hong?"],"q":"Để mình khiến đứa trẻ 7 tuổi, 10 tuổi, thậm chí 15 tuổi trong mình tự hào."},{"s":"sau-tat-ca-dieu-quan-trong-nhat-con-lai-la-gi","t":"Sau tất cả, điều quan trọng nhất còn lại là gì?","d":"2024-03-29","c":"diary","p":["Sau tất cả, điều quan trọng nhất còn lại là gì?","Đó là câu hỏi đầu tiên xuất hiện trong đầu mình giữa một chiều Chủ Nhật mưa (bão) tầm tã, với cà phê, cửa sổ và một bản nhạc pop.","Một cặp đôi dưới hiên","Một xe rác ướt sũng","Và một đứa trẻ mới lớn phía sau ô cửa.","Trước ánh đèn neon nhấp nháy và cái lạnh của trời đông, mọi thứ dường như nhoè đi, để lại mình với những suy nghĩ mơ hồ không chút trật tự.","\"Sau tất cả, điều quan trọng nhất còn lại là gì?\"","Con người luôn sống với những ràng buộc, hữu hình có, vô hình có, từ chuyện nhà cửa vật chất miếng cơm manh áo cho đến những mối quan hệ xã hội bạn bè người thân, chưa kể đến những định kiến, quy tắc, luật lệ của cộng đồng, nhưng thật khó để trả lời cho bản thân mình câu hỏi vì sao.","Vì sao lại như vậy?","Mình cứ đi làm, cứ nỗ lực, cứ bị chà đạp, cứ đứng dậy.","Cứ mệt mỏi, cứ gắng lên, cứ khóc thầm, cứ vỗ mặt.","Những điều bất như ý cứ chất chồng không thoát ra được.","Mình chỉ muốn bỏ mặc, muốn nằm ườn ra đó, muốn thở dài, lại chỉ muốn tự vỗ về bản thân. Ngày qua ngày ôm mình an ủi phải tích cực, nhưng đổi về chỉ là những kì vọng ảo về hiện tại xám ngoét.","Nhìn những điều bình dị trước mắt rồi nhìn lại mình đầy phờ phạc, mình tự hỏi bản thân rốt cuộc đang cố vì điều gì. Có thật sự phải gánh gồng như thế hay không? Có thật sự phải dối lòng rằng mình vẫn ổn, mỗi ngày, chỉ để đổi lấy những bất an này hay không?","Phải chăng tất cả những gì mình cần, đến cuối cùng, cũng chỉ là cảm giác an yên đằng kia, thay vì những điều xa hoa phù phiếm không có thực?","Mình nghĩ mình đã chạm đáy, rất nhiều lần. Bằng cách nào đó, dù vững vàng hay ngả nghiêng, mình vẫn đứng dậy.","À, vì ít ra, mình vẫn còn có gia đình.","Ít ra mình còn có mẹ cạnh bên.","Ít ra mình còn có bạn bè dỗ dành.","Và ít ra, mình không cô đơn.","Mình không muốn mang theo câu hỏi mơ hồ như thế đi suốt quãng đường còn lại. Thay vào đó, mình muốn mình dũng cảm dùng nó làm bàn đạp cho mình xuất phát, chạy ra khỏi vạch kẻ an toàn giữ chân mình suốt thời gian qua.","Đường chỉ tay của mình luôn ngắn hơn người khác rất nhiều, và mình không muốn lãng phí thời gian của mình cho những điều độc hại.","Sau tất cả, nếu những gì ở lại chỉ là nỗi buồn và sự ngờ vực bản thân, thì việc chấp nhận rủi ro để đón những thử thách mới, hẳn sẽ là một sự lựa chọn đúng đắn hơn, nhỉ?"],"q":"Ít ra mình còn có mẹ cạnh bên."},{"s":"tan-man-cuoi-thang-8-nhung-ngay-xinh","t":"Tản mạn cuối tháng 8 - Những ngày xinh","d":"2023-08-29","c":"diary","p":["Mình đã định làm một chút gì đó mới mẻ cho chiếc blog nhỏ của mình, như là lập một topic mỗi ngày một prompt để khuyến khích bản thân viết nhiều nhiều vào, thế nhưng lại thấy mình chưa viết tản mạn cho tháng 8, và cũng chỉ còn vỏn vẹn vài ngày nữa là bước sang tháng 9 rồi, nên phải tranh thủ viết, kẻo lại bỏ lỡ một đoạn thời gian đầy niềm vui.","Thường thì mình hay viết mỗi khi buồn hơn là lúc vui, hẳn là lúc vui thì mình đã bận tận hưởng thay vì ngồi im lặng suy nghĩ như những lúc buồn. Kết quả là mỗi lần mở blog lên mình chỉ thấy toàn những điều tiêu cực thôi, chả muốn chút nào. Nên là vào những lúc rảnh được xíu xiu như thế này, mình lại mong bản thân có thể ghi lại tất cả mọi khoảnh khắc nhiều hơn, trọn vẹn hơn, để chiếc blog của mình thêm *bling bling* như một cuốn nhật ký vậy á.","Tháng vừa rồi của mình trôi qua yên bình như một chiều hạ bên bờ sông, vì mọi thứ cứ êm ả như thế nào ý. Mình pass probation nè, thấy hạnh phúc trong công việc nè, thấy cuộc sống nhiều may mắn nè, và thấy mình trưởng thành hơn, làm được nhiều việc hơn mỗi ngày nữa. Có lẽ là vì vậy mà, mình không biết viết gì những lúc như thế này hết, vì mình thấy mình quá là \"enjoy cái mô mừn\" này rồi í :v","Thôi thì mình sẽ kể cho mọi người nghe một chiếc mô mừn cũng được xem là \"cột mốc\" đáng nhớ trong tháng vừa rồi nha.","Bạn mình đám cưới.","Lần đầu tiên trong cuộc đời, cho đến thời điểm này của mình, mình có một người bạn mời đi đám cưới. Và với mình thì điều này thật sự là một điều đáng nói í, giống như là sự khẳng định cho việc tụi mình đã đến tuổi thành gia lập thất rồiii. Thật lòng thì cảm giác trở thành khách mời thật sự trong đám cưới của một người bạn là một cảm giác rất khác í, khác xa tất cả những lần mình đi đám cưới cùng mẹ trước đây, hay ngay cả là đám cưới của những anh chị em họ hàng thân thiết từ đó đến giờ vậy. Lần đầu tiên trong đời, mình dự đám cưới mà book makeup, lần đầu tiên thuê váy, và cũng là lần đầu tiên thật sự góp mặt trong đám cưới của cô dâu. Nên, với mình đó là một trải nghiệm có một không hai trong đời, và hôm đó mình thấy mình cũng xink lắm ahjhj hong bỏ công đầu tư :>","Cũng hong biết viết gì thêm vì dạo này mình bị yêu đời á, thôi thì nào tìm thấy topic deep deep mình lại trồi lên tám chuyện với mọi người nha ~","Không ngờ là có ngày một đứa ưa nói như mình lại không thể viết quá 2000 từ cho một bài blog, shock, mức độ vô tri của toi đã lên một tầm cao mới rồi hụ hụ","Dù vậy thì, sống vui mới là quan trọng!","Chúc mọi người một kì nghỉ lễ nhiều niềm vui nhaaa"],"q":"Lần đầu tiên trong đời, mình dự đám cưới mà book makeup, lần đầu tiên thuê váy"},{"s":"tan-man-cuoi-thang-7-nhung-ngay-he-yen-a","t":"Tản mạn cuối tháng 7 - Những ngày hè yên ả","d":"2023-07-29","c":"diary","p":["Nhắc đến mùa hè Sài Gòn là không thể thiếu những cơn mưa rào bất chợt nối tiếp những ngày nắng gắt đầu hạ. Tháng 7, trời cũng đã chớm vào đông, mưa ngày càng nhiều và trời cũng đã dần lạnh hơn mỗi sớm.","Dạo gần đây mình bắt đầu viết nhật ký thường hơn rồi, nhưng giờ viết tản mạn lại cảm thấy không biết phải viết gì, cũng không hẳn là không có gì để viết, có lẽ là không biết bắt đầu từ đâu thì đúng hơn.","Tháng 7, tháng thứ hai và cũng là tháng kết thúc thời gian thử việc của mình. Với mình, hai tháng này chắc hẳn là hai tháng tuyệt vời nhất từ đầu năm tới giờ, và đâu đó mình vẫn cảm thấy những sự lựa chọn trước đó của mình đã thật sự chính xác. Mình nhớ rằng đã từng nghe một ai đó nói, “Không bao giờ có sự lựa chọn đúng nhất“, chỉ có tự chúng ta làm cho lựa chọn đó đúng mà thôi. Trong khoảng 1 năm trở lại đây, mình đã trải qua vô số những sự lựa chọn, có cái khiến mình suy sụp, có cái khiến mình hạnh phúc, nhưng mình tin rằng tất cả những sự lựa chọn đó, đều giúp mình học được những bài học cực kì quý báu, để mình biết trân trọng bản thân mình hơn, và học cách dũng cảm đối mặt với những khó khăn trong cuộc sống.","Nói nghe lớn lao quá ha, nhưng trong chặng đường này, cho đến thời điểm hiện tại, mình mới nhận ra là mình vẫn luôn thật sự may mắn.","Giữa những cơn mưa xối xả cuối hè, trong lòng mình lại thấy yên ả đến lạ.","Tháng 7, bạn của mình sắp cưới, con của người yêu cũ sắp thôi nôi, còn mình thì vẫn chọn độc thân hạnh phúc. Mình vẫn thấy mình khá bận rộn, nếu không phải là công việc thì cũng là những dự án cá nhân, thời gian rảnh cũng chỉ đủ dành cho gia đình, bạn bè, và dành cho bản thân. Cũng không hẳn là mình không muốn hay không trông đợi vào một mối quan hệ nào, chỉ là mình cảm thấy mình bận quá, không rảnh yêu đương, nếu có thì người ấy chắn chắn cũng phải bận như mình, vì ở thời điểm hiện tại, mình cũng chẳng có mấy thời gian để chăm chút cho những mối quan hệ. Hẳn là với mình bây giờ, yêu bản thân thôi là đã đủ bận rồi.","Thật lòng mà nói thì mình viết tới đây là hết văn vì gần đây không siêng đọc nữa. Nên là, hẹn gặp lại mọi người vào một ngày khác, và chắc chắn là sắp tới mình sẽ có siêu nhiều thứ để viết luôn á.","Vậy thui, chúc mọi người cuối tuần yên ả nha ~"],"q":"Giữa những cơn mưa xối xả cuối hè, trong lòng mình lại thấy yên ả đến lạ."},{"s":"hom-nay-minh-tron-23-tuoi","t":"Hôm nay mình tròn 23 tuổi","d":"2023-07-09","c":"diary","p":["(Reup từ một chiếc blog của toi hồi sinh nhật mình từ tháng 3 nên timeline sẽ không fit với những gì đang xảy ra ở hiện tại)","Thật ra là cũng hong có gì nhiều, chỉ là tui nhận ra mình đã bước qua U22 nên muốn trồi lên để dài dòng xíu xiu, viết vài lời tạm biệt tuổi 22 và chào đón tuổi mới một cách nghiêm túc hơn","Năm vừa qua của mình là một năm siêu nhiều biến động, mặc dù mình dự đoán là tuổi mới này của mình cũng biến động nhiều hong kém gì tuổi 22, nhưng mình sẽ kỳ vọng những chuyển biến tích cực sẽ diễn ra sắp tới.","Đến thời điểm này đôi lúc mình vẫn chưa thích nghi được với việc bản thân đã “quá lứa lỡ thì” so với các bạn sinh viên, mình cứ nghĩ mình mới 18 thui, còn ham chơi lười biếng dữ lắm. Nhưng vì mình đã bắt đầu đến cái tuổi mà mọi người chuẩn bị thành gia lập thất, có sự nghiệp ổn định, lương 20 củ,… mình mới nhận ra là mọi thứ xung quanh đang dần thay đổi rất nhiều, nên là mình cũng cần phải nỗ lực hơn nữa để bắt kịp mọi người (hoặc đúng hơn là bắt kịp với những mục tiêu mình đặt ra).","Dù với nhiều người quen của mình thì mình đã đi lùi chục bước, từ phú bà đầu tiên đạt thu nhập 1000$ trong đám đến một cu gái thất nghiệp tuổi 22, nhưng mình biết có những sự lựa chọn là bài học mà mình phải học. Bằng cách nào đó, mình nhận ra đồng tiền không còn là thước đo cho sự thành công của mình nữa.","Mình từng đặt mục tiêu thu nhập của mình là 10tr, 20tr, rồi 50tr,… tương ứng với lúc mới ra trường, lên senior, manager,… Nhưng mình chưa bao giờ thật sự nhìn sâu vào bản thân để thật sự thấy mình là ai trong những năm tiếp theo.","Mình từng nghĩ cứ làm nhiều, thu nhập cao thì mình sẽ làm được nhiều thứ hơn, sống có ích hơn, nhưng đổi lại chỉ là những chi tiêu xa xỉ và đống nợ tín dụng mà mình nghĩ nếu mình còn tiếp tục thì chẳng bao lâu nữa mình cũng trở thành miếng mồi cho tư bản.","Mình từng nghĩ có tiền, ừ đúng là không có tất cả, nhưng cũng có hầu hết. Nhưng mình không biết rằng sẽ đến lúc mình không còn hứng thú với việc có tiền nữa. Không một chút nào","Ai đó đã nói, đừng định giá sự nghiệp của mình bằng tiền, tiền là công cụ, là phương tiện chứ không phải đích đến.","Đồng tiền ý nghĩa là đồng tiền đúng với giá trị mình tạo ra, và chỉ là đồng tiền hữu ích khi mình hạnh phúc với việc mình đang làm. Nên dù lựa chọn của mình nghĩa là phải đánh đổi tất cả những thứ vật chất mình có thể có trong tương lai, mình vẫn tin rằng sự khoẻ mạnh mới là điều quan trọng nhất, và mình hạnh phúc với sự tự do tự lo hiện tại.","Lâu quá không viết nên ngại tay ghê, giờ muốn viết cũng thấy ớn qué, đọc hong tự nhiên gì hết mà mình cũng khum ra được chữ nào nữa nên là thui tạm bịt mọi người nha. Lúc khác siêng hơn mình sẽ quay lại","Chúc mừng sinh nhật bé Diên 🌸"],"q":"Bằng cách nào đó, mình nhận ra đồng tiền không còn là thước đo cho sự thành công của mình nữa."},{"s":"tan-man-cuoi-thang-6","t":"Tản mạn cuối tháng 6","d":"2023-06-29","c":"marketing","p":["Hi chào mọi người,","Cũng đã một khoảng thời gian rồi mình mới lại update chiếc blog nhỏ này. Thật ra thì, mình đã dự định làm tản mạn từ đầu tháng 5 cơ, nhưng tới tận bây giờ mới thật sự ngồi lại và gọi là, có chút siêng năng để viết.","Hai tháng vừa qua đã đánh dấu những cột mốc mà với mình, là cực kì tuyệt vời trong suốt khoảng thời gian gần đây. Mình nghĩ rằng việc mình lựa chọn lùi lại một bước, cố gắng cải thiện bản thân và học cách yêu chính mình hơn trong nửa đầu năm 2023 này là một sự lựa chọn rất rất rất đúng đắn. Và nhờ đó, mình đã may mắn tìm được cho bản thân một môi trường cực kì đáng mơ ước để làm việc, học hỏi và phát triển. Nhưng mình vẫn trong quá trình thử việc nên là hiuhiu mọi người hãy chúc mình đỗ được 2 tháng này nha, vì mình rất rất rất là thích công ty hiện tại của mình luôn hong muốn rời đâuu","Thời gian gần đây mình cũng gọi là hơi bận rộn một tí, do có việc làm fulltime mà, nhưng mà nhờ vậy mình lại thấy mình như kiểu được sống trở lại í. Thà là bận rộn làm việc có ích cho đời còn hơn là nằm ì cả ngày ở nhà đúng hong? Dù vậy, mình vẫn thấy khá là tiếc vì vẫn chưa thể tối ưu hiệu suất làm việc ấy, như kiểu nếu mình tận dụng được những khoảng thời gian rảnh rỗi sau giờ làm thì chắc hẳn mình sẽ còn có thể học và làm thêm được nhiều điều có ý nghĩa hơn nữa ấy. Phải cố gắng hui","Có một chuyện nhỏ mà mình đã bất ngờ phát hiện vài ngày trước. Mình đã nhìn mọi chuyện một cách tích cực hơn, hơn rất nhiều so với mình của vài tháng về trước. Mình nhận ra mình bớt than vãn đi một tí, bớt càu nhàu đi một tí, và bắt đầu tập trung vào cách giải quyết vấn đề hơn là chỉ chăm chăm vào lỗi sai của bản thân, hay chăm chăm đổ lỗi cho những yếu tố khách quan.","Ví dụ siêu ngộ là sáng hôm đó ra đường mình xém té vì chạy ngang lỗ cống, nhưng xe mình chỉ vừa nghiêng thôi là mình đỡ được rồi nên khom sao hết. Điều làm mình bất ngờ là, nếu thường ngày, đang gấp, mà còn vướng phải cái gì đó làm mình chậm lại, thì dù thế nào đi nữa, mình cũng sẽ nghĩ là xui quá, xong nhăn nhó khó chịu, thế nhưng hôm đó câu đầu tiên mình thốt ra lại là: \"May quá\". Kiểu mình nói xong mình thấy ngạc nhiên ngang luôn í vì mình không nghĩ là mình lại có thể tích cực được đến vậy, và ngay tại lúc đó mình đã thấy biết ơn rất nhiều vì dù có hơi vấp, nhưng mình đã không ngã, phải mà ngã thật thì mới đúng là xui. Thế là cả ngày hôm đó mình cứ nghĩ mãi về điều này.","Mình tin là mình biết lý do. Lý do cho những chuyển biến tốt đẹp trong thời gian gần đây với cuộc sống của mình. Có thể nhiều bạn sẽ không tin, nhưng mình đã viết nhật kí biết ơn đó. Và mình vẫn đang cố duy trì thói quen này (đến hôm nay là được khoảng 12 13 ngày rồi), để cảm thấy yêu đời, yêu mình hơn. Bắt đầu từ những câu chuyện rất nhỏ như \"hôm nay trời đẹp quá\", \"hôm nay được mẹ nấu cơm giở đi làm\", hôm nay sếp khen mail mình viết good, bữa thì được bạn thân cho xiền =)),... tất cả những điều tưởng chừng rất thường nhật đó khiến mình nhận ra là mình may mắn hơn rất rất nhiều người, thấy mình biết trân trọng cuộc sống hơn, thấy mình cũng... muốn sống hơn một ít.","Thế nên là, dù rằng trải qua không nhiều cũng không ít chuyện này kia trên đời, mình vẫn mong rằng bản thân mình có thể ngày càng yêu quý những niềm vui bé nhỏ của việc được sống nhiều hơn, để những tháng năm còn lại ở trên đời, mình thấy mình đáng sống.","Còn mọi người thì sao? Mọi người có câu chuyện gì ngồ ngộ muốn kể hong?","Cũng như việc viết ra đã khiến mình thấy bình yên trong lòng, mình mong rằng bất kì ai đọc được blog của mình cũng sẽ thấy nhẹ nhõm hơn, yêu đời hơn, dù nghe nó siêu việt tầm cỡ đồ quá ha =))","Vậy hoii à~","Cuối cùng cũng viết xong một chiếc tản mạn tháng 6 rồii =))","Goodnight mọi người và nhớ là Smile more, live fulfilly nhaaaa !!"]},{"s":"tan-man-dau-thang-4-2023","t":"Tản mạn đầu tháng 4/2023","d":"2023-04-02","c":"diary","p":["Hi, xin chào mọi người, lại là mình đây~","Cũng đã lâu rồi mình không viết blog trở lại, cũng không cập nhật tình hình gì trên blog cả, để chiếc blog của mình mốc meo cũng đã hơn vài tháng, thật là xấu hổ quá đi. Thế nhưng thật tình là mình chẳng biết phải update với mọi người gì cả... Cuộc sống của mình dạo này nó cứ thế nào í, chắc là khác nhiều so với dự định của mình, với kì vọng của mình và tất nhiên là với tất cả những người xung quanh nữa - từ những người thân thiết nhất cho đến những người chỉ đơn thuần là quen biết mình, tất cả đều không nghĩ rằng mình sẽ làm những điều có chút \"điên rồ\" như vậy, trong khoảng thời gian mà người người nhà nhà đều chọn cho mình những con đường có tiền đồ rực rỡ... Thôi không vòng vo nữa, nói thẳng ra thì, mình đã thất nghiệp rồi. Dù cả hai sếp đều muốn giữ mình lại, thế nhưng đâu đó mình vẫn cảm thấy con đường này, tại thời điểm này, có lẽ chưa phải là con đường đúng đắn nhất dành cho mình, và mình vẫn tin rằng bản thân mình có thể tự bước đi trên một con đường khác một cách tự tin hơn, hãnh diện hơn, tin tưởng vào điều mình làm và thật sự hạnh phúc trong công việc.","Thế là mặc dù nghe rất hề hước, nhưng mình đã lựa chọn cách thất nghiệp để theo đuổi thứ mình thích :D","Lúc ban đầu, mình đã vẽ ra cho bản thân rất nhiều lối đi, những lối đi mà mình tin rằng chỉ cần mình nỗ lực, hết mình có ý chí thì mình sẽ thành công và sự thành công này sẽ là thành công thật sự - nghĩa là mình sẽ thấy hạnh phúc với việc mình làm, chứ không phải chỉ là làm vì tiền nữa (dù có tiền thì đúng là sướng thật). Thế nhưng dần rồi, mình lại cảm thấy bản thân mình lười quá đi, quá sức lười biếng, và lại có xu hướng sa đà vào những thứ giải trí nhất thời hơn là việc mà mình cần làm, phải làm, và phải hoàn thành tốt. Mình lại còn mất tập trung nữa cơ, cứ làm một ít, lại thấy mình cần phải nghỉ ngơi, song cuối cùng lại chẳng làm xong được cái gì.","Đầu tháng tư này, sau khi mua kha khá đồ shopee (dù rằng mình chẳng dùng tới, chẳng phải là đồ \"nhất thiết phải có\" để mua), mình mới nhận ra rằng, có vẻ như, mình đang chẳng thật sự sống cuộc đời mà mình muốn sống. Mình còn chẳng mảy may theo đuổi nó cơ, thế thì làm sao mình có được cuộc sống đó đây nhỉ? Vậy nên trong một phút ngồi thẫn thờ, mình đã quyết định là, mình phải có được cuộc sống đó! Mình phải bắt đầu lại với việc kiên quyết với bản thân, đặt ra những giới hạn, đặc biệt là, không đi chơi bời với bạn bè nữa, cũng như kiểm soát chi tiêu của bản thân mình tốt hơn hic","Mặc dù mình đã gặp phải kha khá vấn đề (đặc biệt là vấn đề tài chính) sau khi lựa chọn đánh đổi giữa mức lương 20+ củ để đổi lấy cuộc sống vô tư không lo nghĩ như hiện tại, thế nhưng mình tin rằng, sự đánh đổi này là xứng đáng, bởi mình đã cảm thấy những thay đổi tích cực hơn đến với bản thân, thấy may mắn khi được ở trong một môi trường mà mọi người đối tốt với nhau hoàn toàn không toan tính như thế giới của người lớn, và thấy mình bắt đầu biết yêu bản thân mình hơn. Mình nghĩ rằng, ai trong đời đều phải đối mặt với những sự lựa chọn, những bước ngoặt mà mình phải đau đầu suy nghĩ, xem hướng nào mới là đúng đắn. Với mình, mình chọn tin tưởng vào cảm giác của bản thân. \"Mình có hạnh phúc với nó không?\", \"mình có thấy tràn đầy năng lượng mỗi sớm thức dậy hay không?\", \"mình có thấy bản thân mình phát triển hơn không, tích cực hơn không?\"... Hàng ngàn câu hỏi được đặt ra, thế nhưng mình nghĩ rằng, từ sâu tận đáy lòng, mọi người đều đã có sẵn cho mình câu trả lời ngay khi câu hỏi được đặt ra rồi, chỉ là mình có nhận ra được điều đó hay không thôi. Thay vì suy tính thiệt hơn đủ điều, tĩnh tâm lại, hít thở đều và cảm nhận sự thay đổi trong cảm xúc của mình, để thấy rằng mọi vấn đề trên đời thật ra đều rất đơn giản. Bởi lẽ mọi sự lựa chọn, nếu không xuất phát từ niềm tin mạnh mẽ của bản thân mình, đều có thể dễ dàng đổ vỡ sau những cơn rung chấn.","Văn vở ha, nhưng cái nết hành văn bất cần của mình nó cứ như vậy á. Có lẽ đây cũng là những điều nhỏ nhặt mình rút ra được sau hơn nửa tiếng ngồi thẫn thờ viết linh tinh, mong rằng có thể giúp được bạn nào đang phải đối mặt với sự lựa chọn có thêm dũng cảm để quyết định cho bản thân mình nha~","Vậy thôi à, chúc mọi người một tuần mới sắp đến thêm nhiều nhiều nhiều năng lượng tích cực để thêm iu đời hơn nho ~"]},{"s":"ux-ui-study-resources-for-beginner-updating","t":"UX/UI Study Resources for Beginner (updating...)","d":"2023-01-13","c":"marketing","p":["UI Rules/Principles","The 4 Golden Rules of UI Design","10 Usability Heuristics for User Interface Design","Principle of Consistency and Standards in User Interface Design","How to Create a Pattern Library and Why You Should Bother","Pattern library and style guide examples on Website Style Guide Resources","A Practical Guide to Creating Your First Pattern Library"]},{"s":"di-lam-bi-chui-im-hay-cai","t":"ĐI LÀM BỊ CHỬI, IM HAY CÃI?","d":"2023-01-07","c":"growth","p":["Repost bài viết mình đã đăng từ Page \"Một chiếc blog của Thảo và Diên\" ngày 07/09/2022","Gắn cái title cho nó giật tít vậy thôi chứ mình đi làm hong có bị chửi nên mình không đảm bảo trả lời được câu này cho các bác :))","Nhưng mình biết chắc một điều là, con người không có ai hoàn hảo hết, và ngay cả mình cũng có nhiều lúc làm sai, nhiều lúc lơ là, và nhiều lúc bỏ bê trách nhiệm công việc của mình (như bây giờ đáng ra đang phải làm việc thì mình lại đi gõ phím vầy nè). Thế nên là, tuy cá nhân mình hong có bị chửi nhiều, thay vào đó là bị nhắc nhở nhiều hơn, thì mình cũng, gọi là có xíu kinh nghiệm trong việc đối mặt với những tình huống như thế này.","Thường thì, chuyện gì xảy ra cũng có 2 (hoặc nhiều) mặt của vấn đề, nên lúc mình bị la, hay bị nhắc nhở, mình đều giữ trong đầu quan điểm là: \"Mình có làm sai thật không và nếu sai thì sai ở đâu?\" - Mình nghĩ là cái này tưởng dễ, nhưng lại không phải quá dễ với tất cả mọi người, đặc biệt là gen Z bây giờ (tại mình cũng là gen Z - mà gen Z thì đã biết ưu tiên cho bản thân hơn công việc nhiều so với những thế hệ trước). Nhận ra mình có lỗi, dù ít dù nhiều trong tình huống như thế này, đối với mình là một lợi thế, vì nó giúp mình đối diện với những lời tiêu cực một cách có chọn lọc hơn, và chỉ lắng nghe những góp ý mang tính xây dựng, thay vì tập trung vào những câu chì chiết. Và bằng cách nào đó thì điều này giúp mình phát triển hơn từng chút một, bằng cách biết nhận sai, và sửa sai, ừ thì, cũng là nhờ cố gắng từng chút một í, để hạn chế bị la hơn, đặc biệt là những cái đã bị la trước đó.","Trong trường hợp không hoàn hảo, khi mình bị la, mà nghĩ tới nghĩ lui vẫn không thấy mình có lỗi, và điều này lặp đi lặp lại nhiều lần, thì nên nghỉ việc =))))","Thật, không hề đùa =))))","Như mình đã nói, gen Z đặc biệt quan tâm đến trạng thái của bản thân, mình có đang ổn không, mình có đang hạnh phúc với công việc không, mình có thấy áp lực hay xì chét đến mức không thể tiếp tục làm nữa, thì thôi nghỉ việc cho vuông","Không phải là mình khuyên mọi người thấy khó quá mà bỏ (thật ra cũng 1/2 là như thế đi), nhưng có những thứ không phải cứ cố là được, cũng không phải lúc nào người ta cũng nhìn thấy được nỗ lực của mình. Nếu phải làm việc trong trạng thái nỗ lực bị chối bỏ như vậy, e là không sớm thì muộn bạn cũng sẽ cảm thấy chán ghét công việc, chán ghét bản thân mình, mà trước hết là chán sếp đã.","Tin mình đi, mình đã từng rơi vào trạng thái không có muốn nghe bất kì một lời nào từ sếp mình, ngay cả nghe một câu chào, hay một câu \"hôm nay thế nào rồi em\" cũng cảm thấy chán ghét, RẤT CHÁN GHÉT. Có thể họ không làm gì sai, chỉ là mình cảm thấy cách làm việc của mình và sếp không phù hợp, và những góp ý từ sếp làm mình nhận về nhiều tiêu cực hơn là thật sự hỗ trợ được cho công việc. Mình vẫn giữ trạng thái là sếp mình vẫn là một người tốt, và tự nhủ là những feedback này chỉ là nhất thời, mình vẫn điều chỉnh cảm xúc được, cho tới ngày mình thật sự hết chịu nổi để đi tới quyết định nghỉ việc - dù công việc đó có thể giúp mình có nền tảng tài chính ổn định hơn nhiều tại thời điểm đó, mình mới nhận ra mình thật sự cảm thấy nhẹ nhõm và giải thoát khỏi môi trường nhiều phần tiêu cực đó. Sau thời gian đó mình vẫn đôi lần thấy mình có cái sai, vì vẫn nên báo trước và không nên hành xử có chút dứt khoát như vậy, nhưng điều khiến mình hối hận chỉ là mình đã không xin nghỉ sớm hơn để tốt cho cả hai bên, chứ không hề hối hận vì đã nghỉ việc.","Mình nghĩ mọi thứ là ở bản thân mình. Mình tin tưởng mình làm được, mình có năng lực và mình đã nỗ lực cho công việc, thì không có lí do gì mình sợ bị feedback hay bị nhắc nhở vì đã làm chưa tốt cả. Có thể sẽ buồn một chút, mệt mỏi một chút ngay tại lúc đó, nhưng nó sẽ giúp mình cẩn thận và làm việc hiệu quả hơn về lâu dài. Quan trọng là mình phải nhận thức được lỗi sai của mình nếu có, và hướng tới giải quyết vấn đề, chứ không phải chăm chăm vào cảm xúc của bản thân, để công việc trở thành một thử thách thú vị và mình thấy mình trưởng thành hơn với nó, thay vì là chầm kẽm mỗi ngày và đổ lỗi cho tất cả mọi yếu tố bên ngoài.","Kết, đi làm bị chửi, đúng thì im, sai thì cãi, không cãi được nữa thì nghỉ việc =)) Mà nghỉ việc nhiều quá thì nên coi lại bản thân mình nha hỏng có bênh ai nhưng mà tất cả mọi sự lựa chọn đều là từ mình thuiii"]},{"s":"2022-recap","t":"2022 Recap","d":"2023-01-04","c":"diary","p":["Hi mọi người, một năm mới nữa đã trôi qua, cột sống mọi người có ổn hong? (Chứ mình thì... không ổn lắm)","Thật ra ban đầu mình cũng khá là hứng thú với việc viết blog, và hơn nữa là viết cho mọi người đọc, nhưng dần rồi thì mình nhận ra không nên chia sẻ quá nhiều chuyện riêng tư, vì cái tính mình hay lan man í, viết một hồi là lại bị sa đà vào việc kể chi tiết xong quên luôn mục tiêu viết ban đầu. Thế là mình lại ngại viết, nếu có thì cũng chỉ viết xong để nháp hoặc đăng private chứ không đăng public nữa. Có lẽ mà vì vậy nên dù đã lập blog được hơn 2 năm, số lượng bài đăng cũng chỉ vỏn vẹn mấy bài đếm chưa đủ 1 bàn tay. Oe oe.","Tiếc í, cũng có chút hối hận nữa, vì đã không viết nhiều hơn, nên mình lại đi lướt vòng xem anh Kira đăng cái gì =)) để mình thấy mình không cô đơn - trong việc viết blog tản mạn về cuộc sống hằng ngày. Vậy nên là ta da, mình đã xuất hiện trở lại rồi đây ~","Nếu phải nói về năm 2022 trong một từ thì mình sẽ tóm gọn lại bằng chữ \"quằn\". Quằn lắm, đến con giun cũng không quằn bằng mình. Mình bắt đầu năm 2022 bằng đêm giao thừa 1.1 khá vui vẻ, xem pháo hoa rồi chụp hình với bạn thân. Nhưng đến lúc cận Tết âm (và khoảng thời gian dài sau đó), quay đi quẩn lại vẫn chỉ có mình mình. Nói chung là tổn thương sâu sắc nên mình đã quyết định nghỉ chơi hết tất cả bạn bè của mình, tuy là sau này mọi chuyện cũng được giải quyết ổn thoả và bọn mình chơi lại với nhau như bình thường, nhưng mà khoảng nửa đầu năm 2022 đã ảm đạm như vậy đó. Mình nghĩ chắc hẳn là mình không thể sống thiếu tụi nó í, nên là dù quyết định chắc nịch ngay tại thời điểm đó, mình vẫn bứt rứt không chịu nổi, kiểu cứ phải nói hết rõ ràng một lần mới nghỉ chơi được chứ không muốn im im bỏ đi. Ai dè chơi lại =))) Chưa biết sắp tới có hối hận hong chứ năm vừa rồi thì mình vẫn cảm thấy không hối tiếc vì dù có nghỉ chơi thật thì ít ra mình cũng đã nói hết những gì cần nói :v (mà cũng chắc vậy nên mới hong nghỉ chơi)","Đó là chuyện của nửa đầu năm. Nửa cuối năm thì mình lại vướng phải những mâu thuẫn khác, của mình và do mình. Nói sơ qua về tình hình công việc của mình thì mình đã làm freelance được khoảng 1 năm, thời gian không dài không ngắn, nhưng dần dần thì một đứa hoạt ngôn như mình lại cảm thấy bí bách vì không được tiếp xúc với con người. Thế là mình tìm kiếm một công việc fulltime, mong mỏi được sống trong xã hội náo nhiệt, nhưng không ngờ công việc fulltime của mình cũng là làm trực tiếp với BOD và giờ thì sếp của mình đã đi du học bỏ lại mình toi trong căn phòng trống :) Bùn lắm :) Có những ngày mình thật sự stressed out đến mức cảm thấy cuộc sống chẳng có ý nghĩa gì. Công việc thì vẫn cứ tồn đọng ở đó, còn mình thì mỗi ngày đi làm đều như cái xác, mà phải cái xác không hồn còn làm xong việc thì đỡ, xác này không có nổi xíu năng lượng nào để gõ phím luôn. Cứ đờ đờ đẫn đẫn đúng giờ là lết xác lên văn phòng, rồi cũng đúng giờ lại lết xác đi về nhà, xong lại stress vì chưa làm được gì, and again.","Mình muốn bỏ việc rồi. Mình nghĩ cứ đà này thì không thể nào phát triển được, chỉ có đi lùi thôi. Thời điểm đó mình đang đảm nhận cùng lúc 2 công việc, và mình đã quyết tâm nghỉ cả hai.","Đơn xin nghỉ đã sẵn sàng.","Và sếp của mình cũng đã đồng ý.","Nhưng đó chỉ là câu chuyện của một tháng trước.","Mình đã chùn bước.","Thay vì nghỉ cả hai, mình chỉ nghỉ 1 job. Job còn lại, sếp mình còn không biết mình định nghĩ việc nữa cơ.","Cũng không biết là do mình hèn, chưa đủ can đảm để tự tay vứt bỏ chén cơm của mình, hay là do mình vẫn cảm thấy chưa đủ - chưa đạt được đỉnh cao mình muốn trong công việc này nên cuối cùng vẫn rút lại tờ đơn. Nghĩ đi nghĩ lại thì, mặc dù lúc đó mình cực kì stress, nhận lương cũng không còn vui vẻ nữa, có khi xin nghỉ thì mình đã nhẹ nhõm hơn rất nhiều, nhưng đâu đó mình vẫn có cảm giác mạnh mẽ rằng mình sẽ phải vượt qua được, rằng mình có khả năng, và sẽ tiến xa được trên con đường này.","\"Mình còn chưa bắt đầu nữa. Mình không thể bỏ cuộc được.\"","Khoảnh khắc quyết định bỏ cuộc khiến mình khó chịu bứt rứt kiểu gì í, kiểu cứ mâu thuẫn không dứt được. Nên mình lại tự nhủ rằng mình sẽ cho mình một cơ hội cuối cùng với công việc này, và mình sẽ phải làm được, mình chỉ nghĩ như thế thôi.","Chậc. Đi làm mà không có đồng nghiệp thì buồn thật sự luôn í, chưa kể đôi lúc mình lại thấy bạn bè checkin chỗ làm đông đúc nè, đi chơi với công ty nè, hay thấy văn phòng mọi người trang trí Noel náo nhiệt thì lại tủi thân muốn xỉu, nhưng đành chịu thôi chứ biết sao được. Mình nghĩ cái số mình năm nay là phải vượt qua cuộc sống một mình rồi - nghĩa là chừng nào mà mình chưa thấy hạnh phúc với việc tự làm chủ mọi thứ, tự sắp xếp công việc, tự lên kế hoạch, tự thực thi và kỷ luật với bản thân thì mình phải làm một mình cho đến khi vượt qua được, và bắt đầu cảm thấy yêu công việc của mình mà không cần có những yếu tố bên ngoài như đồng nghiệp, môi trường,..v..v.... Trời cho cái số freelance nó zị rùi, thì chấp nhận thui chứ sao giờ :v","Đó, là kết thúc năm 2022 của mình. Một năm quằn quại. Đi du lịch 2 lần cũng quằn quại. Toàn là đối mặt với deadline và tự đấu tranh với bản thân lười biếng. Nhưng rồi mình cũng dần dần vượt qua được. Và mình nghĩ rằng thời gian sắp tới rồi cũng sẽ ổn thôi (dù thần số học bảo là năm nay và năm sau là 2 năm \"chạm đáy nỗi đau\" của mình). Con người mà, ai mà hong có lúc gục ngã đâu. Nên là mình cứ cố gắng đi tiếp thôi. Mặc kệ ai nói gì thì nói, miễn là mình cảm thấy nó đúng, nó có khả năng, thì mình sẽ đi tiếp đến cùng. Yeee","Mình nghĩ là năm vừa qua của mình cũng có kha khá chuyện vui, kha khá chuyện để kể í, nhưng mà do cuối năm của mình quằn quá đi, nên là mình khó mà nghĩ đến những chuyện khác. Khi nào có dịp (hoặc có tâm trạng tốt), mình sẽ lại viết một chiếc recap phiên bản tích cực hơn he :)))","Chúc mọi người một năm 2023 thậtttttt là viên mãn, đạt được mọi điều mình mong đợi và tận hưởng năm mới với thật nhiều niềm vui cũng như là ngày càng thành công trong cuộc sống nheee ~","Mình cũng chúc bản thân mình như zậy luôn! Gambatte ne~"]},{"s":"anxiety-au-lo-va-cach-xoa-bo-chung","t":"Anxiety - Âu lo và cách xoá bỏ chúng","d":"2022-11-29","c":"growth","p":["Xin chào mọi người, lại là mình đâyy ~","Cũng lâu rồi mình không đăng gì, thế nên hôm nay mình sẽ viết về \"Anxiety\" và cách xoá bỏ âu lo nhé","Vì sao á? Vì mình âu lo, và mình đoán rằng ai trong chúng ta chắc chắn cũng trải qua tình trạng này không nhiều thì ít, và mỗi lần như thế, chúng ta lại muốn vượt qua nó, tại vì ai đâu mà muốn âu lo hoài ~","Vậy rồi làm thế nào để \"tạm gác hết những âu lo này\"?","Mình sẽ chỉ mọi người 1 tips cực kì đơn giản mà mình cảm thấy rất hiệu quả với mình.","Đó chính là: Đi uống nước.","Siêu dễ luôn đúng hong? Tại sao là uống nước thì mình cũng không rõ (nếu phải giải thích theo kiểu khoa học thần kinh nơ ron hoocmon ơ đồ), nhưng mình biết là khi tâm trạng của mình bất ổn, việc uống một ngụm nước sẽ giúp mình tập trung vào ly nước, \"ngụm nước\" mình uống, và từ từ từng chút để cơn âu lo trôi theo dòng nước - với mình là như vậy. Mình cảm thấy mỗi khi uống nước chậm rãi, mình có cơ hội để thở - điều mà nhiều bạn sẽ cảm thấy khó khăn khi âu lo, và vì có cơ hội để thở, để oxy lên não, mình sẽ bình tĩnh hơn, rõ ràng hơn một chút với những suy nghĩ của mình.","Nếu mà các bạn đã uống nước nhưng vẫn không bớt âu lo, hãy đi tắm nha. Đó cũng là một giải pháp cực kì hiệu quả với mình, đặc biệt là khi mình có quá nhiều thứ để nghĩ, quá nhiều vấn đề cần giải quyết. Nhưng đi tắm không có nghĩa là cứ tắm nhanh nhanh để mong hết lo âu, mà cần phải tập trung vào làn nước, thế nào nhỉ? \"Tập trung tắm\" hả :v","Ý mình là, thay vì nghĩ đến mục đích, thì cứ tận hưởng quá trình gột rửa đó thôi, suy cho cùng thì tắm cũng là một cách thư giãn, thả lỏng mà. Và đó, có thể, cũng là lí do khiến cho mình dễ thở hơn một chút, và tương tự, suy nghĩ logic và hiệu quả hơn.","Mình đã, cũng có một chút, vượt qua những lúc khó khăn như thế, nên mình mong bài này có thể hữu ích với mọi người, cho những người đã và đang cảm thấy lo âu như mình.","Vậy còn bạn, bạn đã vượt qua âu lo bằng cách nào? Cmt cho mình biết nhó!"]},{"s":"binh-thuong-khong-binh-thuong","t":"Bình thường? Không bình thường?","d":"2022-08-19","c":"diary","p":["Hi, mình đã quay trở lại rồi đây. Lí do mình ở đây hôm nay chắc là cũng khá random, đại loại là một chút công việc, một chút cuộc sống, mọi thứ va vào nhau và mình đang dần tiếp xúc với nhiều người nhất từ trước đến nay nên cũng có hơi bỡ ngỡ - cái kiểu tiếp xúc gắn kết thật nhiều thật nhiều để hiểu về người ta hơn là chỉ đơn thuần biết mặt và biết tên. Nhưng tóm lại chỉ có một chữ, vui.","Vui. Và nhận ra là, mình đang làm đúng những gì mình mong ước. Có thể là do mình thật sự cảm thấy bản thân mình may mắn, nên những điều mình mong đợi, dù nhiều hơn một chút, hay ít hơn một chút, đều dần dần dần dần sẽ đến với mình.","Ừ thì,.. đã lỡ mong đợi rồi thì mình cũng xin nhắc lại là mình vẫn đang tuyển người yêu nhé mọi người :)) Tuyển thì tuyển vậy thui, chứ bãi gửi xe còn chưa có, lấy gì có ai đậu qua vòng nào :<","Nhưng đại khái là mình đã dần tìm thấy được hứng thú, rất rất rất nhiều hứng thú trong công việc, được tiếp xúc, được làm những thứ mình cực kì yêu thích, lại được, một cách nào đó, giúp đỡ cho cộng đồng, khiến mình cảm thấy bản thân mình thật sự không còn quá vô dụng như lúc trước nữa. Mình biết, nhiều lúc mình không làm được những điều mình nói (rất nhiều lúc nữa là đằng khác), thế nhưng những kế hoạch mình chưa thực hiện được, mình mong sẽ có người thay mình hoàn thành những điều ấy, và nhiệm vụ của mình, là tìm tòi, là đưa lối cho các bạn, chạm đến những điều lớn lao hơn, cho cả bản thân và cho cả cộng đồng.","Rất rất rất yêu mọi người và cảm ơn cuộc sống đã cho mình những điều tuyệt vời như thế. Thật lòng í :))) Dù rằng bây giờ là khoảng 12h đêm, mình vẫn chưa tắm, chưa làm xong việc gì và biết rằng còn đống việc tồn đọng vẫn đang đợi mình thì, mình vẫn cảm thấy mãn nguyện một ngày bận rộn như thế này. Có lẽ là, thành quả, sẽ đến, khi mà tụi mình biết trân trọng cuộc sống nhiều hơn. Vì có những người, dù rằng khó khăn từ khi lọt lòng, nhưng vẫn tận hưởng từng giây phút, và chọn cho mình nụ cười qua những ngày khó khăn.","Chắc là mình sẽ kể cho mọi người nghe một mẩu chuyện nhỏ của ngày hôm nay nhỉ?","Tụi mình đến lớp học võ dành cho các trẻ bị bệnh Down. Bệnh down, có lẽ một vài bạn sẽ biết, cản trở người bệnh rất nhiều trong việc sinh hoạt, ăn uống, tắm rửa và với những người bệnh nặng, thật khó để các bạn sống cuộc sống của \"một người bình thường\". Tụi mình đến với tâm lý là giúp đỡ, nhưng như mình thấy, không có tụi mình, các bạn vẫn có thể tự làm được việc của mình, dù rằng những bước đi chắc sẽ phải mỏi mệt hơn, những động tác phải tập đi tập lại nhiều lần hơn, và để đánh được một đòn đánh \"bình thường\" cũng sẽ phải vất vả hơn, nhưng không có tụi mình, các bạn vẫn sẽ làm được. Tụi mình tập cùng, chơi cùng và học cùng các bạn, tuy không giúp đỡ được gì quá nhiều, nhưng sẽ là động lực để các bạn tập năng nổ hơn, tự tin hơn, và vui hơn. Nghe kì ha? Ai đời mà việc tập cùng một người bình thường lại khiến các bạn bệnh Down tự tin hơn! Nhưng thật sự là thế í, vì không có điều gì tuyệt vời hơn với các bạn là được nhìn nhận như một người bình thường, được đối xử như một người bình thường, và được giúp đỡ, như một người bình thường.","Cái bình thường, với người bình thường, chẳng có gì là đặc biệt. Nhưng với các bạn, để được \"bình thường\" là một nỗ lực vô cùng to lớn. Và với mình, không có ai là \"không bình thường\" cả, chỉ là mỗi người chúng ta \"bình thường\" theo những cách riêng, và \"bất bình thường\" cũng theo những cách rất riêng, dù có khác biệt như thế nào về dáng hình, giọng nói hay tính cách.","Và mọi người biết hong, mình đã thấy một bạn cực kì giỏi, rất giỏi, thậm chí là so với những bạn cùng trang lứa. Đó là một bạn bé mắc bệnh Down, nói tiếng anh cực tốt, trong lớp tập toàn cười suốt, và khiến cả đám tụi mình, ngay cả cô giáo, phải bất ngờ vì bạn phát âm chuẩn như người Anh. Phải đó! Là giọng Anh chứ không phải giọng Mỹ nữa í, thêm nữa là phản xạ của em cực kì nhanh, mới lớp 6 thôi mà tụi mình hỏi em cái gì, là em đều có thể trả lời được hầu hết 80 90%. Điển hình là một đoạn, tụi mình hỏi em ngủ mấy giờ, em trả lời là 10h, xong lại hỏi ngay các anh chị ngủ mấy giờ, có bạn trả lời 7h sáng, mình cũng vặn lại thế bạn đấy thức dậy lúc mấy giờ, bạn bảo 7h30, em nói ngay \"No. It's not a sleep. It's only 30 minutes. It's a nap\", xong lại còn cãi qua cãi lại với bạn ngủ lúc 7h sáng là đấy là chợp mắt chứ chẳng phải ngủ bằng tiếng anh được một lúc cơ =)) Dễ cưng cực =))","Thích ghê í, tự dưng lại thấy tự hào, vì mình đã vô tình, làm được một chuyện, cũng...chắc là chuyện tốt ha :>","Thế thôi mọi người ngủ ngonn"]},{"s":"nhat-ky-thang-1-trai","t":"Nhật ký tháng 1: Trải","d":"2022-02-03","c":"diary","p":["(Bài viết được viết lần đầu tiên vào ngày 17/01)","Chỉ vỏn vẹn 10 ngày hơn nữa là đến Tết. Năm mới, hẳn ai cũng có trong mình những dự định mới, những mục tiêu mới, và háo hức mong chờ những điều tốt đẹp cho năm mới của mình. Riêng mình lại vật lộn với mớ cảm xúc hỗn độn cùng cơ thể mềm yếu sau biến cố mà mình tưởng sẽ chẳng bao giờ đến với mình, ít nhất là vào thời điểm này.","Mình mất đi một người bạn.","Cảm giác bất ngờ hoảng hốt và bối rối ập đến vào lúc mình nghe tin rằng tụi mình sẽ không còn có thể gặp lại, kéo theo nỗi căm phẫn khi lý do nó mất là \"sốc sau tiêm vắc xin mũi 3\". Người ta tiêm vắc xin để mong khoẻ mạnh vượt khỏi dịch bệnh, còn bạn mình, lại vì thế mà ra đi.","Thế rồi, mình ôm lấy những mất mát đó cạnh bên những ngày cuối năm. Mình cứ chập chờn trong cơn mơ ngủ, lúc mở mắt lại chỉ mong thiếp đi để không phải cảm thấy bất cứ điều gì. Mình đã, cố gắng vượt qua dần dần như thế.","Hôm nay đã là một tuần hơn kể từ ngày đó. Mặc dù không còn đau khổ đến mức mất ăn mất ngủ như trước, mình vẫn còn lặn ngụp trong không khí u buồn như một người vừa trải qua chuyện tang gia. Dù vậy, mình đã ổn hơn trước rất nhiều, để có thể tạm gác lại cảm xúc mà tập trung vào chuyện tương lai.","Nhìn lại năm cũ, bỗng nhiên mình cảm thấy mình đã dần trưởng thành hơn, không hẳn là \"rất nhiều\", nhưng chắc chắn là hơn một chút. Mình cũng đâu đó, đạt được những mục tiêu nhỏ cho bản thân, dù vẫn còn dang dở nhiều thứ, nhưng cũng không phải đã mãi lười biếng suốt năm qua. Năm mới, mình mong là mình sẽ tiếp tục được những dự định còn dang dở, hoàn thành những mục tiêu mình mong ước, tiếp tục viết tiếp những kế hoạch, và từng bước từng bước hoàn thiện bản thân mỗi ngày.","Thời điểm này năm ngoái, mình vẫn còn chạy đi chạy lại ở văn phòng đoàn, chuẩn bị trang trí Tết, rồi đem ý tưởng đó về nhà làm chậu hoa đào. Tuy rằng gốc đào ở cả văn phòng và ở nhà đều không đứng được lâu do thân giả không chịu được lực, nhưng kể ra đó cũng là những trải nghiệm thú vị khó có được. Mọi khi vào dịp này, mình đã cùng bạn bè mở sòng, hay ríu rít rủ nhau xem đồ Tết, chọn cho nhau những bộ váy mới, hay đi làm tóc, và chầm chậm tận hưởng những ngày cận Tết đang về. Hôm nay, mình vẫn còn làm việc và chờ lương Tết, bận rộn với kì thực tập tốt nghiệp, và loay hoay trong hàng đống chuyện không tên khi vẫn chưa thể sắp xếp được thời gian cho bản thân. Nhưng nhìn lại, sau 1 năm, mình đã có một công việc tạm gọi là ổn định, thêm một công việc để kiếm thêm, và nhờ đó củng cố được 1 phần tài chính của mình.","Đâu đó, mình cảm thấy có chút thành tựu nhỏ.","Cách đây chỉ khoảng nửa năm thôi, bạn bè và nhiều anh chị trong ngoài ngành của mình vẫn còn đang khuyên mình tại sao phải gắng gượng như thế khi mình có thể làm được những công việc kiếm được nhiều hơn. Bản thân mình thời điểm đó cũng áp lực vì không thể sắp xếp hiệu quả mọi thứ và để cho mình được nghỉ ngơi. Tuy rằng nếu so với trước đây, mình lại cảm thấy mình còn nhiều yếu kém, khoẻ hơn, lương cao hơn nhưng lại có vẻ lười biếng và sống kiểu hưởng thụ hơn, nhưng ít ra mình đã chớp được cơ hội để bận rộn trở lại.","Chỉ là đôi lúc, mình lại cảm thấy trống rỗng. Có cái gì đó khiến mỗi ngày của mình dường như trở nên dài hơn, yên ắng hơn, nhưng vô vị.","Uhm, chỉ vậy thôi."]},{"s":"nhat-ky-thang-10-cang-ton-thuong-cang-hanh-phuc","t":"Nhật ký tháng 10: Càng tổn thương, càng hạnh phúc?","d":"2021-10-11","c":"diary","p":["Câu chuyện tổn thương, hẳn là ai cũng từng trải qua một lần trong đời. Không có nỗi đau nào là giống nỗi đau nào, nhưng mọi thứ đều bắt nguồn từ cảm xúc.","Mình nhớ có một câu nói rằng: \"Chúng ta không thể kiểm soát được mọi thứ, nhưng ít nhất chúng ta có thể lựa chọn cách phản ứng với nó\". Thế nên dù không thể kiểm soát được cảm xúc, chúng ta vẫn có thể, thường xuyên, nhẫn nhịn và chịu đựng, đến khi tổn thương được chữa lành, mà không làm tổn thương thêm ai khác.","Nói thì dễ, nhưng không phải tổn thương nào cũng có thể được chữa lành. Có những vết xước sẽ mờ dần theo thời gian, nhưng cũng có những vết sẹo sẽ mãi mãi nằm lại trên cơ thể chắp vá của chúng ta, nhiều lúc, vào những khi trời mưa se lạnh, hay vào những lúc gió buốt, nó lại âm ỉ, nhức nhối, gợi nhắc người bị thương về những chuyện đau lòng trong quá khứ.","Dẫu vậy, nếu được chọn, có lẽ mọi người trên thế gian này đều sẽ chọn được tổn thương, vì có \"thương\", nên mới có \"tổn thương\".","Mình, là một người lạnh lùng và ích kỷ, đó là sự thật. Mình hay nghĩ rằng mỗi người chỉ cần làm tốt chuyện của mình là đủ, nên mình thường không trân trọng sự quan tâm từ người khác. Người ta thường chỉ nhớ được những chuyện người khác làm sai chứ ít nghĩ đến những điều tốt đẹp họ đã làm. Có lẽ, mình cũng là một người tàn nhẫn như vậy.","Mẹ mình rất hay \"ngứa mắt\", mình nghĩ phụ huynh nào cũng thế. Họ muốn con mình tự lập hơn, siêng năng hơn, muốn con mình giỏi trong mọi mặt, hoặc ít ra là nhiều mặt nhất có thể, nên thường dùng cách la mắng như một động lực thúc đẩy.","Nhưng điều đó có thể không đúng với mình. Mỗi người đều có 1 2 điểm \"chưa tốt\", với mình, đó là sự lộn xộn, lộn xộn như cuộc đời của mình vậy. Ở nhà, mình thường xuyên để đồ đạc theo kiểu tiện tay. Tiện tay có cái bàn thì để lên bàn, tiện tay có kệ thì để lên kệ, chứ không nhất thiết là đồ A phải để ở vị trí A, hay đồ B phải để ở vị trí B. Phụ huynh hay gọi là vứt đồ lung tung, dù mình để ở đâu thì mình vẫn nhớ, chỉ là nó không được gọn gàng trong mắt mẹ thôi.","Mẹ mình thì không thích thế, nên mẹ hay rầy mình lắm. Đôi lúc điều đó làm mình cảm thấy mệt mỏi, vì mình vốn bướng bỉnh, thích bắt bẻ, và mẹ thì vẫn hay nói quá, kiểu \"con đúng là đồ bất hiếu\", chỉ vì mình nhiều lần để quần áo không đúng chỗ, dù có lẽ mình biết mẹ không có ý nặng lời. Những lúc như vậy, mình vẫn thường trách mẹ. Mình bảo là, mẹ cứ mặc kệ con, hay, mẹ cứ để đấy lát con dọn,... mình bảo là, vì mẹ quan tâm quá, nên mẹ mới bực dọc, mới khó chịu, chứ như mình nè, dù mẹ có bừa bộn, có quên mất chuyện mình nói, mình cũng không để tâm quá nhiều.","Ý mình là, thấy lần nào thì mẹ cứ nhắc lần đó thôi, dần rồi mình cũng nhớ, chứ không phải để bụng, rồi gộp từng chuyện từng chuyện lại với nhau, suy diễn đủ thứ, rồi cứ mỗi lần thấy mình bừa bộn, mẹ lại gôm hết những lần trước đó để trách mình.","Thế là mẹ bảo, vì con là con của mẹ, nên mẹ mới để tâm, mới phiền lòng, mới lo lắng, mới rầy la.","Được thương yêu, là một phúc phần, có lúc, cũng vô tình trở thành gánh nặng.","Cán cân tình cảm, cho - nhận, vốn chưa hề công bằng. Người ta thường nói, ai cho đi nhiều hơn, sẽ thiệt thòi hơn. Nhưng mình lại không nghĩ thế. Thường thì trong chuyện tình cảm, mình ít khi suy nghĩ thiệt hơn, mình cho đi, đơn giản chỉ là vì mình muốn thế, và mình mong rằng người nhận sẽ vui vì điều đó, hơn là cảm thấy áp lực, hay mệt mỏi. Nếu nói rằng mình không hi vọng được đáp lại có lẽ sẽ là nói dối, nhưng nếu biết sẽ không được đáp lại từ đầu, mình sẽ không dốc lòng với họ, có thể là vì mình hèn, và vì mình muốn họ cảm thấy thoải mái hơn là cứ né tránh mình.","Nhưng mình sẽ không buồn.","Vì mình không hi vọng quá nhiều, không đòi hỏi đáp lại, nên dù mọi chuyện ra sao, mình vẫn cảm thấy bình thường. Và đối với bạn bè mình cũng thế. Có thể cùng nhau vui vẻ là một chuyện tốt, nhưng nếu một lúc nào đó không thể cùng trò chuyện với nhau, mình cũng thanh thản buông tay. Chỉ cần thật lòng với nhau là đủ, dù là cho - nhận, hay là từ chối.","Mình biết, mình như thế này, có khi lại không tốt. Có khi chính vì mình nghĩ như thế, nên mình vô tình áp đặt rằng người khác cũng nên nghĩ như thế. Có thể trong lúc nào đó, vô tình mình đã nghĩ rằng việc cho đi, và đòi hỏi đáp lại, là một điều \"không tốt\". Có lẽ là vậy, nên nếu mình lỡ như cảm thấy sự yêu cầu đáp lại từ người cho, mình lại không còn thoải mái được nữa, vì vốn dĩ mình chưa từng đòi hỏi được nhận. Thế nên thà là mọi người mặc kệ mình, còn hơn là mọi người cứ quan tâm mình, rồi khổ vì mình, rồi lại trách mình.","Vẫn là mình ích kỷ. Mình vẫn muốn đáp lại tất cả mọi người, nếu có thể. Nhưng nếu không, thì thà rằng mọi người cứ ghét mình vẫn hơn. Dần dà, mình trở thành một người vô tâm, mình không buồn, nhưng mình cũng không vui. Mọi thứ cứ lưng chừng giữa việc giữ cho bản thân ổn định, tích cực, hạnh phúc với những điều mình có, và cố gắng tốt hơn mỗi ngày, với việc dằn vặt, trống rỗng khi tự hỏi mình lý do để tồn tại.","“Làm sao có thể sống mà không yêu?”","Có lẽ, mình chưa từng thật sự chấp nhận tổn thương như mình vẫn nghĩ. Có lẽ việc mình làm chỉ là né tránh mọi sự đau khổ có thể xảy ra, và vờ như một mình mình vẫn ổn, dù thế nào đi nữa. Không phải vì thật lòng chấp nhận, mà vì mình sợ mình sẽ để tâm, sẽ lo lắng, sẽ đau khổ, nên mình dừng bước trước vạch an toàn, và ép bản thân mình chấp nhận.","Nhưng mình liệu đã hiểu hết về “thế nào đi nữa” hay chưa?","Chúng ta tổn thương, vì chúng ta có “thương”, đó là phúc phần, cũng có lúc là gánh nặng. Nhưng dù là bị tổn thương gấp trăm lần, có lẽ, chỉ một lần đáp lại cũng đã khiến hạnh phúc lớn hơn gấp bội. Càng tổn thương, thì càng hạnh phúc.","Còn mình? Đâu đó, mình vẫn muốn có thể cho đi hết mình như trước. Đâu đó, mình vẫn muốn bản thân có thể dốc lòng, thành thật làm điều mình muốn, hơn là sợ hãi, nản lòng, viện cớ rằng mọi thứ đã được sắp đặt, rằng dù cố gắng, cũng không thay đổi được gì. Đâu đó, mình vẫn muốn trở lại làm mình của tuổi 15, 18. Tự tin, ngông cuồng, và dũng cảm, kể cả có tổn thương, vẫn có thể bước tiếp, và sống thật với lòng mình. Chỉ vậy là đủ."]},{"s":"personalized-marketing-la-gi","t":"Personalized Marketing là gì?","d":"2021-09-11","c":"marketing","p":["Chắc hẳn là bất cứ ai có tìm hiểu về Marketing đều đã từng nghe qua thuật ngữ này rồi đúng hong. Để tìm hiểu được Personalized Marketing là gì thì chỉ cần vài ba dòng search google là ra, nhưng để hiểu được bản chất và vận dụng sự sáng tạo của mình để phát triển được các chiến dịch Marketing cá nhân hoá thì không hề dễ xíu nào đâu à nhen. Cá nhân hoá có nhiều cách, và bài viết mà mình đang viết này, hướng tới các bạn sinh viên Marketing, cũng là một cách để cá nhân hoá. Vậy thì cá nhân hoá là gì và tại sao mình lại cần cá nhân hoá?","Bài này mình viết cho 1 Page mình đang phát triển nên sẵn update ở blog luôn :> Vì là overview và viết cho các bạn sinh viên Marketing là chính nên sẽ không quá đào sâu vào thuật ngữ mà chỉ giải thích những điều basic thui, mọi người đọc vui nha.","Personalized Marketing là gì?","Cá nhân hoá (tên tiếng Anh là Personalization) là những điều chỉnh trong hoạt động kinh doanh của doanh nghiệp nhằm cải thiện trải nghiệm khách hàng thông qua việc hiểu khách hàng hơn dựa vào phân tích dữ liệu mà người dùng đã để lại thông tin trên các kênh online và offline, tạo ra các chiến dịch Marketing phù hợp với từng cá nhân, từng nhóm khách hàng khác nhau.","Nói nôm na thì cá nhân hoá là việc doanh nghiệp thực hiện các điều chỉnh phù hợp với sở thích và nhu cầu của từng đối tượng khác nhau. Ví dụ: Bạn đến một quán phở thường ăn, cô chủ biết bạn không thích ăn hành nên chủ động không bỏ hành vào bát mà không cần bạn yêu cầu, đó chính là cá nhân hoá.","Vậy bí mật đằng sau cá nhân hóa là gì?","Theo báo cáo từ Econsultancy’s 2017 “Conversion Rate Optimization”, 93% doanh nghiệp nhận thấy rằng cá nhân hoá đã giúp họ đạt được những thành công đáng kể trong việc biến khách hàng tiềm năng thành khách hàng thật sự của mình. Điều gì đã khiến cá nhân hoá hiệu quả như thế?","Dale Carnegie đã từng viết trong quyển sách How to Win Friends and Influence People nổi tiếng của ông rằng:","“Remember that a person’s name is, to that person, the sweetest and most important sound in any language\".","Cái tên rất quan trọng, bằng cách gọi tên của một người khi phù hợp, chúng ta có thể ảnh hưởng tốt hơn đến họ. Dễ thấy nhất là khi bạn ở trong một lớp học ồn ào và đông đúc, dù cho bạn có thể không thể nghe thấy người ngồi cạnh nói gì, nhưng chỉ cần nghe giáo viên gọi đến tên mình, bạn nhất định sẽ chú ý.","Cá nhân hoá cũng dựa trên lý thuyết tương tự. Khách hàng thích được cảm thấy \"độc nhất\". Họ sẽ thích thú nếu một doanh nghiệp biết đến, nhớ đến và muốn mang lại cho họ những trải nghiệm tốt.","Con người được lập trình để cảm thấy vui và hạnh phúc khi được nhận ra và thấy mình có giá trị với người khác, điều đó khiến họ an toàn và tin tưởng đối phương. Vì vậy, doanh nghiệp nắm bắt được điều này sẽ có thể tối ưu các chiến dịch Marketing của mình để mang lại trải nghiệm khách hàng tốt hơn.","Lợi ích của cá nhân hoá?","Rõ ràng, như ví dụ trên, việc cô chủ biết bạn ghét hành và chủ động loại bỏ hành giúp bạn cảm thấy thoải mái hơn nhiều so với việc mỗi lần đến quán đều phải dặn đi dặn lại \"Cô ơi đừng bỏ hành giúp con\" đúng không? Đó chính là tác dụng của cá nhân hoá - mang lại trải nghiệm tốt hơn cho người dùng.","Nhìn chung, lợi ích của cá nhân hoá thường xoay quanh 3 vấn đề sau:","Cải thiện trải nghiệm khách hàng.","Tăng doanh thu.","Xây dựng mối quan hệ khách hàng.","Có thể thấy, giữa hàng loạt các thông tin quảng cáo tràn lan trên thị trường, một thông điệp được cá nhân hoá, đánh đúng nhu cầu của chúng ta sẽ trở nên nổi bật, mang lại cảm giác hài lòng hơn. Sẽ thật bực mình nếu mình chỉ muốn mua một chậu cây để bàn nhưng lại được đề xuất mua hạt giống cây mai hay đào đúng hong? Cũng như theo thống kê, những doanh nghiệp đã áp dụng chiến lược cá nhân hóa đạt doanh số trung bình cao hơn so với các doanh nghiệp không áp dụng tới 19%.","Ngày nay, các chiến dịch cá nhân hoá không chỉ giúp người dùng có một trải nghiệm tốt hơn mà còn hướng đến việc tạo ra cảm xúc tích cực cho khách hàng. Và chính những cảm giác tuyệt vời đó sẽ là cây cầu vững chắc kết nối thương hiệu với khách hàng của mình, mang lại lợi nhuận to lớn cho doanh nghiệp. Điển hình có thể kể đến chiến dịch khắc tên của Coca Cola.","Chiến dịch khắc tên của Coca Cola.","Nhắc đến chiến dịch này thì có lẽ các bạn 9x, 2k khó có thể quên được đúng không? Mình còn nhớ hồi đó để săn được một chai Coca Cola có tên mình không hề dễ dàng. Thế nên cứ ngậm ngùi nhìn bạn bè mình tag nhau trên newfeeds với mấy chai Coca thôii.","Giờ hãy cùng nhìn lại chiến dịch độc đáo này một chút nha.","Tại Việt Nam, chiến dịch “Share a coke” có tên “Trao Coca-Cola, kết nối bạn bè” bắt đầu từ ngày 09/06/2014 với những chai Coca-Cola in tên người dùng đã trở thành cơn sốt và trở thành hiện tượng được chia sẻ nhiều nhất trên mạng xã hội. Coca-Cola Việt Nam đã lựa chọn rất nhiều tên riêng phổ biến để in trên nhãn sản phẩm như Nam, Thảo, Quỳnh, Hiền, Yến cho đến Linh, Tùng, Tuấn, Đức, Hà...., hay thậm chí là cách gọi như ông yêu, bà yêu, bố yêu, em yêu hay út cưng để nhắc mọi người về tất cả các mối quan hệ, từ gia đình, bạn online, bạn ấu thơ, đồng nghiệp, người yêu.","Như mình đã đề cập ở trên, cái tên là một trong những ngôn ngữ quan trọng có thể kết nối con người ngay lập tức. Coca Cola đã biết tận dụng điều đó để tạo ra chiến dịch ý nghĩa giúp mọi người kết nối với nhau và mang lại cho Coca Cola thành công vượt trội với:","Hơn 200.000 lượt like Fanpage","Hơn 40.000 cuộc nói chuyện chủ đề in tên lên lon Coke","Từ khoá “Trao Coca-Cola kết nối bạn bè” cho 54.400 kết quả trên Google, tìm từ khoá “Share a Coke Vietnam” có 548.000 kết quả.","Ngoài CocaCola ra thì còn có rất nhiều brand phát triển các chiến dịch cá nhân hoá cực kì sáng tạo và ý nghĩa khác. Ngày nay, cá nhân hoá đã trở thành một phần tất yếu trong chiến lược phát triển kinh doanh của hầu hết mọi doanh nghiệp. Khách hàng tụi mình rất thông minh và ngày càng khó tính đúng không nào? Thế nên để có thể \"lấy lòng\" được tụi mình, doanh nghiệp nào cũng phải nỗ lực rất nhiều.","Thực tế thì giờ tụi mình có thể thấy các hoạt động cá nhân hoá ở khắp nơi, từ cá nhân hoá các email nè, hay những ưu đãi \"chỉ dành cho riêng bạn nè\", đến những chương trình thẻ tích điểm, đề xuất sản phẩm, đều là các hoạt động cá nhân hoá đó. Tên của bạn được các thương hiệu gọi thường xuyên hơn, và bạn cũng dần làm quen với điều đó. Và điều này yêu cầu mọi doanh nghiệp phải ngày càng sáng tạo hơn để tạo ra các chiến dịch cá nhân hoá độc nhất của riêng mình.","Mong là với bài viết này thì mọi người cũng gain được một số insights hữu ích về cá nhân hoá. Mọi người thấy bài viết này thế nào? Nếu có thắc mắc, đề xuất hay bất kì điều gì cần trao đổi thì comment bên dưới cho mình nha.","Hẹn gặp lại mọi người trong các bài viết tiếp theo <3"]},{"s":"mot-chut-nhat-ki-mua-dich","t":"Một chút nhật kí mùa dịch","d":"2021-08-30","c":"diary","p":["Thường thì giờ này mình lẽ ra phải đang làm việc í, nhưng mình lại nghĩ đến điều này, sau khi vòng quanh mạng xã hội một chút. Có vẻ như là mình đang trốn việc một tẹo, nhưng mình nghĩ ý tưởng sẽ trôi đi nếu mình không nhanh chóng ghi chép lại, và có khi sẽ mãi chìm vào quên lãng nếu mình không làm ngay, nên mặc dù có hơi sai một chút, mình vẫn quyết định sẽ dành 5p để tốc kí mùa dịch.","Mùa dịch thì, chẳng có gì để làm, nhưng lại có đủ thứ chuyện để làm. Trước khi mình bắt đầu bước chân vào học kì hè, một ngày của mình trôi cũng khá nhàn hạ. Mình dậy sớm nè, làm chút việc nhà, ngồi vào bàn làm việc, làm đúng giờ hành chính, đôi khi công việc cũng không nhiều nên mình vẫn thường dùng thời gian rảnh xem vài tập phim. Hết ngày thì lại bắt đầu lôi việc còn dang dở ra để giải quyết, vì trong ngày mải chơi í hic. Nhìn chung, cũng khá là nhàn rỗi, đôi lúc còn có thời gian đánh đàn hay karaoke.","Nhưng mà học kì hè đến, mình như kiểu bị đập deadline vào mặt. Thêm cả, một đứa khá là chủ quan và trì hoãn như mình không biết làm thế nào để xoay sở và cân bằng giữa việc học, làm và nghỉ ngơi, giải trí ấy. Nên mình cứ rơi vào trạng thái trộn lẫn mọi thứ vào nhau và mất tập trung cực kì. Thế nên dạo gần đây đôi lúc mình cảm thấy khá stress í, đôi lúc chẳng biết thời gian nghỉ của mình ở đâu trong ngày nữa cơ. 8h30-17h30 thì thực tập, sau 18h lại bắt đầu xử lí đống bài tập 3 môn thay thế tốt nghiệp ở trường, rồi còn cả dự án nghiên cứu khoa học của bọn mình nữa, tuy mỗi thứ chỉ một ít thôi, nhưng mình cũng khá overload. Nhiều việc trong ngày nên mình cứ hay bị đùn đẩy mọi thứ đến deadline í, làm thì cũng làm đấy, nhưng làm mỗi thứ một ít, vừa làm vừa chơi, nên phải gần đến deadline mình mới thật sự tập trung được. Vậy đó, nên tối nào cũng thức đến 12h hơn, xong buổi sáng không còn dậy sớm nổi nữa.","Thế là mình nhớ đến khoảng thời gian trước dịch. Bận bịu. Nhưng bận bịu rất vui. Giờ nghĩ lại khoảng thời gian đó, dù bận, mình vẫn cảm thấy mình là mình nhất. Chưa có giai đoạn nào mình thấy mình bận như cách đây 5,6 tháng. Thời điểm đó, để chuẩn bị đủ tiền cho chuyến đi tình nguyện quốc tế, mình quyết định cày 2 job part-time, có những ngày mình đi làm tận 13 tiếng, ở trường thì học 4,5 môn, rồi lại còn chạy project cho cuộc thi CMO. Bận, bận xỉu, nhưng không có ngày nào là mình không cười. Giờ nghĩ đến mình vẫn thấy hạnh phúc í. Làm cũng nhiều, nghe chửi cũng nhiều, cũng stress, cũng khóc, nhưng mình vui lắm.","Mình còn nhớ những ngày mình túc trực ở chỗ làm gần như 18 tiếng. Vừa mới ra ca thì thay quần áo ở lại lôi laptop ra xử lí công việc, vì sợ về nhà sẽ lười biếng, sẽ muốn nghỉ ngơi. Rồi có những ngày vừa kết thúc công việc ở chỗ làm kia, lại vội về nhà tắm rửa rồi chạy ra quán cà phê làm việc, chạy task với bạn bè, vừa làm vừa uống vừa ăn vừa nói, ở lì đến lúc người ta đóng cửa mới về. Đó là khoảng thời gian áp lực nhất, nhưng mình yêu điều đó. Lắm lúc không hiểu mình lấy đâu ra động lực để quay cuồng như vậy, học rồi làm rồi học, than thở cũng nhiều, nhưng chỉ cần một ly Chocolate đá xay, một ly bạc xỉu, hay một tô mì gà quay 8h tối cũng đủ để làm tụi mình no cái bụng và thấy an ủi. Stress đó, nhưng tụi mình biết là tụi mình sẽ làm được, dù nhiều lúc còn ăn gian nộp trễ deadline nữa cơ =)))","Tự dưng mình nhận ra, động lực có thể xuất hiện trong những hình hài nhỏ bé, như một bữa tiệc sau thi, một chầu sinh tố cà rốt, một buổi karaoke xập xình với các anh chị em bạn dì, nhưng lại mang sức mạnh to lớn, thúc đẩy tụi mình chạy và chạy nhanh về phía trước. Biết ơn vì mình đã gặp được những người bạn thật giỏi ở đại học này, và trải qua những tháng ngày vô cùng đáng nhớ. Trước khi gặp mọi người, mình chỉ sống vì mình thôi, mình nuông chiều bản thân lắm, thấy khó, thấy stress là chưa chắc đã cố thế đâu. Nhưng gặp được mọi người, bị thúc đẩy bởi năng lượng tích cực của mọi người, (dù nhiều lúc cũng chầm zn =)) mình lại thấy bản thân phải cố gắng hơn nữa, cũng không đến nỗi phải thành đạt tiền tỷ, chỉ là để cảm thấy mình được sống, được làm việc, và đạt được niềm vui khi cùng nhau trưởng thành mỗi ngày. Cám ơn mọi người nhiều nhiều nhiều <3","Dạo này mình cũng chạy deadline đó, nhưng không còn vừa chạy vừa chơi với các bạn được nữa rồi. Mình lại nhớ mọi người quá. Mong là dịch mau mau hết, để tụi mình còn sớm gặp nhau.","Còn giờ thì mình không thể trốn việc nữa rùii, tạm biệt các bạn nha."]},{"s":"nhung-quyen-sach-thay-doi-cuoc-doi-minh-books-th","t":"Những quyển sách thay đổi cuộc đời mình - Books that changed my life","d":"2021-08-26","c":"books","p":["Chào mọi người, như đã hứa thì tuần này mình sẽ quay trở lại với một post mới. Và ta-da!","Hôm nay mình viết về những quyển sách đã thay đổi cuộc đời mình (hoặc phần nào thay đổi) nha. Mặc dù mình không đọc sách quá nhiều vì mình cũng khá lười í, nhưng dạo trước thì mình có nhiều thời gian để chăm chút cho bản thân nên cũng may mắn đọc được nhiều quyển khá có giá trị với mình, và cũng học được nhiều thứ để thay đổi nữa.","Trong list này thì mình sẽ đề cập theo thứ tự ưu tiên nha, tổng cộng mình chỉ nghĩ đến 3 quyển thôi nên mong là post này sẽ ngắn gọn, xúc tích một xíu.","Quyển sách đầu tiên, và cũng là quyển sách ảnh hưởng đến mình nhiều nhất chính là \"7 habits of highly effective people\", tên tiếng Việt là 7 thói quen của người thành đạt, nếu mình nhớ không nhầm.","Nếu bạn nào đã đọc qua quyển này rồi thì chắc cũng sẽ recommend quyển này giống mình cho mà xem, vì giá trị của quyển này đã vượt khỏi ranh giới của selfhelp rồi í. Còn nếu mà bạn nào chưa đọc thì mình cực kì cực kì đề xuất mọi người nên đọc lắm luôn. Để tóm tắt về quyển sách này thì nó bao gồm rất nhiều những triết lí đạo đức, nhưng lại được truyền tải hết sức gần gũi và những tình huống trong sách cực kì đời thường, thực tế nên rất dễ để người đọc hiểu và thẩm thấu í.","Quyển sách không vẽ vời hoa mỹ về “cách làm người”, “cách sống” một cách rất giả trân mà hướng tới chân thiện mỹ từ trong chính bản thân của bạn. Đọc xong mình cảm giác như mình thật sự trở nên tốt đẹp, cảm thông và quan tâm đến người khác hơn í. Có thể một số bạn cho rằng mấy quyển selfhelp như này chỉ là một viên dopamine để người đọc cảm thấy tràn đầy năng lượng và có động lực mạnh mẽ trong vài ngày rồi lại quay trở lại như cũ chứ thực chất không giúp được gì, mình cũng nghĩ thế, nhưng mình tin chắc 7 habits of highly effective people không chỉ có như thế.","Thật lòng mà nói thì mình không nhớ nhiều về những nội dung trong sách đâu vì mình mau quên lắm, nhưng bằng cách nào đó, những quan điểm, suy nghĩ của tác giả vẫn đọng lại trong lòng mình, và từng chút từng chút mở mang tầm mắt cho mình, về cách nhìn nhận vấn đề nè, cách đánh giá mọi thứ khách quan hơn, và giúp mình tư duy tốt hơn, bớt phiến diện và ác nghiệt hơn trước.","Trước đây, tư duy của mình hạn hẹp hơn nhiều, và mình chẳng biết cảm thông hay gì đâu, ích kỉ lắm. Có những thứ mình cho rằng 1 là 1, 2 là 2, và không dễ dàng chịu đón nhận các quan điểm khác biệt, dù thực tế thì đúng sai chỉ là tương đối. Thế nên nếu phải thừa nhận thì quả thật hồi nhỏ mình đã rất cứng đầu, bây giờ thì thật ra cũng thế, nhưng ít ra mình đã sẵn sàng mở lòng nhiều hơn, và tập chấp nhận rằng một câu chuyện có thể có nhiều khía cạnh khác mà mình chưa biết đến.","Dù mình vẫn chưa đọc hết quyển này, do quãng thời gian đó khá là bận rộn nên mình không duy trì được í, sau này thì không có đủ dũng cảm để đọc lại từ đầu, vì mình không thích cái gì lưng chừng, nên mình lỡ drop luôn. Nhưng trong thời gian sắp tới mình sẽ cố gắng đọc lại từng chút một, vì giờ mình thấy mình hơi bị lười rồi hic.","Quyển sách thứ hai mà mình muốn giới thiệu cho mọi người là \"Cô gái văn chương tập 1\", nhưng nếu có cơ hội mọi người nên đọc hết nguyên bộ. Mặc dù là tiểu thuyết văn chương có hơi hướng trinh thám một xíu, nhưng Cô gái văn chương là một kết hợp tuyệt vời giữa những tác phẩm cổ điển và hiện thực có phần kì ảo. Mình nhớ như in tập 1 của Cô gái văn chương vì đây chính là quyển sách đã đưa mình đến với “Thất lạc cõi người” – thêm một quyển sách recommend cho mọi người, nhưng mình sẽ nói sau.","Không bàn đến lời kể và cốt truyện, điều mà mình nhận được ở Cô gái văn chương là hiện thực. Nghe khá là khó hiểu ha, hiện thực ở đây là hiện thực ẩn sau những mặt nạ mà mọi người không thể hiện ra cho người khác thấy, những suy nghĩ, những lối sống, biểu cảm khác thường không dám để ai phát hiện. Với mình, cái khác thường đó thật đến nỗi ám ảnh, và mình nghĩ rằng bất cứ ai trong chúng ta đôi lúc đều trải qua những khoảnh khắc như thế, hoặc ít ra thì mình đã cảm thấy bản thân như thế. Mặc dù câu chuyện có mở đầu khá u ám, nhưng kết thúc lại mang đến một cảm giác vô cùng ấm áp.","Như kiểu, bất cứ ai cũng có quyền hạnh phúc, dù cho khác biệt đến đâu, và dù khác biệt đến đâu, thì chúng ta vẫn là con người, hoặc ít ra sẽ luôn có những người nhìn nhận mình như thế.","Để hiểu hơn về câu chuyện này thì mình nghĩ “Thất lạc cõi người” sẽ là một quyển sách sâu sắc hơn, nhưng có thể cũng u ám hơn “Cô gái văn chương tập 1”, tuỳ cảm nhận mà mọi người lựa chọn nhé. Cá nhân mình thì vẫn thích Cô gái văn chương 1 hơn, vì điểm kết của nó khá là Happy Ending với mình, còn Thất lạc cõi người thì chân thật quá, ám ảnh mình hơn nhiều, dù rất hay nhưng mình vẫn không dám đọc lại vì sợ bị cuốn vào í.","À, và lí do mà quyển sách này thay đổi cuộc sống của mình í hả? Vì mình thấy được bản thân của mình trong câu chuyện, và vì mình cũng từng có những cảm xúc như thế, nên mình bị nhập tâm hơn í. Thế nên dường như cái kết đã nhen nhóm trong lòng mình chút gì đó, ấm áp, tựa ngọn lửa ngày đông ấy, và giữ cho mình chút hơi đến tận bây giờ, dù nhiều lúc cuộc sống với mình cũng khá là bế tắc. Mình nghĩ đó là hi vọng nhỉ? Hi vọng rằng dù khác biệt, đâu đó vẫn sẽ có người chấp nhận mình, hoặc là nhờ hi vọng đó, mình dần dần chấp nhận bản thân mình chăng?","Quay lại chủ đề nè, quyển sách thứ 3, và chắc cũng là quyển sách cuối cùng rồi, mà mình muốn giới thiệu cho mọi người, chính là một quyển sách vô cùng vô cùng nổi tiếng “Rừng Na Uy”.","Xin không review thêm nhiều vì đã có quá nhiều review về quyển sách này rồi. Nhưng nếu nói lí do vì sao quyển sách này thay đổi cuộc đời mình á, mình nghĩ là nó đã tô điểm cho nhận thức của mình rất rất nhiều. Có khá nhiều câu trích dẫn hay trong quyển sách, thật lòng thì mình cũng chả nhớ được câu nào đâu, nhưng mình nhớ từng giai đoạn trong câu chuyện của nam chính, và cái kiểu suy nghĩ lúc sâu lúc nông của cậu ta làm mình đôi lúc cảm thấy chả thể hiểu được.","Well, với mình thì cái “chả thể hiểu được” đó, chính là điểm làm mình ấn tượng, không chỉ mỗi nhân vật chính, mà ngay cả các nhân vật khác đều như vậy. Vì thực ra thì là con người, ai chẳng có những lúc như thế. Mỗi người một câu chuyện, và mình chẳng thể nào phán xét xem một người đã làm đúng hay sai, vì mình vốn không ở trong câu chuyện đó, không trải qua những suy nghĩ đó, và cũng chẳng chịu trách nhiệm cho cuộc sống đó. Thế nên, dù khó hiểu thật đấy, nhưng mình lại cảm thấy, mình hiểu.","Nó không đúng với luân thường đạo lí chút nào đâu, cho những bạn có ý định đọc qua. Nhưng nó thật. Và nó thật đến đau lòng. Mình học được nhiều từ Rừng Na Uy lắm, và quyển sách giúp mình sáng mắt ra nhiều, tại thời điểm mà mình đang loay hoay với những suy nghĩ bừa bộn của mình. Nên đôi lúc nghĩ về Rừng Na Uy, mình vẫn cứ cảm thấy đau đáu với những cuộc đời trong trang sách.","Mải viết xém chút mình quên đoạn kết luôn. Tóm tắt lại thì có 3 quyển sách đã góp phần thay đổi cuộc đời mình, bao gồm:","7 habits of highly effective people","Cô gái văn chương tập 1","Rừng Na Uy","Và xem thêm Thất lạc cõi người nếu bạn thích nhó. Mong là chia sẻ của mình sẽ hữu ích cho bạn nào đang muốn tìm một quyển sách giá trị để đọc trong mùa dịch nè, và nhớ đón chờ những bài viết tiếp theo của mình nha.","Chúc mọi người cuối tuần vui vẻ <3"]},{"s":"dua-con-cua-may-man","t":"Đứa con của may mắn","d":"2021-08-20","c":"diary","p":["Hello mọi người,","Buồn cười lắm, bình thường mình có rất nhiều thứ để viết cơ, nhưng hễ cứ buộc mình phải nghĩ một chủ đề hay hay để viết thì mình lại chẳng biết bắt đầu như thế nào. Nhưng mà vì blog mình chưa có bài viết nào hết, nên trước mắt mình sẽ viết nhật kí một chút cho ngày hôm nay vậy.","Điểm nhấn của hôm nay là mình được khen đó. Trùi ui mình không kể hết được mình vui đến thế nào chỉ với vài dòng chữ được, nhưng nếu mà các bạn gặp mình bây giờ thì chắc hẳn mình đang vừa nói câu đó vừa vẫy tay liên tục í. Thật là muốn để đống icon mặt cười vào đây mà tự nhủ mình phải nghiêm túc, nên thui, teencode thôi là được rồi.","Quay lại với câu chuyện, mình được khen vì đã nghiêm túc viết một bài blog hoàn chỉnh, rõ ràng, dễ hiểu và đầu tư sau khi được chị mentor review chi tiết. Điều làm mình hạnh phúc nhất là chị không những tuyên dương mình trước mặt mọi người mà chị còn nhấn mạnh suốt 1 tháng rưỡi vừa qua thì mình là người duy nhất đạt chỉ tiêu viết blog trong 3 bạn. Điều này làm mình muốn khóc vì vui luôn á thật sự huhuhu.","Thật sự thì niềm vui này đã vượt quá sự kì vọng của mình. Suốt quãng thời gian thực tập, mình cứ nghĩ rằng mình thật sự lười biếng chết đi được, toàn đợi sát deadline mới chạy, lại còn ỷ y, nhiều lúc làm cũng làm việc qua loa nữa. Ngay cả với bài blog vừa được khen này, mình cũng cảm thấy bản thân mình chưa đủ đầu tư, thế mà lại được khen, với mình đây quả là một sự may mắn bất ngờ, vui không tả được, mà đâu đó vẫn len lỏi chút cảm giác tội lỗi vì chưa đủ cố gắng.","Niềm vui thứ hai, cũng đến từ công việc của mình, là mình sắp được làm Landing Page rồi. Hic phải nói là mình hạnh phúc thật sự luôn í, nghĩ tới cảnh được mở wordpress lên xong dành cả ngày để mò mẫm mấy cái tool, kéo kéo thả thả rồi chỉnh chỉnh, mày mò gặp lỗi rồi tìm cách sửa cho đến khi nhìn thấy website của mình hoàn thiện, sướng rơn. Sướng như sắp được gặp crush vậy á. Khum coá từ ngữ nào tả được.","Nhiều lúc ngẫm nghĩ, mình vẫn cảm thấy mình thật sự là đứa con của may mắn. Dù cho mình có lười biếng đến đâu, vô ý hay chủ quan đến đâu, may mắn, vẫn ở bên cạnh mình. Không biết là do mình nghĩ thế thôi, hay thật sự như thế thật, nhưng mình luôn biết ơn những điều kì diệu này, nhỏ có, lớn có. Nhưng các bạn biết không, mình vẫn tin vào luật hấp dẫn ấy, Paulo Coelho cũng đã từng nhắc đến trong quyển sách Nhà giả kim của mình: \"Khi bạn khao khát một điều gì đó, cả vũ trụ sẽ hợp lực giúp bạn đạt được điều đó.\" Thế nên khi mình tin bản thân mình may mắn, cảm giác như may mắn sẽ thật sự tới với mình ý. Không phải vì mình may mắn mà mình tin, mà vì mình tin nên mình may mắn. Người ta vẫn hay nói kiểu thế nhỉ?","Hmm, sẵn đã nói về luật hấp dẫn rồi, mình cũng muốn nói thêm một xíu. Thật ra thì mặc dù có nhiều ý kiến xoay quanh vấn đề này, nhưng vì nó cũng chỉ là một giả thuyết thôi, nên mình không dám suy xét đúng sai. Mình chỉ đơn thuần nghĩ, thế giới của mình như thế nào, đều là do mình quyết định. Mình nghĩ rằng thế giới của mình tràn đầy hạnh phúc, thì dù cho có gặp khó khăn, vất vả, mình luôn tìm thấy những điều hạnh phúc nho nhỏ ở đó. Còn nếu mình tin rằng thế giới là một màu xám, toàn những chuyện đau khổ, bất công, thì dù bên cạnh mình là niềm vui, là bạn bè, gia đình luôn quan tâm, support, mình vẫn sẽ cảm thấy không đủ, không phải thứ mình muốn.","Suy cho cùng đây cũng chỉ là quan điểm của mình. Thế nên như mình vẫn luôn nói \"Smile more, live fulfilly\", mình phải vui trước, thì thế giới của mình mới vui được.","Thế thôi. Chúc mọi người một buổi tối nhiều niềm vui nha.","Smile more, live fulfilly.","Gracie."]},{"s":"about-me","t":"About Me","d":"2021-08-17","c":"diary","p":["Chào mọi người mình là Duyên, nhưng mọi người có thể gọi mình là Grace hoặc Gracie như một cách gọi thân mật nha.","Khác với những cây viết chuyên nghiệp về một chủ đề cụ thể, mình viết blog chủ yếu để ghi lại những cảm xúc, suy nghĩ và những bài học mà mình tích luỹ được trong hành trình trưởng thành.","Mình sinh ra và lớn lên tại Sài Gòn, một thành phố khá náo nhiệt và bận rộn. Nhưng trước guồng quay chóng mặt của Sài Gòn, mình lại sống có phần khép kín và chậm chạp. Vì gia đình mình cũng chỉ vừa đủ ăn đủ mặc nên từ nhỏ mình đã rèn luyện bản thân tỉnh táo trước những cám dỗ xung quanh, không học đòi cái này cái nọ, phân biệt được cái nào vòi được cái nào không. Dần dần, mình lớn lên và biết đến triết lí sống tối giản, cùng mẹ nghe thuyết pháp mỗi ngày, để ngày càng nhận ra thế nào là \"đủ\", và tìm thấy hạnh phúc với những gì mình có.","Mình nghĩ đó là một điều may mắn với mình. Và mình cũng muốn lan toả may mắn đó đến mọi người, đến những bạn đang đọc những dòng này, mong là các bạn sẽ tìm thấy niềm vui từ chính bản thân bạn, bởi vì bản thân bạn đã là một điều kì diệu rồi.","About \"Hôm nay mình viết\"","Hôm nay mình viết là chắc là một cụm từ quen thuộc với mọi người đúng hong? Với mình, dường như mỗi khi cầm bút lên, mình luôn mở đầu bằng \"Hôm nay mình viết...\". Tên blog cũng được ra đời như thế.","Một ngày đầu hạ năm 2021, mình chợt nghĩ đến việc viết một chiếc blog nghiệp dư để từng bước xây dựng profile của mình. Nhân tiện nói sơ qua một chút, mình hiện tại là sinh viên Marketing, thế nên với mình có một profile cá nhân siêu xịn xò (hoặc xịn vừa vừa thôi) là một bước đệm hoàn hảo bổ sung cho CV. Nhưng rồi mình nhận ra, chỉ viết về Marketing thôi thì chắc chưa đã cái nư của mình. Cuối cùng, thay vì chọn một cái tên thật kêu như \"Marketing With Duyên\" - cái tên mà mình đã chuẩn bị build cho facebook và instagram, thì mình đã quyết định bước từng bước nhỏ với \"Hôm nay mình viết\". Nhưng nếu một ngày bạn có tình cờ thấy \"Marketing With Duyên\" xuất hiện thì cũng đừng ngạc nhiên nhé vì có thể mình sẽ vẫn thực hiện dự định đó để đào sâu hơn về Marketing nè.","Dù vậy, đừng vì thế mà nghĩ \"Hôm nay mình viết\" sẽ toàn những chuyện trên trời dưới đất nhé, oan cho mình lắm cơ. Mình lập blog, một phần là vì bản thân thật, mình không phủ nhận, nhưng ý định chính của mình vẫn là tạo ra một thế giới nhỏ để chia sẻ tất cả mọi thứ mình biết, không chỉ về Marketing, mà còn về những khía cạnh khác trong cuộc sống thường nhật, làm thế nào để hoàn thiện bản thân mỗi ngày và làm thế nào để trở nên hạnh phúc (dù hạnh phúc là điều mà mỗi người phải tự chiêm nghiệm được).","Mình nghĩ, bất kì ai cũng đều có khả năng làm điều mình muốn, bởi lẽ:","Nếu muốn, bạn sẽ tìm cách,","Nếu không muốn, bạn sẽ tìm lí do\"","Dù đôi khi có vẻ hơi sáo rỗng, nhưng với mình, câu nói ấy vẫn là kim chỉ nam giúp mình hướng tới mục tiêu.","Mình chưa bao giờ nghĩ mình sẽ thật sự chăm chỉ viết blog, hay làm điều gì đó \"thường xuyên\", trừ ăn và ngủ, bởi ở cái tuổi trưởng thành này, mình nhận thức được mình vô cùng lười biếng, so với các bạn cùng lứa. Nhưng peer pressure chưa bao giờ cản bước mình, cũng chưa bao giờ thật sự là động lực. Chỉ đến khi mình nhận ra được ý nghĩa trong việc mình làm, mình mới thật sự cảm thấy hạnh phúc, và niềm vui đó, mỗi khi mình ngẫm lại, đều thúc đẩy mình tiến lên từng ngày. Một cách nhẹ nhàng, an yên.","Chỉ đến khi bắt đầu, mình mới có thể bước tiếp. Bản thân mình chưa bao giờ tìm kiếm triết lý sống nào, cũng không đánh giá bất kì quan điểm nào là hay, dở, nên hay không nên. Mọi câu chuyện đều có những context riêng, thế nên với mình, \"Smile more, live fulfilly\" là điều mình luôn nhắn nhủ với bản thân.","Chỉ cần mỉm cười và sống hết mình, thế là đủ.","Duyên."],"q":"Một ngày đầu hạ năm 2021, mình chợt nghĩ đến việc viết một chiếc blog nghiệp dư"}];
+const CATS = {diary:"nhật ký", notes:"ghi chú", japanese:"tiếng Nhật", marketing:"marketing", growth:"lớn lên", books:"sách"};
+const VIEC = [
+  {k:"dung", the:"Dùng được", ten:"Lune", vai:"Tự thiết kế, tự code", dong:"Sổ chi tiêu cá nhân, trông như một cuốn sổ tiết kiệm bằng giấy.", chi:["Giao diện như sổ tiết kiệm, nhập giao dịch nhanh như gõ vào bảng tính.","Làm bằng React và Supabase."]},
+  {k:"dung", the:"Dùng được", ten:"N2", vai:"Tự làm để tự học", dong:"Web app mình tự làm để ôn JLPT N2.", chi:["Mình dùng nó để ôn mỗi ngày.","Sắp đưa lên GitHub để bạn bè học chung."]},
+  {k:"kq", the:"", ten:"Enterline & Partners", vai:"Social Media Specialist · 02.2023 – 06.2024", dong:"Kênh TikTok đạt 10.000 người theo dõi sau một năm.", chi:["Lên chiến lược cho TikTok, YouTube, Facebook và Instagram.","Kênh TikTok đạt 10.000 người theo dõi sau một năm."]},
+  {k:"uom", the:"Đang ươm", ten:"Cửa hàng template", vai:"Việc riêng của mình", dong:"Template Canva cho khách nước ngoài.", chi:["Sản phẩm đầu tiên là sơ đồ chỗ ngồi đám cưới."]}
+];
+const CAM = [
+  ["Away Digital Teams","SEO Specialist, làm Local SEO cho Amplified Marketing","01.2026 – nay"],
+  ["TDCX","Digital Marketing Consultant, dự án Google · Malaysia","08.2024 – 08.2025"],
+  ["Elite Prep Vietnam","Business Development Executive","06.2022 – 03.2023"]
+];
+
+const $ = (s, r=document) => r.querySelector(s), $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function rng(seed){ let a = seed>>>0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ a>>>15, 1 | a); t = t + Math.imul(t ^ t>>>7, 61 | t) ^ t; return ((t ^ t>>>14)>>>0) / 4294967296; }; }
+const store = { get(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} } };
+
+function flower(size, n, color, center, inner){
+  let s = `<svg width="${size}" height="${size}" viewBox="-32 -32 64 64" aria-hidden="true">`;
+  const rx = n > 6 ? 5.5 : 9.5, ry = n > 6 ? 16 : 16, cy = n > 6 ? -15 : -15;
+  for (let i=0;i<n;i++) s += `<ellipse cx="0" cy="${cy}" rx="${rx}" ry="${ry}" fill="${color}" transform="rotate(${i*360/n})"/>`;
+  if (inner) for (let i=0;i<n;i++) s += `<ellipse cx="0" cy="-10" rx="6" ry="11" fill="${inner}" transform="rotate(${(i+.5)*360/n})"/>`;
+  return s + `<circle r="${n > 6 ? 8 : 5}" fill="${center||"#F2C53D"}"/></svg>`;
+}
+function sprig(color, w, h, bud){
+  return `<svg class="nhanh" width="${w}" height="${h}" viewBox="0 0 120 150" aria-hidden="true" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round"><path d="M40 148 C46 110 36 70 58 14"/><path d="M44 112 C62 104 74 92 80 74"/><ellipse cx="30" cy="104" rx="11" ry="4.5" transform="rotate(28 30 104)"/><ellipse cx="54" cy="84" rx="11" ry="4.5" transform="rotate(-34 54 84)"/><ellipse cx="34" cy="64" rx="10" ry="4" transform="rotate(30 34 64)"/><circle cx="58" cy="12" r="6" fill="${bud}"/><circle cx="48" cy="26" r="5" fill="${bud}"/><circle cx="82" cy="70" r="5.5" fill="${bud}"/></svg>`;
+}
+function shadows(el, n, seed, box){
+  const r = rng(seed); let h = "";
+  for (let i=0;i<n;i++){ const w = 70 + r()*170;
+    h += `<i style="left:${(box[0]+r()*box[2]).toFixed(1)}%;top:${(box[1]+r()*box[3]).toFixed(1)}%;width:${w|0}px;height:${(w*(.25+r()*.2))|0}px;opacity:${(.16+r()*.26).toFixed(2)};filter:blur(${(7+r()*9)|0}px);--r:${(-70+r()*70)|0}deg;--dx:${(8+r()*22)|0}px;--dy:${(-6+r()*16)|0}px;--dr:${(3+r()*8)|0}deg;animation-duration:${(5+r()*6).toFixed(1)}s;animation-delay:-${(r()*6).toFixed(1)}s"></i>`; }
+  el.innerHTML = h;
+}
+function blobs(el, n, seed, colors, box){
+  const r = rng(seed); let h = "";
+  for (let i=0;i<n;i++){ const w = 80 + r()*260;
+    h += `<div class="dom" style="left:${(box[0]+r()*box[2]).toFixed(1)}%;top:${(box[1]+r()*box[3]).toFixed(1)}%;width:${w|0}px;height:${(w*(.18+r()*.26))|0}px;background:${colors[(r()*colors.length)|0]};opacity:${(.3+r()*.4).toFixed(2)};filter:blur(${(6+r()*11)|0}px);transform:rotate(${(-50+r()*100)|0}deg)"></div>`; }
+  return h;
+}
+
+/* ---------- light ---------- */
+const LIGHTS = ["sang","chieu","toi"];
+(function(){ const h = new Date().getHours(); document.body.dataset.light = h >= 5 && h < 15 ? "sang" : h < 18 ? "chieu" : "toi"; })();
+$("#doi").onclick = () => { const b = document.body; b.dataset.light = LIGHTS[(LIGHTS.indexOf(b.dataset.light)+1) % 3]; };
+
+/* ---------- water (WebGL) ---------- */
+const water = (function(){
+  const cv = $("#water"); let gl = null;
+  try { gl = cv.getContext("webgl", {antialias:false, alpha:false}); } catch(e){}
+  const rip = new Float32Array(24).fill(-99); let ri = 0, t0 = performance.now(), raf = 0, on = false, night = 0, warm = 0;
+  if (!gl){ cv.style.display = "none"; return { start(){}, stop(){}, ripple(){} }; }
+  const vs = "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
+  const fs = `precision highp float;uniform vec2 uR;uniform float uT;uniform vec3 uP[8];uniform float uN;uniform float uW;
+float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+float ns(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1.,0.)),f.x),mix(h21(i+vec2(0.,1.)),h21(i+vec2(1.,1.)),f.x),f.y);}
+float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*ns(p);p=p*2.02+vec2(3.1,1.7);a*=.5;}return v;}
+void main(){vec2 p=(gl_FragCoord.xy-.5*uR)/uR.y;float h=0.;
+for(int i=0;i<8;i++){vec3 r=uP[i];float age=uT-r.z;if(age>0.&&age<7.){float d=length((p-r.xy)*vec2(1.,1.25));float fr=age*.1;h+=sin(64.*(d-fr))*exp(-20.*abs(d-fr))*exp(-.55*age)*smoothstep(0.,.35,age);}}
+vec2 q=p*vec2(1.5,3.4)+h*.06;float t=uT*.06;
+float n1=fbm(q+vec2(t,t*1.7));float n2=fbm(q*1.7+vec2(-t*1.3,t)+n1*1.8);float n3=fbm(q*4.+n2*2.+vec2(t*2.,-t));
+vec3 deep=vec3(.40,.60,.50),mid=vec3(.62,.79,.69),lite=vec3(.86,.94,.88),sky=vec3(.78,.87,.89);
+vec3 c=mix(deep,mid,smoothstep(.28,.52,n2));c=mix(c,lite,smoothstep(.5,.68,n2));
+c=mix(c,sky,.35*smoothstep(.35,.75,fbm(p*1.1+7.)));
+c+=smoothstep(.56,.62,n3)*smoothstep(.45,.6,n2)*.16;
+float g=smoothstep(.66,.7,n2+h*.3);float tw=pow(ns(gl_FragCoord.xy*.22+uT*3.),8.);
+c+=g*(.08+2.2*tw);c+=h*.07;
+c=mix(c,c*vec3(1.07,.98,.82)+vec3(.04,.02,-.02),uW);
+vec3 nt=vec3(.05,.12,.14)+c*vec3(.16,.27,.31)+g*tw*vec3(.75,.8,.7);
+c=mix(c,nt,uN);gl_FragColor=vec4(c,1.);}`;
+  const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)){ cv.style.display = "none"; return { start(){}, stop(){}, ripple(){} }; }
+  gl.useProgram(pr);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+  const a = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
+  const U = n => gl.getUniformLocation(pr, n), uR = U("uR"), uT = U("uT"), uP = U("uP"), uN = U("uN"), uW = U("uW");
+  let W = 0, H = 0;
+  function size(){ const d = Math.min(devicePixelRatio || 1, 1.5), w = Math.round(cv.clientWidth*d), h = Math.round(cv.clientHeight*d); if (w !== W || h !== H){ W = cv.width = w; H = cv.height = h; gl.viewport(0,0,w,h); } }
+  const now = () => (performance.now() - t0) / 1000;
+  function frame(){
+    size(); const L = document.body.dataset.light;
+    night += ((L === "toi" ? 1 : 0) - night) * .04; warm += ((L === "chieu" ? 1 : 0) - warm) * .04;
+    gl.uniform2f(uR, W, H); gl.uniform1f(uT, still ? 4 : now()); gl.uniform3fv(uP, rip); gl.uniform1f(uN, night); gl.uniform1f(uW, warm);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    if (on) raf = requestAnimationFrame(frame);
+  }
+  return {
+    start(){ if (on) return; on = true; raf = requestAnimationFrame(frame); },
+    stop(){ on = false; cancelAnimationFrame(raf); },
+    ripple(x, y){ if (still) return; const w = cv.clientWidth, h = cv.clientHeight; rip[ri*3] = (x - w/2)/h; rip[ri*3+1] = (h/2 - y)/h; rip[ri*3+2] = now(); ri = (ri+1) % 8; }
+  };
+})();
+
+/* ---------- home: flowers on the water ---------- */
+const SPOTS = [[56,20],[73,37],[50,54],[76,64],[60,80],[88,18]], SPOTS_M = [[8,36],[50,45],[12,55],[52,64],[8,74],[50,84]];
+const floaters = [];
+(function(){
+  const box = $("#hoa"), r = rng(3);
+  POSTS.slice(0,6).forEach((p, i) => {
+    const a = document.createElement("a"); a.className = "hoa"; a.href = "#bai-" + p.s;
+    const s = 56 + (r()*16|0), [y,m,d] = p.d.split("-");
+    a.innerHTML = `<span class="be" style="width:${s*2.1|0}px;height:${s*1.15|0}px"><span class="la-sen" style="background:${["#86B777","#93C083","#7FB26F","#8DBB7E"][i%4]}"></span>${flower(s, 5, "#FFFFFF", "#F2C53D", i%2 ? "" : "#FFEDEA")}</span><span class="nhan"><small>${d}.${m}.${y} · ${CATS[p.c]||""}</small><b>${esc(p.t)}</b></span>`;
+    a.querySelector("svg").style.marginLeft = (-s/2) + "px";
+    box.appendChild(a);
+    floaters.push({el:a, i, ph:r()*6.28, sp:.25 + r()*.2, next:1 + r()*6});
+  });
+  const pet = $("#petals"); let h = "";
+  for (let i=0;i<12;i++){ const s = 16 + r()*18; h += `<div class="canh" style="left:${(4+r()*92).toFixed(1)}%;top:${(18+r()*78).toFixed(1)}%;transform:rotate(${r()*72|0}deg)">${flower(s|0, 5, "#FFFFFF", "#F2DE8A")}</div>`; }
+  pet.innerHTML = h;
+  const lieu = $("#lieu"), greens = ["#5E8E4E","#7FAE62","#4F7F45","#95C277"]; h = "";
+  [1,4,80,85,90,94,98].forEach(x => { const len = x < 50 ? 70 + r()*50 : 150 + r()*260; let leaves = "";
+    for (let y=14; y<len; y+=20){ const side = (y/20|0)%2 ? 1 : -1; leaves += `<i style="top:${y}px;height:${34+r()*22|0}px;background:${greens[r()*4|0]};transform:rotate(${side*(12+r()*14)|0}deg);margin-left:${side*5}px"></i>`; }
+    h += `<div class="lieu" style="left:${x}%;height:${len|0}px;--a:${(-2-r()*3).toFixed(1)}deg;--b:${(2+r()*4).toFixed(1)}deg;animation-duration:${(5+r()*4).toFixed(1)}s;animation-delay:-${(r()*5).toFixed(1)}s">${leaves}</div>`; });
+  lieu.innerHTML = h;
+})();
+function placeFlowers(){
+  const m = innerWidth < 760, S = m ? SPOTS_M : SPOTS;
+  floaters.forEach(f => { const [x,y] = S[f.i]; f.el.style.left = x + "%"; f.el.style.top = y + "%"; f.el.classList.toggle("trai", !m && x > 70); });
+}
+let lastMove = 0;
+$("#s-nuoc").addEventListener("pointermove", e => {
+  const t = performance.now(); if (t - lastMove > 140){ lastMove = t; water.ripple(e.clientX, e.clientY); }
+  floaters.forEach(f => { const b = f.el.firstElementChild.getBoundingClientRect(); f.el.classList.toggle("gan", Math.hypot(e.clientX - (b.left + b.width/2), e.clientY - (b.top + b.height/2)) < 150); });
+});
+$("#s-nuoc").addEventListener("pointerdown", e => water.ripple(e.clientX, e.clientY));
+function floatLoop(tm){
+  const t = tm/1000;
+  if (document.body.dataset.scene === "nuoc" && !still) floaters.forEach(f => {
+    f.el.style.transform = `translate(${(Math.sin(t*f.sp + f.ph)*9).toFixed(1)}px, ${(Math.cos(t*f.sp*.8 + f.ph)*6).toFixed(1)}px) rotate(${(Math.sin(t*f.sp*.6 + f.ph)*2.2).toFixed(2)}deg)`;
+    if (t > f.next){ f.next = t + 5 + Math.random()*6; const b = f.el.firstElementChild.getBoundingClientRect(); water.ripple(b.left + b.width/2, b.top + b.height*.6); }
+  });
+  requestAnimationFrame(floatLoop);
+}
+requestAnimationFrame(floatLoop);
+
+/* ---------- shelf ---------- */
+const YEARS = [...new Set(POSTS.map(p => p.d.slice(0,4)))].sort();
+const TOPIC = {notes:"ghi-chu", marketing:"marketing", growth:"lon-len", books:"doc-sach", japanese:"tieng-nhat"};
+const bookOf = p => p.c === "diary" ? "nk-" + p.d.slice(0,4) : (TOPIC[p.c] || "ghi-chu");
+const G = "linear-gradient(90deg,";
+const SKIN = {
+  nk:[["#E4DBC8,#F1EADB 18%,#ECE4D3 82%,#DDD3BF","#6B5B3E"],["#BFCDB4,#D2DEC8 18%,#C9D6BF 82%,#B6C5AB","#3F5238"],["#CDBFAE,#DDD1C2 18%,#D5C8B8 82%,#C4B5A3","#56483A"],["#DEDCD3,#ECEAE2 18%,#E5E3DA 82%,#D5D3C9","#55584E"],["#E3C3C3,#F0D5D4 18%,#EACCCB 82%,#DBB9B9","#7A4A4E"],["#BFD0DC,#D3E0E9 18%,#C9D8E2 82%,#B5C7D4","#3E5566"]],
+  "lon-len":{ten:"Lớn lên", bg:"#E3C3C3,#F0D5D4 18%,#EACCCB 82%,#DBB9B9", fg:"#7A4A4E", pat:"", h:440},
+  "marketing":{ten:"Marketing", bg:"#BFD0DC,#D3E0E9 18%,#C9D8E2 82%,#B5C7D4", fg:"#3E5566", pat:"", h:480},
+  "doc-sach":{ten:"Sách mình đọc", bg:"#EBD9B4,#F5E7C8 18%,#F0E0BE 82%,#E3CFA6", fg:"#7A6332", pat:"", h:500},
+  "tieng-nhat":{ten:"Tiếng Nhật", bg:"#D6C8DA,#E5D9E8 18%,#DDD0E1 82%,#CCBDD1", fg:"#5E4A66", pat:"", h:420},
+  "ghi-chu":{ten:"Ghi chú nhỏ", bg:"#C5D3B8,#D6E1CB 18%,#CEDAC2 82%,#BCCBAE", fg:"#3F5238", pat:"repeating-linear-gradient(0deg,rgba(255,255,255,.5) 0 7px,rgba(0,0,0,0) 7px 14px),repeating-linear-gradient(90deg,rgba(255,255,255,.5) 0 7px,rgba(0,0,0,0) 7px 14px)", h:400}
+};
+const FONT = {"nk-2021":"'Playfair Display',Georgia,serif","nk-2022":"Mynerve,var(--f-ui)","nk-2023":"'Josefin Sans',var(--f-ui)","nk-2024":"Lora,Georgia,serif","nk-2025":"'Cormorant Garamond',Georgia,serif","nk-2026":"Quicksand,var(--f-ui)",
+  "lon-len":"Lora,Georgia,serif","marketing":"'Josefin Sans',var(--f-ui)","doc-sach":"Prata,Georgia,serif","tieng-nhat":"Spectral,Georgia,serif","ghi-chu":"Mynerve,var(--f-ui)"};
+const BOOKS = [...new Set(POSTS.filter(p => p.c === "diary").map(p => "nk-" + p.d.slice(0,4)))].sort().concat(["lon-len","marketing","doc-sach","tieng-nhat","ghi-chu"].filter(k => POSTS.some(p => bookOf(p) === k)));
+const byYear = k => POSTS.filter(p => bookOf(p) === k).sort((a,b) => a.d < b.d ? -1 : 1);
+const bookName = k => k.startsWith("nk-") ? "Nhật ký " + k.slice(3) : SKIN[k].ten;
+const CAY = `<svg viewBox="0 0 120 130" aria-hidden="true"><g fill="#6FA257"><ellipse cx="60" cy="40" rx="9" ry="22"/><ellipse cx="40" cy="48" rx="8" ry="20" transform="rotate(-32 40 48)"/><ellipse cx="80" cy="48" rx="8" ry="20" transform="rotate(32 80 48)"/><ellipse cx="26" cy="64" rx="7" ry="17" transform="rotate(-58 26 64)"/><ellipse cx="94" cy="64" rx="7" ry="17" transform="rotate(58 94 64)"/></g><g fill="#8DBB7E"><ellipse cx="50" cy="56" rx="6" ry="15" transform="rotate(-14 50 56)"/><ellipse cx="70" cy="56" rx="6" ry="15" transform="rotate(14 70 56)"/></g><path d="M34 78 h52 l-6 46 a6 6 0 0 1 -6 6 h-28 a6 6 0 0 1 -6 -6 z" fill="#FBF8EC"/><path d="M34 78 h52 v8 h-52 z" fill="#EDE6D0"/></svg>`;
+const VAT = [
+  `<svg viewBox="0 0 90 150" aria-hidden="true"><g stroke="#8A9A74" stroke-width="1.6" fill="none"><path d="M45 96 C 40 60, 30 40, 22 22"/><path d="M45 96 C 46 60, 50 36, 52 14"/><path d="M45 96 C 52 64, 62 46, 72 30"/></g><g fill="#FFFFFF"><circle cx="22" cy="20" r="6"/><circle cx="30" cy="34" r="5"/><circle cx="52" cy="12" r="6"/><circle cx="46" cy="30" r="5"/><circle cx="72" cy="28" r="6"/><circle cx="62" cy="44" r="5"/><circle cx="36" cy="50" r="4.5"/></g><path d="M26 92 h38 c8 14 8 40 -2 54 h-34 c-10 -14 -10 -40 -2 -54 z" fill="#FBF8EC"/><path d="M26 92 h38 v6 h-38 z" fill="#EDE6D0"/></svg>`,
+  `<svg viewBox="0 0 80 130" aria-hidden="true"><rect x="22" y="14" width="8" height="70" rx="3" fill="#E9B8BE" transform="rotate(-8 26 50)"/><rect x="38" y="6" width="8" height="78" rx="3" fill="#B9CFA6"/><rect x="50" y="18" width="8" height="66" rx="3" fill="#F2DFA2" transform="rotate(9 54 50)"/><path d="M12 62 h56 l-4 62 a5 5 0 0 1 -5 5 h-38 a5 5 0 0 1 -5 -5 z" fill="#FBF8EC"/><g stroke="#E3DBC6" stroke-width="3"><path d="M26 78 v36"/><path d="M40 78 v36"/><path d="M54 78 v36"/></g></svg>`,
+  `<svg viewBox="0 0 90 120" aria-hidden="true"><rect x="8" y="10" width="74" height="100" fill="#D9B978"/><rect x="16" y="18" width="58" height="84" fill="#F3F6E4"/><g transform="translate(45 60)"><g fill="#FFFFFF" stroke="#D8DCC6" stroke-width=".6"><ellipse cy="-13" rx="7" ry="13"/><ellipse cy="-13" rx="7" ry="13" transform="rotate(72)"/><ellipse cy="-13" rx="7" ry="13" transform="rotate(144)"/><ellipse cy="-13" rx="7" ry="13" transform="rotate(216)"/><ellipse cy="-13" rx="7" ry="13" transform="rotate(288)"/></g><circle r="4.5" fill="#F2C53D"/></g></svg>`
+];
+let SHELF_W = 600;
+/* books on the shelf: diaries are plain notebooks, topic books are "books by Duyên", read books are static */
+const DOC = [
+  {t:"Atomic Habits", a:"James Clear", nen:"#E4E0D2", fg:"#3D4A3A", f:"Lora,Georgia,serif", ngang:true, w:60, h:418, chat:"m-giay", noi:true},
+  {t:"Thất lạc cõi người", a:"Dazai Osamu", nen:"#3F5A43", fg:"#E2D3A6", f:"'Cormorant Garamond',Georgia,serif", w:36, h:392, chat:"m-vai", kim:true},
+  {t:"7 Habits of Highly Effective People", a:"Stephen R. Covey", nen:"#F4F0E5", fg:"#4A5640", f:"'Josefin Sans',var(--f-ui)", w:52, h:440, nho:true, chat:"m-giay", nghieng:true},
+  {t:"Cô gái văn chương", a:"", nen:"#D7C8AC", fg:"#4D3F2A", f:"Spectral,Georgia,serif", w:42, h:376, chat:"m-vai"}
+];
+const NK_DESIGN = ["tranh-hoa","caro","theu","tranh-nui"];
+const TOPIC_LOOK = {
+  "lon-len":{nen:"#F3EEE2", fg:"#4A5640", h:404, w:58, chat:"m-giay", vt:"tren", art:"vuon"},
+  "marketing":{nen:"#FAF7EF", fg:"#3D4A3A", h:428, w:50, chat:"m-giay", vt:"giua"},
+  "doc-sach":{nen:"#B5C6A3", fg:"#2F3F2C", h:414, w:54, chat:"m-vai", vt:"tren", noi:true},
+  "tieng-nhat":{nen:"#EFE6D2", fg:"#4D4030", h:446, w:52, chat:"m-giay", vt:"tren", jp:"日本語", art:"ho"},
+  "ghi-chu":{nen:"#E2D6BF", fg:"#4D4030", h:376, w:48, chat:"m-vai", vt:"tren", art:"hoa2"}
+};
+const dinh = r => `<i class="dinh" style="height:calc(${(3 + r() * 3).toFixed(1)}px*var(--k,1))"></i>`;
+const hoSo = (cls, w, h, nen, fg, r, extra) => `class="bia ${cls}" style="--w:${w};--h:${h};--nen:${nen};color:${fg};margin-left:calc(${(r() * 7).toFixed(1)}px*var(--k,1))${extra || ""}"`;
+function noteSpine(k, i, r){
+  const d = NK_DESIGN[i % 4], y = k.slice(3), h = [430, 398, 446, 414][i % 4], w = 58 + byYear(k).length * 3;
+  let nen = "#EEE6D3", van = "", inner = "", chat = "m-vai";
+  if (d === "tranh-hoa"){ nen = "#E9DFC9"; inner = `<i class="khau"></i><i class="tranh vua" style="background-image:url(art/hoa1.webp);--ar:1.94"></i>`; }
+  if (d === "tranh-nui"){ nen = "#C9C2A8"; inner = `<i class="tranh day-du" style="background-image:url(art/nui.webp)"></i>`; }
+  if (d === "hoa"){ nen = "#6F8F69"; inner = `<svg class="minh-hoa" viewBox="0 0 60 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M30 400 C 22 330, 38 270, 28 200 S 34 80, 30 0" fill="none" stroke="#C9D8B4" stroke-width="1.4" opacity=".8"/>${[70,150,240,320].map((yy, j) => `<g transform="translate(${j % 2 ? 40 : 20} ${yy}) rotate(${(r() * 70) | 0})" opacity=".95">${[0,72,144,216,288].map(a => `<ellipse cx="0" cy="-7" rx="4.2" ry="7" fill="#F4EFE2" transform="rotate(${a})"/>`).join("")}<circle r="2.6" fill="#E3C27A"/></g>`).join("")}${[110,190,280].map((yy, j) => `<ellipse cx="${j % 2 ? 22 : 38}" cy="${yy}" rx="8" ry="3.4" fill="#A9C092" transform="rotate(${j % 2 ? -30 : 30} ${j % 2 ? 22 : 38} ${yy})"/>`).join("")}</svg>`; }
+  if (d === "caro"){ nen = "#A3BA95"; chat = "m-vai m-caro"; }
+  if (d === "theu"){ nen = "#EDE4D0"; inner = `<span class="theu">${sprig("#7E9A6B", 30, 40, "#E3AEB4")}</span><i class="day-ruy"></i>`; }
+  if (d === "khau"){ nen = "#D6C4A8"; inner = `<i class="khau"></i><span class="theu giua">${flower(26, 5, "#F4EFE2", "#C9A46A")}</span>`; }
+  return {w, html:`<a href="#sach-${k}" aria-label="Nhật ký ${y}" ${hoSo("gay so-tay " + chat, w, h, nen, "#3F4A38", r, van ? ";--van:" + van : "")}>${dinh(r)}${inner}<span class="nhan-nam" aria-hidden="true">${y}</span></a>`};
+}
+function topicSpine(k, r){
+  const L = TOPIC_LOOK[k], name = SKIN[k].ten, flat = !L.art && Math.max(...name.split(" ").map(x => x.length)) <= 5 && r() < .6;
+  const title = `<span class="tieu${flat ? " ngang" : ""}" style="font-family:${FONT[k]};font-size:calc(${(L.art ? 15 + r() * 2 : 16 + r() * 5).toFixed(1)}px*var(--k,1))">${flat ? name.split(" ").join("<br>") : name}</span>`;
+  return {w:L.w, html:`<a href="#sach-${k}" aria-label="${name}" ${hoSo("gay " + L.chat + (L.noi ? " m-noi" : "") + (L.art ? " co-tranh" : " vt-" + L.vt), L.w, L.h, L.nen, L.fg, r)}>${dinh(r)}<i class="gan tren"></i>${title}${L.jp ? `<span class="tac jp">${L.jp}</span>` : ""}${L.art ? `<i class="tranh${L.art.startsWith("hoa") ? " vua" : ""}" style="background-image:url(art/${L.art}.webp);--ar:${L.art === "hoa2" ? 1.83 : 1.94}"></i>` : `<i class="gan duoi"></i>`}</a>`};
+}
+function readSpine(b, r){
+  const title = b.ngang ? `<span class="tieu ngang" style="font-family:${b.f}">${b.t.split(" ").join("<br>")}</span>` : `<span class="tieu${b.nho ? " nho" : ""}" style="font-family:${b.f}">${b.t}</span>`;
+  return {w:b.w, html:`<span role="img" aria-label="${b.t}${b.a ? ", " + b.a : ""}" ${hoSo("tinh " + b.chat + (b.noi ? " m-noi" : "") + (b.kim ? " m-kim" : "") + (b.nghieng ? " nghieng" : ""), b.w, b.h, b.nen, b.fg, r)}>${dinh(r)}${title}${b.a ? `<span class="tac" style="font-family:${b.f}">${b.a}</span>` : ""}</span>`};
+}
+function shelfOrder(){
+  const nk = BOOKS.filter(k => k.startsWith("nk-")), tp = BOOKS.filter(k => !k.startsWith("nk-")), out = []; let ni = 0, ti = 0, di = 0;
+  ["nk","doc","tp","nk","doc","tp","tp","nk","doc","tp","nk","doc","tp"].forEach(p => { if (p === "nk" && ni < nk.length) out.push({k:nk[ni], nk:ni++}); else if (p === "tp" && ti < tp.length) out.push({k:tp[ti++]}); else if (p === "doc" && di < DOC.length) out.push({doc:DOC[di++]}); });
+  while (ni < nk.length) out.push({k:nk[ni], nk:ni++}); while (ti < tp.length) out.push({k:tp[ti++]}); while (di < DOC.length) out.push({doc:DOC[di++]});
+  return out;
+}
+/* objects: one light from the upper right, soft contact shadows, no glow */
+const BONG = id => `<filter id="${id}" x="-30%" y="-200%" width="160%" height="500%"><feGaussianBlur stdDeviation="2.4"/></filter>`;
+const CAT_SVG = `<svg viewBox="0 0 132 70" aria-hidden="true"><defs>${BONG("mb")}<linearGradient id="mt" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFBF2"/><stop offset=".55" stop-color="#F3E8D5"/><stop offset="1" stop-color="#DCCBB0"/></linearGradient><radialGradient id="mv" cx=".55" cy=".35" r=".6"><stop offset="0" stop-color="#E2C29A"/><stop offset="1" stop-color="#E2C29A" stop-opacity="0"/></radialGradient></defs>
+<ellipse cx="64" cy="64" rx="56" ry="4.5" fill="rgba(80,60,35,.32)" filter="url(#mb)"/>
+<path d="M14 64 C 8 42, 26 26, 58 25 C 82 24, 98 30, 104 44 L 106 64 Z" fill="url(#mt)"/>
+<ellipse cx="58" cy="38" rx="26" ry="11" fill="url(#mv)"/>
+<path d="M92 42 C 92 28, 104 22, 114 26 C 124 30, 126 44, 120 54 C 114 63, 98 64, 93 58 Z" fill="url(#mt)"/>
+<path d="M99 30 L 101 17 L 109 26 Z M 116 27 L 122 16 L 124 31 Z" fill="#F7EEDF"/><path d="M101.5 27 L 102.5 20.5 L 106.5 25.5 Z M 118 27 L 121 21 L 122 28.5 Z" fill="#E9C6B3"/>
+<path d="M102 44 q3.5 2.6 7 0 M 113 43 q3.5 2.6 7 0" stroke="#7A6A55" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M110.5 49 l1.5 1.2 l1.5 -1.2" stroke="#C99A8C" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+<path d="M20 62 C 4 60, 4 46, 18 47 C 26 48, 34 56, 52 60" stroke="#F1E6D2" stroke-width="7.5" fill="none" stroke-linecap="round"/><path d="M20 62 C 4 60, 4 46, 18 47" stroke="rgba(120,95,60,.18)" stroke-width="1" fill="none"/>
+<path d="M14 64 C 8 42, 26 26, 58 25 C 82 24, 98 30, 104 44" stroke="rgba(130,105,70,.22)" fill="none"/><path d="M60 64 q6 -5 12 0 M 78 64 q6 -5 12 0" stroke="rgba(130,105,70,.25)" fill="none"/></svg>`;
+const NEN_SVG = `<svg viewBox="0 0 72 100" aria-hidden="true"><defs>${BONG("nb")}<linearGradient id="nk" x1="0" x2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity=".18"/><stop offset=".72" stop-color="#FFFFFF" stop-opacity=".1"/><stop offset=".86" stop-color="#FFFFFF" stop-opacity=".7"/><stop offset="1" stop-color="#FFFFFF" stop-opacity=".2"/></linearGradient><linearGradient id="nw" x1="0" x2="1"><stop offset="0" stop-color="#E8DCC2"/><stop offset=".7" stop-color="#F7EFDF"/><stop offset="1" stop-color="#EFE3CB"/></linearGradient></defs>
+<ellipse cx="36" cy="96" rx="30" ry="3.6" fill="rgba(80,60,35,.3)" filter="url(#nb)"/>
+<rect x="8" y="34" width="56" height="58" rx="7" fill="url(#nw)"/><ellipse cx="36" cy="35" rx="27" ry="4" fill="#FAF4E6"/>
+<rect x="16" y="54" width="40" height="24" rx="1.5" fill="#EFE4CC"/><path d="M28 68 q8 -9 16 0" stroke="#9CB28C" stroke-width="1.3" fill="none"/><circle cx="36" cy="61" r="1.6" fill="#D9A0A7"/>
+<line x1="36" y1="35" x2="36" y2="28" stroke="#4E4030" stroke-width="1.3"/><path class="lua" d="M36 15 C 31.5 21, 32.5 27, 36 28 C 39.5 27, 40.5 21, 36 15 Z" fill="#F2C36B"/><path d="M36 21 C 34.5 24, 35 26.5, 36 27 C 37 26.5, 37.5 24, 36 21 Z" fill="#FFF3D2"/>
+<rect x="6" y="10" width="60" height="84" rx="8" fill="url(#nk)" stroke="rgba(150,140,115,.45)"/><rect x="56" y="16" width="4" height="70" rx="2" fill="#FFFFFF" opacity=".55"/></svg>`;
+const PEN_SVG = `<svg viewBox="0 0 90 150" aria-hidden="true"><defs>${BONG("pb")}<linearGradient id="pc" x1="0" x2="1"><stop offset="0" stop-color="#E9E2D2"/><stop offset=".6" stop-color="#FBF8F0"/><stop offset=".85" stop-color="#FFFFFF"/><stop offset="1" stop-color="#ECE5D6"/></linearGradient></defs>
+<ellipse cx="45" cy="146" rx="38" ry="4" fill="rgba(80,60,35,.3)" filter="url(#pb)"/>
+<g transform="rotate(-9 30 70)"><rect x="25" y="8" width="8" height="70" rx="1.5" fill="#9DB58C"/><path d="M25 8 l4 -8 l4 8 z" fill="#E9D3AE"/><path d="M28 2 l1 -2 l1 2 z" fill="#4E4030"/></g>
+<g><rect x="40" y="2" width="9" height="76" rx="2" fill="#5E7A55"/><rect x="40" y="2" width="9" height="10" rx="2" fill="#C9C1AE"/></g>
+<g transform="rotate(8 58 70)"><rect x="54" y="12" width="8" height="66" rx="1.5" fill="#E6B8BC"/><path d="M54 12 l4 -8 l4 8 z" fill="#E9D3AE"/><path d="M57 6 l1 -2 l1 2 z" fill="#4E4030"/></g>
+<path d="M10 66 h70 v70 a8 8 0 0 1 -8 8 h-54 a8 8 0 0 1 -8 -8 z" fill="url(#pc)"/><ellipse cx="45" cy="66" rx="35" ry="4.5" fill="#F4EFE3" stroke="rgba(150,135,105,.35)"/><ellipse cx="45" cy="66" rx="30" ry="3" fill="#D9D0BC"/>
+<path d="M45 104 c -9 -10 -18 -2 -10 3 c 4 2 8 0 10 -3 c 2 3 6 5 10 3 c 8 -5 -1 -13 -10 -3 z M45 104 l -7 18 M45 104 l 7 18" stroke="#8FA584" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>`;
+function treoSVG(r){
+  const LEAF = "M0 -1 C -5 1 -10 -3 -10 -9 C -10 -15 -4 -20 0 -25 C 4 -20 10 -15 10 -9 C 10 -3 5 1 0 -1 Z";
+  const tone = () => ["l1","l2","l3"][(r() * 3) | 0];
+  const leaf = (x, y, rot, sc) => `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot | 0}) scale(${sc.toFixed(2)})"><path d="${LEAF}" fill="url(#${tone()})"/><path d="M0 -2 L0 -22" stroke="rgba(255,255,255,.35)" stroke-width=".8"/></g>`;
+  let back = "", front = "";
+  const vine = (x0, len, sway, toFront) => { let p = `M${x0} 46`, x = x0, out = "";
+    for (let y = 50; y < len; y += 15 + r() * 6){ x += (r() - .5) * sway; p += ` L${x.toFixed(1)} ${y.toFixed(1)}`; const sd = r() < .5 ? -1 : 1; out += leaf(x + sd * 2, y, sd * (130 + r() * 40), .62 + r() * .3); }
+    const str = `<path d="${p}" stroke="#6B8C52" stroke-width="1.2" fill="none" stroke-linecap="round"/>${out}`; if (toFront) front += str; else back += str; };
+  vine(48, 300, 7, true); vine(60, 220, 9, true); vine(40, 250, 6, false); vine(112, 170, 8, false); vine(122, 120, 6, false);
+  let crown = ""; for (let i = 0; i < 22; i++){ const x = 40 + r() * 84, y = 22 + r() * 22; crown += leaf(x, y, -60 + r() * 120, .7 + r() * .45); }
+  return `<svg viewBox="0 0 170 310" aria-hidden="true"><defs>${BONG("tb")}
+<linearGradient id="l1" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#5D8A4A"/><stop offset="1" stop-color="#8DB56C"/></linearGradient>
+<linearGradient id="l2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#6F9A57"/><stop offset="1" stop-color="#A9C987"/></linearGradient>
+<linearGradient id="l3" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#4E7A40"/><stop offset="1" stop-color="#7FA862"/></linearGradient>
+<linearGradient id="po" x1="0" x2="1"><stop offset="0" stop-color="#E6DDCB"/><stop offset=".55" stop-color="#FAF6EC"/><stop offset=".85" stop-color="#FFFFFF"/><stop offset="1" stop-color="#EDE5D4"/></linearGradient></defs>
+<ellipse cx="86" cy="100" rx="40" ry="3.6" fill="rgba(80,60,35,.32)" filter="url(#tb)"/>
+${back}${crown}
+<path d="M46 50 h80 l-7 42 a9 9 0 0 1 -9 8 h-48 a9 9 0 0 1 -9 -8 z" fill="url(#po)"/><ellipse cx="86" cy="50" rx="40" ry="5" fill="#F6F1E6" stroke="rgba(150,135,105,.35)"/><ellipse cx="86" cy="50.5" rx="35" ry="3.4" fill="#7A6A52" opacity=".55"/>
+<path d="M50 60 q36 6 72 0" stroke="rgba(150,135,105,.25)" fill="none"/>
+${front}</svg>`; }
+function renderShelf(){
+  const vw = innerWidth, rows = vw < 620 ? 3 : vw < 900 ? 2 : 1, items = shelfOrder(), r = rng(2026);
+  const sp = items.map((it, i) => it.doc ? readSpine(it.doc, rng(i * 13 + 3)) : it.nk != null ? noteSpine(it.k, it.nk, rng(it.nk + 5)) : topicSpine(it.k, rng(it.k.length * 7)));
+  const per = Math.ceil(sp.length / rows); let h = "", maxW = 0;
+  for (let t = 0; t < rows; t++){ const part = sp.slice(t * per, (t + 1) * per); let tw = 0; const row = part.map(x => { tw += x.w * .86 + 6; return x.html; }).join("");
+    maxW = Math.max(maxW, tw + (rows === 1 ? 40 : 90)); h += `<div class="tang">${row}${rows > 1 && t === rows - 1 ? `<span class="vat" style="width:calc(58px*var(--k,1))">${PEN_SVG}</span>` : ""}</div>`; }
+  h += `<span class="treo">${treoSVG(rng(7))}</span><span class="meo">${CAT_SVG}</span><span class="nen">${NEN_SVG}</span>`;
+  if (rows === 1) h += `<span class="ong-but">${PEN_SVG}</span>`;
+  SHELF_W = maxW + 40; $("#gay").innerHTML = h; $("#gay").dataset.rows = rows; fitShelf(rows);
+}
+$("#the-nhanh").innerHTML = sprig("#26301F", 60, 76, "#B9A8E6");
+shadows($("#bong-ke"), 40, 23, [44,-4,58,80]);
+shadows($("#bong-ve"), 34, 77, [50,0,52,90]);
+(function(){ const box = $("#hoa-mo"), r = rng(55); let h = ""; for (let i = 0; i < 9; i++) h += `<span style="left:${(r() * 22 - 4).toFixed(1)}%;bottom:${(r() * 26 - 6).toFixed(1)}%;filter:blur(${(3 + r() * 5).toFixed(1)}px);transform:rotate(${(r() * 70) | 0}deg)">${flower(60 + r() * 50, 5, "#FBF8EE", "#EBD9A0")}</span>`;
+  for (let i = 0; i < 7; i++) h += `<i style="left:${(r() * 22 - 2).toFixed(1)}%;bottom:${(r() * 30 - 8).toFixed(1)}%;width:${(40 + r() * 50) | 0}px;height:${(16 + r() * 16) | 0}px;transform:rotate(${(r() * 180) | 0}deg)"></i>`; box.innerHTML = h; })();
+function fitShelf(rows){ rows = rows || +$("#gay").dataset.rows || 1; const vw = innerWidth, vh = innerHeight, mob = vw < 820;
+  const k = mob ? Math.max(.5, Math.min(1, (vw - 44) / SHELF_W)) : Math.max(.45, Math.min(1.15, (vw - 640 - vw * .03 - 100) / SHELF_W, (vh * .6) / (rows * 470)));
+  $("#gay").style.setProperty("--k", k.toFixed(3)); }
+let shelfRows = 0; function shelfMaybe(){ const want = innerWidth < 620 ? 3 : innerWidth < 900 ? 2 : 1; if (want !== shelfRows){ shelfRows = want; renderShelf(); } else fitShelf(); }
+
+/* ---------- book ---------- */
+const book = $("#book"), flow = $("#flow"), flip = $("#flip");
+let B = {year:null, page:0, pages:1, n:2, pw:520, busy:false, show:true};
+const notes = store.get("duyen-nhan") || {};
+(function(){
+  const r = rng(5);
+  $("#co").innerHTML = blobs(0, 56, 5, ["#86AD5A","#3A5C33","#A7C76E","#4F7A3E","#2F4F2C"], [-6,-6,110,112]) +
+    Array.from({length:44}, () => { const x = r()*100, y = r()*100, s = 24 + r()*30|0; return (x > 14 && x < 86 && y > 12 && y < 88) ? "" : `<div class="canh" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%;transform:rotate(${r()*60|0}deg)">${flower(s, 6, ["#B9B4F0","#CFC6F2","#A9A6E8","#FFFFFF","#E7C4F0"][r()*5|0], "#F2C53D")}</div>`; }).join("");
+  shadows($("#bong-sach"), 30, 9, [30,-8,70,80]);
+  $("#vuon-co").innerHTML = blobs(0, 46, 41, ["#A9D07C","#4F8444","#C6E293","#6FA257","#3F7240"], [-6,26,110,80]);
+  shadows($("#bong-vuon"), 36, 13, [34,8,66,74]);
+})();
+function buildBook(year){
+  const posts = byYear(year), nk = year.startsWith("nk-"), r = rng(year.length * 131 + year.charCodeAt(year.length - 1) * 17);
+  let h = `<section class="bia-trong"><div class="so"${nk ? "" : ' style="font-size:3.2em;line-height:1.05"'}>${nk ? year.slice(3) : esc(SKIN[year].ten)}</div><div class="ky">${nk ? "NHẬT KÝ · " : ""}HÔM NAY MÌNH VIẾT</div><p class="de-tu">[LỜI ĐỀ TỪ CỦA BẠN]</p><ul class="muc">` +
+    posts.map(p => `<li><button type="button" data-go="${p.s}"><small>${nk ? p.d.slice(8) + "." + p.d.slice(5,7) : p.d.slice(5,7) + "." + p.d.slice(2,4)}</small><span>${esc(p.t)}</span></button></li>`).join("") + `</ul></section>`;
+  posts.forEach((p, pi) => {
+    const [y,m,d] = p.d.split("-"); let hit = false;
+    const paras = p.p.map((x, i) => { let t = esc(x);
+      if (p.q && !hit && x.includes(p.q)){ hit = true; t = esc(x).replace(esc(p.q), `<mark class="hl" style="--hc:${pi%2 ? "#CFC6F2" : "#F7BECB"}">${esc(p.q)}</mark>`); }
+      return `<p>${t}</p>` + (i === 1 && p.p.length > 4 ? [`<figure class="anh" style="--r:${(r()*6-3).toFixed(1)}deg"><div>[ẢNH CỦA BẠN]</div></figure>`, `<div class="ve-xe" style="--r:${(r()*6-3).toFixed(1)}deg"><span>GIỮ LẠI</span><span>${d}.${m}.${y}</span></div>`, `<span class="la-ep" style="--r:${(r()*30-15)|0}deg;width:max-content">${sprig("#6F9A55", 54, 68, "#F7BECB")}</span>`][pi % 3] : ""); }).join("");
+    h += `<article class="bai" id="p-${p.s}" data-slug="${p.s}"${/\bmưa\b/i.test(p.t + " " + p.p.join(" ")) ? " data-mua" : ""}><div class="dau"><span>${d}.${m}<br>${y}</span><span>${(CATS[p.c]||"").toUpperCase()}</span></div><span class="ep" style="--r:${(r()*40-20)|0}deg">${flower(54, pi%3 ? 6 : 8, ["#FFFFFF","#CFC6F2","#F7BECB"][pi%3], "#F2C53D")}</span><h2>${esc(p.t)}</h2>${paras}${sprig("#26301F", 62, 78, "#B9A8E6")}</article>`;
+  });
+  flow.innerHTML = h; B.year = year; B.page = 0;
+  store.set("duyen-doc", year);
+}
+function sizeBook(){
+  const vw = innerWidth, vh = innerHeight, n = vw < 820 ? 1 : 2;
+  const pw = n === 2 ? Math.min(520, (vw - 96)/2) : Math.min(520, vw - 36), ph = Math.max(360, Math.min(n === 2 ? 680 : 760, vh - (n === 2 ? 190 : 210)));
+  const pad = Math.max(22, pw*.1);
+  book.dataset.n = n; book.style.setProperty("--n", n); book.style.setProperty("--pw", pw + "px"); book.style.setProperty("--ph", ph + "px");
+  flow.style.setProperty("--pad", pad + "px"); flow.style.setProperty("--pv", Math.max(26, ph*.065) + "px"); flow.style.setProperty("--fs", (pw < 400 ? 16.5 : 18.5) + "px");
+  B.n = n; B.pw = pw;
+  B.pages = Math.max(1, Math.ceil((flow.scrollWidth - 2) / pw));
+}
+const pageOf = el => Math.floor((el.getBoundingClientRect().left - flow.getBoundingClientRect().left + 4) / B.pw);
+function currentPost(){ let cur = null; $$(".bai", flow).forEach(a => { if (pageOf(a.firstElementChild) <= B.page + B.n - 1) cur = a; }); return cur; }
+function showPage(p){
+  B.page = Math.max(0, Math.min(B.pages - 1, p)); if (B.n === 2) B.page -= B.page % 2;
+  flow.style.transform = `translateX(${-B.page * B.pw}px)`; flow.parentNode.scrollLeft = 0; scrollTo(0,0);
+  $("#g-truoc").disabled = B.page === 0; $("#g-sau").disabled = B.page + B.n >= B.pages;
+  $("#so-trang").textContent = `${bookName(B.year)} · ${Math.floor(B.page / B.n) + 1} / ${Math.ceil(B.pages / B.n)}`;
+  setTimeout(() => $$("mark.hl", flow).forEach(m => { const q = pageOf(m); if (q >= B.page && q < B.page + B.n) m.classList.add("on"); }), 60);
+  drawNotes();
+  const cp = currentPost(), dau = store.get("duyen-dau") || {};
+  $("#s-sach").classList.toggle("mua", !!(cp && cp.hasAttribute("data-mua")));
+  if (cp && B.page > 0){ dau[B.year] = cp.dataset.slug; store.set("duyen-dau", dau); }
+  const rb = $("#ruy-sach"); rb.hidden = !(dau[B.year] && B.page === 0 && B.n === 2);
+}
+$("#ruy-sach").onclick = () => { const sl = (store.get("duyen-dau") || {})[B.year], a = sl && document.getElementById("p-" + sl); if (a) jump(pageOf(a.firstElementChild)); };
+function turn(dir){ turnTo(B.page + dir * B.n, dir); }
+function turnTo(target, dir){
+  if (B.busy || target < 0 || target >= B.pages || target === B.page) return;
+  if (still){ showPage(target); return; }
+  if (B.n === 2) target -= target % 2;
+  if (target === B.page) return;
+  B.busy = true; const from = B.page, pw = B.pw, one = B.n === 1, N = one ? 18 : 24, w = pw / N, hinge = one ? 1 : dir;
+  const slice = page => { const kids = [...flow.children]; let hit = null, st = 0;
+    for (const k of kids){ if (!k.classList.contains("bai")) continue; const p = pageOf(k.firstElementChild || k); if (p <= page){ hit = k; st = p; } else break; }
+    const c = flow.cloneNode(false); c.removeAttribute("id");
+    if (hit){ c.appendChild(hit.cloneNode(true)); return {c, off:(page - st) * pw}; }
+    for (const k of kids){ if (k.classList.contains("bai")) break; c.appendChild(k.cloneNode(true)); } return {c, off:page * pw}; };
+  const face = (src, x, back) => { const m = document.createElement("div"); m.className = "mat" + (back ? " sau" : ""); if (src){ const c = src.c.cloneNode(true); c.style.transform = `translateX(${-(src.off + x)}px)`; m.appendChild(c); } const sh = document.createElement("i"); sh.className = "toi"; m.appendChild(sh); return m; };
+  // one page (phone): the leaf is the page you leave (forward) or the page coming back (backward)
+  const fSrc = slice(one ? (dir > 0 ? from : target) : (dir > 0 ? from + 1 : from)), bSrc = one ? null : slice(dir > 0 ? target : target + 1);
+  let cover = null, csh = null;
+  if (!one){ const cSrc = slice(dir > 0 ? from : from + 1); cover = document.createElement("div"); cover.className = "che-trang"; cover.style.left = (dir > 0 ? 0 : pw) + "px"; cSrc.c.style.transform = `translateX(${-cSrc.off}px)`; csh = document.createElement("i"); csh.className = "toi"; cover.append(cSrc.c, csh); }
+  const cast = document.createElement("div"); cast.className = "che-bong"; cast.style.left = (one ? 0 : (dir > 0 ? pw : 0)) + "px";
+  cast.style.background = `linear-gradient(${hinge > 0 ? 90 : 270}deg,rgba(60,50,20,.55),rgba(60,50,20,.18) 35%,rgba(60,50,20,0) 75%)`;
+  const leaf = document.createElement("div"); leaf.className = "la"; leaf.style.left = (hinge > 0 ? (one ? 0 : pw) : 0) + "px"; leaf.style.transformOrigin = hinge > 0 ? "0% 100%" : "100% 100%";
+  const strips = []; let parent = leaf;
+  for (let k = 0; k < N; k++){ const d = document.createElement("div"); d.className = "dai"; d.style.width = (w + 1) + "px";
+    d.style.transformOrigin = hinge > 0 ? "left center" : "right center";
+    d.style.left = hinge > 0 ? (k ? w : 0) + "px" : (k ? -w : pw - w) + "px";
+    const fx = hinge > 0 ? k * w : pw - (k + 1) * w, bx = hinge > 0 ? pw - (k + 1) * w : k * w;
+    const f = face(fSrc, fx, false), b = face(bSrc, bx, true); d.append(f, b); parent.appendChild(d); parent = d; strips.push({d, f:f.lastChild, b:b.lastChild}); }
+  if (cover) book.append(cover); book.append(cast, leaf);
+  const late = one && dir < 0; if (!late) showPage(target);
+  const ease = x => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3)/2, BEND = 24, MAXA = one ? 150 : 180, DUR = one ? 950 : 1250, t0 = performance.now(), sgn = hinge > 0 ? -1 : 1;
+  const step = now => { const t = Math.min(1, (now - t0) / DUR), tt = late ? 1 - t : t; let prev = 0, tip = 0;
+    for (let k = 0; k < N; k++){ const u = k / (N - 1), base = MAXA * ease(tt), room = Math.min(base, MAXA - base), a = base + Math.min(BEND, room * .9) * Math.sin(Math.PI * tt) * (u * u * (3 - 2 * u));
+      strips[k].d.style.transform = `rotateY(${(sgn * (a - prev)).toFixed(2)}deg)`; prev = a; tip = a;
+      const sn = Math.sin(a * Math.PI / 180), cs = Math.cos(a * Math.PI / 180);
+      strips[k].f.style.opacity = Math.max(0, .26 * sn * (1 - cs) * .5 + .06 * sn).toFixed(3);
+      strips[k].b.style.opacity = Math.max(0, .05 + .2 * sn * (1 + cs) * .5).toFixed(3); }
+    const lift = Math.sin(Math.PI * tt);
+    
+    if (one) leaf.style.opacity = tip > 110 ? Math.max(0, 1 - (tip - 110) / 40).toFixed(3) : "1";
+    cast.style.opacity = (tip < 90 ? .5 * Math.sin(tip * Math.PI / 180) : .5 * Math.sin(tip * Math.PI / 180) * .3).toFixed(3);
+    if (csh) csh.style.opacity = (tip > 90 ? .34 * Math.sin(tip * Math.PI / 180) : 0).toFixed(3);
+    if (t < 1) requestAnimationFrame(step); else { if (late) showPage(target); leaf.remove(); cast.remove(); if (cover) cover.remove(); B.busy = false; } };
+  requestAnimationFrame(step);
+}
+$("#g-sau").onclick = () => turn(1); $("#g-truoc").onclick = () => turn(-1);
+document.addEventListener("keydown", e => { if (document.body.dataset.scene !== "sach" || /INPUT|TEXTAREA/.test(e.target.tagName)) return; if (e.key === "ArrowRight") turn(1); if (e.key === "ArrowLeft") turn(-1); });
+flow.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (!b) return; const a = document.getElementById("p-" + b.dataset.go); if (a) jump(pageOf(a.firstElementChild)); });
+function jump(p){ if (B.n === 2) p -= p % 2; turnTo(p, p > B.page ? 1 : -1); }
+function openBook(year, slug){
+  if (B.year !== year) buildBook(year);
+  requestAnimationFrame(() => { sizeBook(); let p = 0; if (slug){ flow.style.transform = "translateX(0)"; const a = document.getElementById("p-" + slug); if (a) p = pageOf(a.firstElementChild); } showPage(p); });
+}
+/* notes: shared through Supabase when config.js has keys; otherwise kept in this browser */
+let SB = null; const MINE = store.get("duyen-nhan-cua-toi") || {};
+(async function(){ const c = window.DUYEN_SB || {}; if (!c.url || !c.key || !window.supabase) return;
+  try { SB = window.supabase.createClient(c.url, c.key, {auth:{persistSession:false}});
+    const {data, error} = await SB.from("loi_nhan").select("slug,ten,loi").eq("cong_khai", true).eq("da_duyet", true).not("slug", "is", null).order("tao_luc", {ascending:true}).limit(500);
+    if (error) throw error; for (const k in notes) delete notes[k];
+    data.forEach(n => (notes[n.slug] = notes[n.slug] || []).push({t:n.ten || "một người bạn", m:n.loi}));
+    if (document.body.dataset.scene === "sach") drawNotes();
+  } catch(e){ SB = null; } })();
+async function guiLoiNhan(row){ if (!SB) return false; const {error} = await SB.from("loi_nhan").insert(row); if (error) throw error; return true; }
+function drawNotes(){
+  const cur = currentPost(), slug = cur ? cur.dataset.slug : "", list = (notes[slug] || []).concat(MINE[slug] || []), box = $("#giay"), b = $("#b-an");
+  b.hidden = !list.length; b.textContent = (B.show ? "Ẩn" : "Hiện") + ` lời nhắn (${list.length})`;
+  box.innerHTML = "";
+  if (B.n === 1){ box.style.cssText = "position:absolute;left:0;right:0;bottom:-18px;display:flex;gap:8px;z-index:7"; } else box.style.cssText = "";
+  if (!B.show) return;
+  list.slice(-4).forEach((n, i) => { const d = document.createElement("div"); d.className = "giay"; d.style.setProperty("--r", (i%2 ? 4 : -5) + "deg");
+    if (B.n === 2){ d.style.top = (22 + (i>>1)*34) + "%"; d.style[i%2 ? "right" : "left"] = "-104px"; }
+    d.innerHTML = `${esc(n.m)}<small>${esc(n.t)}${n.w ? " · chờ Duyên duyệt" : ""}</small>`; box.appendChild(d); });
+}
+$("#b-an").onclick = () => { B.show = !B.show; drawNotes(); };
+$("#b-nhan").onclick = () => { const f = $("#form"); f.hidden = !f.hidden; $("#form-msg").hidden = true; if (!f.hidden) $("#ten-ban").focus(); };
+$("#form").addEventListener("submit", async e => {
+  e.preventDefault(); const t = $("#ten-ban").value.trim(), m = $("#loi-nhan").value.trim(), msg = $("#form-msg"), btn = e.target.querySelector("button[type=submit]");
+  if (!t || !m){ msg.hidden = false; msg.setAttribute("role","alert"); msg.textContent = !t ? "Bạn chưa ghi tên." : "Bạn chưa viết lời nhắn."; return; }
+  msg.removeAttribute("role"); const cur = currentPost(), slug = cur ? cur.dataset.slug : "", chung = $("#dan-len").checked;
+  btn.disabled = true;
+  try { const sent = await guiLoiNhan({slug, ten:t, loi:m, cong_khai:chung});
+    if (chung){ (MINE[slug] = MINE[slug] || []).push({t, m, w:1}); store.set("duyen-nhan-cua-toi", MINE); B.show = true; drawNotes(); $("#form").hidden = true; }
+    else { msg.hidden = false; msg.textContent = sent ? "Đã kẹp vào sách. Chỉ Duyên đọc được." : "Đã kẹp vào sách (lưu trên máy này)."; }
+    $("#loi-nhan").value = "";
+  } catch(err){ msg.hidden = false; msg.setAttribute("role","alert"); msg.textContent = "Chưa gửi được, bạn thử lại sau nha."; }
+  btn.disabled = false;
+});
+
+/* ---------- garden ---------- */
+(function(){
+  const r = rng(8);
+  $("#gia").innerHTML = VIEC.map((v, i) => `<button class="gia ${v.k}" type="button" data-i="${i}"><span class="khung" style="--r:${(r()*3-1.5).toFixed(1)}deg">${v.the ? `<span class="the ${v.k}">${v.the}</span>` : ""}<h3>${esc(v.ten)}</h3><p>${esc(v.dong)}</p></span></button>`).join("");
+  $("#cam").innerHTML = CAM.map(c => `<li style="--r:${(r()*3-1.5).toFixed(1)}deg"><b>${esc(c[0])}</b>${esc(c[1])}<br>${esc(c[2])}</li>`).join("");
+  let opener = null;
+  $("#gia").addEventListener("click", e => { const b = e.target.closest(".gia"); if (!b) return; const v = VIEC[b.dataset.i]; opener = b;
+    $("#to-the").textContent = v.the; $("#to-the").hidden = !v.the; $("#to-the").className = "the " + v.k; $("#to-ten").textContent = v.ten; $("#to-vai").textContent = v.vai; $("#to-chi").innerHTML = v.chi.map(c => `<li>${esc(c)}</li>`).join("");
+    $("#to").classList.add("on"); $("#to .dong").focus(); });
+  const close = () => { $("#to").classList.remove("on"); if (opener) opener.focus(); };
+  $("#to .dong").onclick = close; $("#to").addEventListener("click", e => { if (e.target.id === "to") close(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+})();
+const silk = (function(){
+  const cv = $("#lua"), ctx = cv.getContext("2d"), sc = $("#s-vuon"); let cover = .07, target = .07, raf = 0, on = false, W = 0, H = 0;
+  const T = {dong:1.08, he:.46, mo:.07};
+  function size(){ const d = Math.min(devicePixelRatio||1, 1.5), w = cv.clientWidth, h = cv.clientHeight; if (w*d !== cv.width || h*d !== cv.height){ cv.width = w*d; cv.height = h*d; } ctx.setTransform(d,0,0,d,0,0); W = w; H = h; }
+  function edge(y, t, x0, k){ return x0 + Math.sin(y*.006 + t*.5 + k)*20 + Math.sin(y*.017 - t*.8 + k*2)*8 + (y/H)*26; }
+  function band(x0, x1, t, k, fill){ ctx.beginPath(); for (let y=-10; y<=H+10; y+=24) ctx.lineTo(edge(y,t,x0,k), y); for (let y=H+10; y>=-10; y-=24) ctx.lineTo(edge(y,t,x1,k+.6), y); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); }
+  function ribbon(t, y0, amp, k, a){ ctx.beginPath(); for (let x=W*.3; x<=W+20; x+=24){ const u = (x-W*.3)/(W*.7); ctx.lineTo(x, y0 + Math.sin(u*5 + t*.7 + k)*amp*u + u*120); } for (let x=W+20; x>=W*.3; x-=24){ const u = (x-W*.3)/(W*.7); ctx.lineTo(x, y0 + 14 + 70*u + Math.sin(u*4.4 + t*.6 + k + 1)*amp*u + u*120); } ctx.closePath();
+    const g = ctx.createLinearGradient(W*.3,0,W,0); g.addColorStop(0,"rgba(226,244,206,0)"); g.addColorStop(.45,`rgba(232,246,210,${a})`); g.addColorStop(.8,`rgba(252,246,200,${a*1.1})`); g.addColorStop(1,`rgba(206,236,200,${a})`); ctx.fillStyle = g; ctx.fill(); }
+  function frame(tm){
+    size(); const t = still ? 2 : tm/1000; cover += (target - cover) * .06; ctx.clearRect(0,0,W,H);
+    ribbon(t, H*.10, 60, 0, .42); ribbon(t, H*.34, 80, 2.4, .3);
+    const x0 = W*(1 - cover) - 30, g = ctx.createLinearGradient(x0,0,W,H);
+    g.addColorStop(0,"rgba(222,240,204,.90)"); g.addColorStop(.35,"rgba(250,246,206,.86)"); g.addColorStop(.7,"rgba(204,232,200,.92)"); g.addColorStop(1,"rgba(240,248,224,.94)");
+    band(x0, W + 80, t, 0, g);
+    const n = Math.ceil((W - x0)/64) + 1;
+    for (let i=0;i<n;i++){ const x = x0 + 26 + i*64; band(x, x+15, t, i*.7, "rgba(255,255,255,.38)"); band(x+15, x+38, t, i*.7+.3, "rgba(120,165,110,.13)"); }
+    if (on) raf = requestAnimationFrame(frame);
+  }
+  $$(".keo button").forEach(b => b.onclick = () => { const k = b.dataset.lua; target = T[k]; sc.dataset.lua = k; $$(".keo button").forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  return { start(){ if (on) return; on = true; raf = requestAnimationFrame(frame); }, stop(){ on = false; cancelAnimationFrame(raf); } };
+})();
+
+/* ---------- routing ---------- */
+const wash = $("#wash"); let first = true; wash.innerHTML = `<span class="troi">${flower(120, 5, "#FFFFFF", "#F2C53D")}</span>`;
+function route(){
+  let h = (location.hash || "#nuoc").slice(1), scene = "nuoc", arg = null, slug = null;
+  if (h === "ke-sach" || h === "vuon" || h === "ve-minh") scene = h;
+  else if (h.startsWith("sach-") && BOOKS.includes(h.slice(5))){ scene = "sach"; arg = h.slice(5); }
+  else if (h.startsWith("bai-")){ const p = POSTS.find(x => x.s === h.slice(4)); if (p){ scene = "sach"; arg = bookOf(p); slug = p.s; } }
+  const go = () => {
+    document.body.dataset.scene = scene;
+    $$(".scene").forEach(s => s.classList.toggle("on", s.id === "s-" + scene));
+    $$(".top nav a").forEach(a => a.dataset.nav === (scene === "sach" || scene === "ke-sach" ? "viet" : scene) ? a.setAttribute("aria-current","page") : a.removeAttribute("aria-current"));
+    scene === "nuoc" ? water.start() : water.stop(); scene === "vuon" ? silk.start() : silk.stop();
+    $("#form").hidden = true; $$(".gay.ra").forEach(g => g.classList.remove("ra"));
+    if (scene === "sach") openBook(arg, slug);
+    if (scene === "nuoc") placeFlowers();
+    if (scene === "ke-sach") shelfMaybe();
+  };
+  if (first || still){ first = false; go(); return; }
+  wash.animate([{opacity:0},{opacity:1, offset:.45},{opacity:1, offset:.55},{opacity:0}], {duration:1100, easing:"ease-in-out"});
+  wash.firstChild.animate([{transform:"translate(-46vw,12vh) rotate(0deg) scale(.7)"},{transform:"translate(46vw,-8vh) rotate(200deg) scale(1.1)"}], {duration:1100, easing:"cubic-bezier(.3,0,.3,1)"});
+  setTimeout(go, 500);
+}
+$("#gay").addEventListener("click", e => { const g = e.target.closest(".gay"); if (g) g.classList.add("ra"); });
+(function(){
+  const h = (location.hash || "").slice(1); if (still || (h && h !== "nuoc")) return;
+  const rem = document.createElement("div"); rem.id = "rem"; rem.setAttribute("aria-hidden","true");
+  const r = rng(314), gr = ["#3F6B3A","#5E8E4E","#7FAE62","#4F7F45","#95C277","#2F5630"]; let html = "";
+  ["t","p"].forEach(side => { let d = "";
+    for (let k = 0; k < 15; k++){ const x = (k + .2 + r()*.6) / 15 * 100, len = innerHeight * (.72 + r()*.4); let lv = "";
+      for (let y = 6 + r()*20; y < len; y += 20 + r()*12){ const sd = r() < .5 ? -1 : 1, lh = 34 + r()*34;
+        lv += `<i style="top:${y|0}px;height:${lh|0}px;background:${gr[(r()*6)|0]};transform:rotate(${(sd*(14 + r()*30))|0}deg);opacity:${(.78 + r()*.22).toFixed(2)}${r() < .22 ? ";filter:blur(2px)" : ""}"></i>`; }
+      d += `<div class="day" style="left:${x.toFixed(1)}%;height:${len|0}px;--a:${(-1.5 - r()*2).toFixed(1)}deg;--b:${(1.5 + r()*2.5).toFixed(1)}deg;animation-duration:${(4.5 + r()*4).toFixed(1)}s;animation-delay:-${(r()*5).toFixed(1)}s">${lv}</div>`; }
+    html += `<div class="canh ${side}">${d}</div>`; });
+  rem.innerHTML = html; document.body.appendChild(rem); document.body.classList.add("mo-dau");
+  setTimeout(() => rem.classList.add("mo"), 1100);
+  setTimeout(() => { rem.remove(); }, 5200);
+  setTimeout(() => document.body.classList.remove("mo-dau"), 7000);
+})();
+(function(){
+  let ac = null, on = false, tm = 0; const N = [293.66,329.63,369.99,440,493.88,587.33,659.25,739.99];
+  const note = (f, v) => { const t = ac.currentTime, g = ac.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + 3.4); g.connect(ac.destination);
+    [["triangle",1,1],["sine",2,.3]].forEach(([ty, mul, lv]) => { const o = ac.createOscillator(), og = ac.createGain(); o.type = ty; o.frequency.value = f * mul; og.gain.value = lv; o.connect(og); og.connect(g); o.start(t); o.stop(t + 3.5); }); };
+  const play = () => { if (!on) return; const i = (Math.random() * N.length) | 0; note(N[i], .07); if (Math.random() < .35) setTimeout(() => on && note(N[(i + 2) % N.length] / 2, .05), 260); tm = setTimeout(play, 1500 + Math.random() * 2200); };
+  $("#dan").onclick = function(){ try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); on = !on; this.setAttribute("aria-pressed", String(on)); clearTimeout(tm); if (on){ ac.resume(); play(); } } catch(e){ on = false; this.setAttribute("aria-pressed","false"); } };
+  const oc = $("#o-cua"), r = rng(88), gr = ["#7FAE62","#95C277","#5E8E4E","#B7D27E","#A9D07C"]; let h = "";
+  for (let i = 0; i < 46; i++){ const w = 8 + r()*9; h += `<i style="left:${(22 + r()*72).toFixed(1)}%;top:${(4 + r()*52).toFixed(1)}%;width:${w.toFixed(1)}%;height:${(w*.62).toFixed(1)}%;background:${gr[(r()*5)|0]};opacity:${(.75 + r()*.25).toFixed(2)};--a:${(-4 - r()*5).toFixed(1)}deg;--b:${(3 + r()*6).toFixed(1)}deg;animation-duration:${(4 + r()*4).toFixed(1)}s;animation-delay:-${(r()*5).toFixed(1)}s"></i>`; }
+  oc.insertAdjacentHTML("beforeend", h);
+  $("#hop-thu").addEventListener("submit", function(e){ e.preventDefault(); const v = $("#thu").value.trim(), b = $("#thu-bao");
+    if (!v){ b.textContent = "Viết vài chữ trước đã nha."; return; }
+    guiLoiNhan({slug:null, ten:null, loi:v, cong_khai:false}).then(sent => { if (!sent){ const hop = store.get("duyen-hop-thu") || []; hop.push({m:v, at:Date.now()}); store.set("duyen-hop-thu", hop); } $("#thu").value = ""; b.textContent = "Đã bỏ vào hộp thư."; }).catch(() => { b.textContent = "Chưa gửi được, thử lại sau nha."; }); });
+  $("#thu").addEventListener("input", () => { $("#thu-bao").textContent = ""; });
+})();
+(function(){
+  const c = $("#mua"), x = c.getContext("2d"); let drops = [], raf = 0, lt = 0, W = 0, H = 0;
+  const size = () => { const d = Math.min(devicePixelRatio || 1, 2); W = c.clientWidth; H = c.clientHeight; c.width = W * d; c.height = H * d; x.setTransform(d,0,0,d,0,0);
+    const n = Math.round(W * H / 5200); drops = Array.from({length:n}, () => mk(true)); };
+  const mk = any => { const z = Math.random(); return {x:Math.random() * (W + 120) - 20, y:any ? Math.random() * H : -40 - Math.random() * 200, z, len:8 + z * 16, v:150 + z * 230, a:.35 + z * .65, w:.7 + z * 1.1, sp:0}; };
+  const tick = now => { const dt = Math.min(.05, (now - lt) / 1000); lt = now; x.clearRect(0,0,W,H); x.lineCap = "round";
+    for (let i = 0; i < drops.length; i++){ const d = drops[i];
+      if (d.sp > 0){ d.sp -= dt; const q = 1 - d.sp / .28; x.strokeStyle = `rgba(240,246,250,${(1 - q) * d.a})`; x.lineWidth = 1; x.beginPath(); x.ellipse(d.x, d.y, 3 + q * 9 * (.5 + d.z), (1 + q * 3) * (.5 + d.z), 0, 0, 6.3); x.stroke(); if (d.sp <= 0) drops[i] = mk(false); continue; }
+      d.y += d.v * dt; d.x -= d.v * dt * .1;
+      x.strokeStyle = `rgba(238,245,250,${d.a})`; x.lineWidth = d.w; x.beginPath(); x.moveTo(d.x, d.y); x.lineTo(d.x + d.len * .13, d.y - d.len); x.stroke();
+      if (d.y > H * (.55 + d.z * .45)){ if (d.z > .55 && Math.random() < .6) d.sp = .28; else drops[i] = mk(false); } }
+    raf = requestAnimationFrame(tick); };
+  const sync = () => { const on = document.body.dataset.scene === "sach" && $("#s-sach").classList.contains("mua") && !still;
+    if (on && !raf){ size(); lt = performance.now(); raf = requestAnimationFrame(tick); } else if (!on && raf){ cancelAnimationFrame(raf); raf = 0; } };
+  new MutationObserver(sync).observe($("#s-sach"), {attributes:true, attributeFilter:["class"]});
+  new MutationObserver(sync).observe(document.body, {attributes:true, attributeFilter:["data-scene"]});
+  addEventListener("resize", () => { if (raf) size(); });
+})();
+addEventListener("hashchange", route);
+let rz = 0; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { placeFlowers(); shelfMaybe(); if (document.body.dataset.scene === "sach"){ const cur = currentPost(); sizeBook(); showPage(cur && B.page ? pageOf(cur.firstElementChild) : 0); } }, 150); });
+document.addEventListener("visibilitychange", () => { if (document.hidden){ water.stop(); silk.stop(); } else route0(); });
+function route0(){ const s = document.body.dataset.scene; if (s === "nuoc") water.start(); if (s === "vuon") silk.start(); }
+placeFlowers(); shelfMaybe(); route();
+</script>
+</body>
+</html>
