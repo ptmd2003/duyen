@@ -18,6 +18,7 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 - Project ref `jrhaxqrfnnfesspkjaqt`. MCP server configured in `.mcp.json` (needs `/mcp` → Authenticate in a terminal).
 - `loi_nhan` rules: anon may insert only `slug, ten, loi, cong_khai`; anon may read only rows with `cong_khai and da_duyet`. Trigger `chan_spam` caps 20 inserts / 10 min site-wide and rejects duplicate text within 1 day.
 - Duyên approves notes in Table Editor → `loi_nhan` → `da_duyet = true`.
+- `luot_thich` (likes): anon can only `select`; writes go through `thich(p_slug, p_cong ±1)` (security definer, slug regex, 300 clicks/10 min via private `luot_bam` log). Client hides the like button if the table is missing.
 - Don't create test rows on the live DB unless needed; if you do, say so and tell the owner to delete them.
 
 ## Conventions
@@ -25,6 +26,11 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 - Vanilla JS, no framework, no bundler. Helpers: `$`, `$$`, `esc` (always escape user/post text into HTML), `store` (try/catch localStorage), `rng(seed)` (deterministic decoration).
 - Respect `prefers-reduced-motion` (`still`).
 - Pin CDN versions (supabase-js is `@2.45.4`).
+
+## Gotchas
+- CSS class names collide easily in this one big file (e.g. `.so`, `.dem`, `.thich` were already taken). `grep` a class name before using it; prefix new ones (`nut-thich`, `so-thich`).
+- Phones (<760px) get their own layouts: home pads are stacked in JS (`placeFlowers`), the book is 1-page with spine/page-stack (`.book[data-n="1"]`), the light toggle `#doi` moves into the header. Check both 390px and 360px.
+- The intro curtain (`#rem`) is driven by rAF in JS (clip-path wave + mask), not CSS transitions. Screenshots can't capture it reliably; record a video (Playwright `recordVideo`) and pull frames with Playwright's ffmpeg.
 
 ## Workflow
 Use the `ship-update` skill for any change: edit → `cd tests && npm test` → update `todolist.md` + README changelog → commit. Use the `senior-engineer` agent for reviews and planning.

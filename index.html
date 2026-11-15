@@ -106,9 +106,10 @@ body[data-light="toi"] .chao::before{opacity:0}
 .ke{position:absolute;left:0;right:0;bottom:0;height:17%;background:linear-gradient(180deg,#EEF2DF 0%,#C8D5B5 12%,#B9C9A5 100%);box-shadow:0 -10px 24px rgba(60,80,50,.18)}
 .nha{margin:18px 0 0;font-family:var(--f-display);font-size:clamp(22px,2.7vw,36px);line-height:1.15;letter-spacing:-.01em}
 #rem{position:fixed;inset:0;z-index:90;pointer-events:none}
-#rem .canh{position:absolute;top:0;bottom:0;width:50.5%;overflow:hidden;background:rgba(214,234,208,.5);backdrop-filter:blur(16px) saturate(1.1);-webkit-backdrop-filter:blur(16px) saturate(1.1);transition:transform 3.4s cubic-bezier(.5,0,.15,1),opacity 2.6s ease 1s}
+#rem .canh{position:absolute;top:0;bottom:0;width:calc(50% + 180px);overflow:hidden;will-change:transform,clip-path;background:rgba(214,234,208,.5);backdrop-filter:blur(16px) saturate(1.1);-webkit-backdrop-filter:blur(16px) saturate(1.1);transition:opacity 2.6s ease 1s}
 #rem .canh.t{left:0}#rem .canh.p{right:0}
-#rem.mo .canh.t{transform:translateX(-104%) skewX(3deg);opacity:.2}#rem.mo .canh.p{transform:translateX(104%) skewX(-3deg);opacity:.2}
+#rem.mo .canh{opacity:.2}
+#rem .day{rotate:var(--xoay,0deg)}
 #rem .day{position:absolute;top:-30px;width:2px;background:#4F7F45;transform-origin:top center;animation:du 6s ease-in-out infinite alternate}
 #rem .day i{position:absolute;left:-7px;width:15px;border-radius:50% 50% 50% 50%/70% 70% 30% 30%;transform-origin:top center}
 body.mo-dau .chao h1{animation:hien-chu 1.8s ease 2.3s both}
@@ -190,7 +191,6 @@ mark.hl.on{background-size:100% 100%}
 .goc[disabled]{display:none}
 .giay{position:absolute;z-index:7;width:190px;padding:14px 16px;background:#FFFDF2;box-shadow:0 10px 20px rgba(30,45,20,.35);font-family:var(--f-hand);font-size:17px;line-height:1.35;color:#26301F;transform:rotate(var(--r,-4deg));animation:roi .7s cubic-bezier(.2,.8,.2,1) both;overflow-wrap:break-word}
 .giay:nth-child(even){background:#EAF2DA}
-.chep{display:block;margin:1.2em 0 0;padding:6px 0;border:0;background:none;font-family:var(--f-ui);font-size:13px;letter-spacing:.06em;color:#4C5A41;text-decoration:underline;text-underline-offset:3px;cursor:pointer;break-inside:avoid}
 .giay .loi{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:6;overflow:hidden}.giay.mo .loi{-webkit-line-clamp:unset}.giay{cursor:pointer}.giay.mo{z-index:9}
 .giay small{display:block;margin-top:8px;font-family:var(--f-ui);font-size:11px;letter-spacing:.08em;color:#4C5A41}
 @keyframes roi{from{opacity:0;transform:translateY(-30px) rotate(calc(var(--r,-4deg) - 10deg))}}
@@ -550,7 +550,6 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
 /* mobile quick wins (Phase 2.5 A) */
 #form input[type=radio]{accent-color:#3A5C33;width:18px;height:18px}
 .ve-xe{width:auto;min-width:62%;max-width:100%}.ve-xe span{white-space:nowrap}
-.chep{display:inline-flex;align-items:center;min-height:44px;padding:0}
 .top .brand{display:inline-flex;align-items:center;min-height:44px}
 @media (max-width:820px){
   #doi{top:calc(22px + env(safe-area-inset-top, 0px));bottom:auto;left:auto;right:clamp(18px,5vw,72px);background:transparent;border-color:var(--fg);box-shadow:none}
@@ -560,6 +559,57 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
   .duoi{left:clamp(14px,4vw,56px)}
 }
 @media (max-width:520px){#doi{right:10px}.top{padding-right:60px}}
+/* phone book: spine, page stack, corner hint, smaller type (Phase 2.5 C) */
+.book[data-n="1"] .bia{--t:calc(.25 + .75*var(--con,1));box-shadow:calc(10px*var(--t)) 0 0 var(--leaf),0 34px 60px rgba(20,40,15,.5);background:linear-gradient(90deg,rgba(0,0,0,.3),rgba(0,0,0,.1) 9px,rgba(255,255,255,.12) 11px,rgba(255,255,255,0) 15px),var(--leaf)}
+.book[data-n="1"] .ruot{--t:calc(.25 + .75*var(--con,1));box-shadow:calc(1.2px*var(--t)) 0 0 #D3C7A8,calc(2.4px*var(--t)) 0 0 #F3ECD9,calc(3.6px*var(--t)) 0 0 #D3C7A8,calc(4.8px*var(--t)) 0 0 #F3ECD9,calc(6.0px*var(--t)) 0 0 #D3C7A8,calc(7.2px*var(--t)) 0 0 #F3ECD9,calc(8.4px*var(--t)) 0 0 #D3C7A8,calc(9.6px*var(--t)) 0 0 #F3ECD9}
+.book[data-n="1"] .trang{box-shadow:2px 0 3px rgba(60,50,20,.18)}
+.book[data-n="1"] .trang::after{background:linear-gradient(90deg,rgba(90,75,35,.24),rgba(120,105,60,.08) 3%,rgba(120,105,60,0) 8%)}
+@media (hover:none){
+  .book[data-n="1"] .goc.sau::after{border-width:0 0 26px 26px;filter:drop-shadow(-2px -2px 2px rgba(60,50,20,.2));animation:goi-y 1.4s ease 1.2s 2}
+  .book[data-n="1"] .goc.truoc::after{border-width:0 22px 22px 0;filter:drop-shadow(2px -2px 2px rgba(60,50,20,.16))}
+}
+@keyframes goi-y{50%{border-width:0 0 42px 42px}}
+@media (max-width:520px){
+  h1.big{font-size:36px}
+  .nha{font-size:18px}
+  .top .brand,.top>a:first-child{font-size:24px}
+  .bai h2{font-size:1.72em}
+  .nut{font-size:14px;padding:0 16px}
+}
+@media (prefers-reduced-motion:reduce){.book .goc::after{animation:none!important}}
+/* home on phones: smaller pads, titles beside them (Phase 2.5 B) */
+.hoa{--k:1}
+.hoa .be{width:calc(var(--s)*2.1px*var(--k));height:calc(var(--s)*1.15px*var(--k))}
+.hoa .be svg{width:calc(var(--s)*1px*var(--k));height:calc(var(--s)*1px*var(--k));margin-left:calc(var(--s)*-.5px*var(--k))}
+@media (max-width:759px){
+  .hoa{--k:.6}
+  .chao{width:76vw}
+  .nhan,.hoa.trai .nhan,.hoa:hover .nhan,.hoa:focus-visible .nhan,.hoa.gan .nhan{left:100%;right:auto;top:50%;transform:translateY(-50%);margin-left:6px;opacity:1;max-width:calc(100vw - 150px);padding:7px 12px;min-height:44px}
+  .nhan b{font-size:15px;line-height:1.25}
+  .nhan small{font-size:11px;color:inherit;opacity:.8}
+  .nhan,.hoa.trai .nhan,.hoa:hover .nhan,.hoa:focus-visible .nhan,.hoa.gan .nhan{background:none;box-shadow:none;padding:4px 6px;color:var(--fg);--glow:rgba(236,245,234,.95);text-shadow:0 0 2px var(--glow),0 0 8px var(--glow),0 0 16px var(--glow)}
+  body[data-light="toi"] .nhan{--glow:rgba(12,28,20,.9)}
+  .nhan{transition:opacity .9s ease}
+  #hoa.lang .hoa .nhan{opacity:0}
+  #hoa.lang .hoa.gan .nhan,#hoa.lang .hoa:focus-visible .nhan{opacity:1;transition-duration:.3s}
+}
+/* shelf on phones (Phase 2.5 B) */
+.top{transition:color .6s,background .3s,box-shadow .3s}
+body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(60,80,40,.12)}
+#con-nua{position:fixed;z-index:29;left:50%;bottom:calc(22px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);padding:10px 16px;border-radius:999px;background:rgba(38,48,31,.86);color:#FBF8EC;font-size:13px;letter-spacing:.04em;white-space:nowrap;pointer-events:none;animation:nhun 1.8s ease-in-out infinite}
+@keyframes nhun{50%{transform:translate(-50%,-5px)}}
+@media (prefers-reduced-motion:reduce){#con-nua{animation:none}}
+@media (max-width:619px){.treo{left:-13%}}
+@media (hover:none){.nhan-nam.luon{opacity:1;transform:translate(-50%,0)}}
+/* share + like at the end of each post */
+.tac-vu{display:flex;gap:6px;margin:1.1em 0 0 -10px;break-inside:avoid}
+.nut-nho{display:inline-flex;align-items:center;gap:6px;min-width:44px;min-height:44px;padding:0 10px;border:0;border-radius:999px;background:none;color:#4C5A41;font-family:var(--f-ui);font-size:13px;letter-spacing:.04em;cursor:pointer;transition:background .2s,color .2s}
+.nut-nho:hover,.nut-nho:focus-visible{background:rgba(76,90,65,.1)}
+.nut-nho[hidden]{display:none}
+.nut-thich svg{fill:transparent;transition:fill .2s}
+.nut-thich.da{color:#C2566E}.nut-thich.da svg{fill:currentColor}
+.nut-thich.nay svg{animation:dap .45s ease}
+@keyframes dap{40%{transform:scale(1.3)}}
 </style>
 </head>
 <body data-scene="nuoc" data-light="sang">
@@ -657,6 +707,7 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
 
 </main>
 
+<div id="con-nua" aria-hidden="true" hidden>còn sách ở dưới nữa ↓</div>
 <div id="anhsang" aria-hidden="true"></div>
 <button id="doi" type="button" aria-label="Đổi ánh sáng: sáng, chiều, tối"><i></i></button>
 <div id="wash" aria-hidden="true"></div>
@@ -763,15 +814,14 @@ c=mix(c,nt,uN);gl_FragColor=vec4(c,1.);}`;
 })();
 
 /* ---------- home: flowers on the water ---------- */
-const SPOTS = [[56,20],[73,37],[50,54],[76,64],[60,80],[88,18]], SPOTS_M = [[8,36],[50,45],[12,55],[52,64],[8,74],[50,84]];
+const SPOTS = [[56,20],[73,37],[50,54],[76,64],[60,80],[88,18]], SPOTS_M = [[3,37],[11,46],[3,55],[11,64],[3,73],[11,82]];
 const floaters = [];
 (function(){
   const box = $("#hoa"), r = rng(3);
   POSTS.slice(0,6).forEach((p, i) => {
     const a = document.createElement("a"); a.className = "hoa"; a.href = "#bai-" + p.s;
     const s = 56 + (r()*16|0), [y,m,d] = p.d.split("-");
-    a.innerHTML = `<span class="be" style="width:${s*2.1|0}px;height:${s*1.15|0}px"><span class="la-sen" style="background:${["#86B777","#93C083","#7FB26F","#8DBB7E"][i%4]}"></span>${flower(s, 5, "#FFFFFF", "#F2C53D", i%2 ? "" : "#FFEDEA")}</span><span class="nhan"><small>${d}.${m}.${y} · ${CATS[p.c]||""}</small><b>${esc(p.t)}</b></span>`;
-    a.querySelector("svg").style.marginLeft = (-s/2) + "px";
+    a.innerHTML = `<span class="be" style="--s:${s}"><span class="la-sen" style="background:${["#86B777","#93C083","#7FB26F","#8DBB7E"][i%4]}"></span>${flower(s, 5, "#FFFFFF", "#F2C53D", i%2 ? "" : "#FFEDEA")}</span><span class="nhan"><small>${d}.${m}.${y} · ${CATS[p.c]||""}</small><b>${esc(p.t)}</b></span>`;
     box.appendChild(a);
     floaters.push({el:a, i, ph:r()*6.28, sp:.25 + r()*.2, next:1 + r()*6});
   });
@@ -786,14 +836,22 @@ const floaters = [];
 })();
 function placeFlowers(){
   const m = innerWidth < 760, S = m ? SPOTS_M : SPOTS;
-  floaters.forEach(f => { const [x,y] = S[f.i]; f.el.style.left = x + "%"; f.el.style.top = y + "%"; f.el.classList.toggle("trai", !m && x > 70); });
+  if (m){ // phones: stack pads under the greeting, measured, so cards never overlap
+    $("#hoa").classList.remove("lang"); clearTimeout(placeFlowers.t); placeFlowers.t = setTimeout(() => $("#hoa").classList.add("lang"), document.body.classList.contains("mo-dau") ? 9500 : 5000);
+    let y = $(".chao").getBoundingClientRect().bottom + 28; const H = $("#s-nuoc").clientHeight - 20;
+    floaters.forEach((f, i) => { const el = f.el; el.classList.remove("trai"); el.style.left = (i % 2 ? 11 : 3) + "%"; const pad = el.firstElementChild.offsetHeight, lab = el.querySelector(".nhan").offsetHeight, h = Math.max(pad, lab);
+      el.style.top = (y + Math.max(0, (lab - pad) / 2)) + "px"; el.hidden = y + h > H; y += h + 12; });
+    return; }
+  floaters.forEach(f => { f.el.hidden = false; const [x,y] = S[f.i]; f.el.style.left = x + "%"; f.el.style.top = y + "%"; f.el.classList.toggle("trai", !m && x > 70); });
 }
 let lastMove = 0;
 $("#s-nuoc").addEventListener("pointermove", e => {
   const t = performance.now(); if (t - lastMove > 140){ lastMove = t; water.ripple(e.clientX, e.clientY); }
   floaters.forEach(f => { const b = f.el.firstElementChild.getBoundingClientRect(); f.el.classList.toggle("gan", Math.hypot(e.clientX - (b.left + b.width/2), e.clientY - (b.top + b.height/2)) < 150); });
 });
-$("#s-nuoc").addEventListener("pointerdown", e => water.ripple(e.clientX, e.clientY));
+$("#s-nuoc").addEventListener("pointerdown", e => { water.ripple(e.clientX, e.clientY);
+  floaters.forEach(f => { const b = f.el.firstElementChild.getBoundingClientRect(); f.el.classList.toggle("gan", Math.hypot(e.clientX - (b.left + b.width/2), e.clientY - (b.top + b.height/2)) < 170); }); });
+$("#s-nuoc").addEventListener("pointerup", e => { if (e.pointerType === "mouse") return; clearTimeout(placeFlowers.g); placeFlowers.g = setTimeout(() => floaters.forEach(f => f.el.classList.remove("gan")), 2600); });
 function floatLoop(tm){
   const t = tm/1000;
   if (document.body.dataset.scene === "nuoc" && !still) floaters.forEach(f => {
@@ -868,7 +926,7 @@ function spineOf(d, i){
   if (d.colo) inner += `<span class="colo">${LA}</span>`;
   if (d.ke2) inner += `<i class="ke-mong" style="bottom:calc(30px*var(--k,1))"></i>`;
   if (!d.tac && !d.tranh && !d.nhan && d.ten && !d.colo) inner += `<i class="dau-nho"${d.gan ? ' style="bottom:calc(' + ((100 - Math.min(...d.gan.filter(p => p > 50)) + 4) / 100 * d.h).toFixed(1) + 'px*var(--k,1))"' : ""}></i>`;
-  if (nk) inner += `<span class="nhan-nam" aria-hidden="true">${key.slice(3)}</span>`;
+  if (nk) inner += `<span class="nhan-nam${!d.ten && !d.nhan ? " luon" : ""}" aria-hidden="true">${key.slice(3)}</span>`;
   const st = `--w:${d.w};--h:${d.h};--nen:${d.nen};color:${d.fg};margin-left:calc(${(d.gap || 1).toFixed(1)}px*var(--k,1))${d.lean ? `;--lean:${d.lean}deg;margin-right:calc(${(d.h * Math.sin(d.lean * Math.PI / 180) + 1).toFixed(1)}px*var(--k,1))` : ""}`;
   const cls = `bia sach2 ${d.mat}${d.lean ? " tua" : ""}${nk ? " so-tay" : ""}${interactive ? " gay" : " tinh"}`;
   return {w:d.w, html: interactive ? `<a class="${cls}" href="#sach-${key}" aria-label="${esc(label)}" style="${st}">${inner}</a>` : `<span class="${cls}" role="img" aria-label="${esc(label)}" style="${st}">${inner}</span>`};
@@ -968,17 +1026,17 @@ function buildBook(year){
     const paras = p.p.map((x, i) => { let t = esc(x);
       if (p.q && !hit && x.includes(p.q)){ hit = true; t = esc(x).replace(esc(p.q), `<mark class="hl" style="--hc:${pi%2 ? "#CFC6F2" : "#F7BECB"}">${esc(p.q)}</mark>`); }
       return `<p>${t}</p>` + (i === 1 && p.p.length > 4 ? [p.img ? `<figure class="anh" style="--r:${(r()*6-3).toFixed(1)}deg"><div><img src="${esc(p.img)}" alt="${esc(p.alt || "")}" loading="lazy"></div></figure>` : `<div class="ve-xe" style="--r:${(r()*6-3).toFixed(1)}deg"><span>GIỮ LẠI</span><span>${d}.${m}.${y}</span></div>`, `<div class="ve-xe" style="--r:${(r()*6-3).toFixed(1)}deg"><span>GIỮ LẠI</span><span>${d}.${m}.${y}</span></div>`, `<span class="la-ep" style="--r:${(r()*30-15)|0}deg;width:max-content">${sprig("#6F9A55", 54, 68, "#F7BECB")}</span>`][pi % 3] : ""); }).join("");
-    h += `<article class="bai" id="p-${p.s}" data-slug="${p.s}"${/\bmưa\b/i.test(p.t + " " + p.p.join(" ")) ? " data-mua" : ""}><div class="dau"><span>${d}.${m}<br>${y}</span><span>${(CATS[p.c]||"").toUpperCase()}</span></div><span class="ep" style="--r:${(r()*40-20)|0}deg">${flower(54, pi%3 ? 6 : 8, ["#FFFFFF","#CFC6F2","#F7BECB"][pi%3], "#F2C53D")}</span><h2>${esc(p.t)}</h2>${paras}<button class="chep" type="button" data-link="${p.s}">chép link bài này</button>${sprig("#26301F", 62, 78, "#B9A8E6")}</article>`;
+    h += `<article class="bai" id="p-${p.s}" data-slug="${p.s}"${/\bmưa\b/i.test(p.t + " " + p.p.join(" ")) ? " data-mua" : ""}><div class="dau"><span>${d}.${m}<br>${y}</span><span>${(CATS[p.c]||"").toUpperCase()}</span></div><span class="ep" style="--r:${(r()*40-20)|0}deg">${flower(54, pi%3 ? 6 : 8, ["#FFFFFF","#CFC6F2","#F7BECB"][pi%3], "#F2C53D")}</span><h2>${esc(p.t)}</h2>${paras}<div class="tac-vu"><button class="nut-nho nut-thich" type="button" data-thich="${p.s}" aria-pressed="false" aria-label="Thích bài này" hidden><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.2-9.6C1.6 7.4 3.8 4 7.2 4c2 0 3.5 1.1 4.8 2.8C13.3 5.1 14.8 4 16.8 4c3.4 0 5.6 3.4 4.4 6.9-1.7 5-9.2 9.6-9.2 9.6z"/></svg><span class="so-thich"></span></button><button class="nut-nho chia" type="button" data-link="${p.s}" aria-label="Chia sẻ bài này"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><span class="nhan-nut">chia sẻ</span></button></div>${sprig("#26301F", 62, 78, "#B9A8E6")}</article>`;
   });
-  flow.innerHTML = h; B.year = year; B.page = 0;
+  flow.innerHTML = h; B.year = year; B.page = 0; if (typeof paintLikes === "function") paintLikes();
   store.set("duyen-doc", year);
 }
 function sizeBook(){
   const vw = innerWidth, vh = innerHeight, n = vw < 820 ? 1 : 2;
-  const pw = n === 2 ? Math.min(520, (vw - 96)/2) : Math.min(520, vw - 36), ph = Math.max(360, Math.min(n === 2 ? 680 : 760, vh - (n === 2 ? 190 : 210)));
-  const pad = Math.max(22, pw*.1);
+  const pw = n === 2 ? Math.min(520, (vw - 96)/2) : Math.min(520, vw - 48), ph = Math.max(360, Math.min(n === 2 ? 680 : 760, vh - (n === 2 ? 190 : 210)));
+  const pad = n === 1 ? Math.max(20, pw*.075) : Math.max(22, pw*.1);
   book.dataset.n = n; book.style.setProperty("--n", n); book.style.setProperty("--pw", pw + "px"); book.style.setProperty("--ph", ph + "px");
-  flow.style.setProperty("--pad", pad + "px"); flow.style.setProperty("--pv", Math.max(26, ph*.065) + "px"); flow.style.setProperty("--fs", (pw < 400 ? 16.5 : 18.5) + "px");
+  flow.style.setProperty("--pad", pad + "px"); flow.style.setProperty("--pv", Math.max(26, ph*.065) + "px"); flow.style.setProperty("--fs", (pw < 400 ? 15 : 18.5) + "px");
   B.n = n; B.pw = pw;
   B.pages = Math.max(1, Math.ceil((flow.scrollWidth - 2) / pw));
 }
@@ -986,7 +1044,7 @@ const pageOf = el => Math.floor((el.getBoundingClientRect().left - flow.getBound
 function currentPost(){ let cur = null; $$(".bai", flow).forEach(a => { if (pageOf(a.firstElementChild) <= B.page + B.n - 1) cur = a; }); return cur; }
 function showPage(p){
   B.page = Math.max(0, Math.min(B.pages - 1, p)); if (B.n === 2) B.page -= B.page % 2;
-  flow.style.transform = `translateX(${-B.page * B.pw}px)`; flow.parentNode.scrollLeft = 0; scrollTo(0,0);
+  flow.style.transform = `translateX(${-B.page * B.pw}px)`; book.style.setProperty("--con", B.pages > B.n ? (1 - (B.page + B.n) / B.pages).toFixed(3) : 0); flow.parentNode.scrollLeft = 0; scrollTo(0,0);
   $("#g-truoc").disabled = B.page === 0; $("#g-sau").disabled = B.page + B.n >= B.pages;
   $("#so-trang").textContent = (B.n === 1 ? "" : `${bookName(B.year)} · `) + `${Math.floor(B.page / B.n) + 1} / ${Math.ceil(B.pages / B.n)}`;
   setTimeout(() => $$("mark.hl", flow).forEach(m => { const q = pageOf(m); if (q >= B.page && q < B.page + B.n) m.classList.add("on"); }), 60);
@@ -1081,7 +1139,7 @@ function openBook(year, slug){
 /* notes: shared through Supabase when config.js has keys; otherwise kept in this browser */
 let SB = null; const MINE = store.get("duyen-nhan-cua-toi") || {};
 (async function(){ const c = window.DUYEN_SB || {}; if (!c.url || !c.key || !window.supabase) return;
-  try { SB = window.supabase.createClient(c.url, c.key, {auth:{persistSession:false}});
+  try { SB = window.supabase.createClient(c.url, c.key, {auth:{persistSession:false}}); loadLikes();
     const {data, error} = await SB.from("loi_nhan").select("slug,ten,loi").eq("cong_khai", true).eq("da_duyet", true).not("slug", "is", null).order("tao_luc", {ascending:true}).limit(500);
     if (error) throw error; for (const k in notes) delete notes[k];
     data.forEach(n => (notes[n.slug] = notes[n.slug] || []).push({t:n.ten || "một người bạn", m:n.loi}));
@@ -1102,10 +1160,26 @@ function drawNotes(){
     d.innerHTML = `<span class="loi">${esc(n.m)}</span><small>${esc(n.t)}${n.w ? " · chờ Duyên duyệt" : ""}</small>`; box.appendChild(d); });
 }
 $("#b-an").onclick = () => { B.show = !B.show; drawNotes(); };
-flow.addEventListener("click", async e => { const b = e.target.closest("[data-link]"); if (!b) return; const slug = b.dataset.link;
-  try { await navigator.clipboard.writeText(location.origin + location.pathname + "#bai-" + slug); b.textContent = "đã chép link"; }
-  catch(err){ history.replaceState(null, "", "#bai-" + slug); b.textContent = "link ở thanh địa chỉ rồi nha"; }
-  setTimeout(() => (b.textContent = "chép link bài này"), 2200); });
+/* share: phone share sheet, else copy the link */
+flow.addEventListener("click", async e => { const b = e.target.closest("[data-link]"); if (!b) return; const slug = b.dataset.link, p = POSTS.find(x => x.s === slug);
+  const url = location.origin + location.pathname + "#bai-" + slug, lab = b.querySelector(".nhan-nut");
+  if (navigator.share){ try { await navigator.share({title: p ? p.t + " · duyên" : "duyên", url}); } catch(err){} return; }
+  try { await navigator.clipboard.writeText(url); lab.textContent = "đã chép link"; }
+  catch(err){ history.replaceState(null, "", "#bai-" + slug); lab.textContent = "link ở thanh địa chỉ"; }
+  setTimeout(() => (lab.textContent = "chia sẻ"), 2200); });
+/* likes: counts live in Supabase (luot_thich); which posts I liked is kept in this browser */
+const LIKES = {}, MY_LIKES = new Set(store.get("duyen-thich") || []); let likesOn = false;
+function paintLikes(){ $$(".nut-thich", flow).forEach(b => { const s = b.dataset.thich, mine = MY_LIKES.has(s), n = LIKES[s] || 0;
+  b.hidden = !likesOn; b.setAttribute("aria-pressed", mine); b.classList.toggle("da", mine);
+  b.querySelector(".so-thich").textContent = n ? n : ""; b.setAttribute("aria-label", (mine ? "Bỏ thích" : "Thích") + " bài này" + (n ? `, ${n} lượt thích` : "")); }); }
+async function loadLikes(){ try { const {data, error} = await SB.from("luot_thich").select("slug,so"); if (error || !Array.isArray(data)) throw error;
+  data.forEach(r => (LIKES[r.slug] = r.so)); likesOn = true; paintLikes(); } catch(e){ likesOn = false; } }
+flow.addEventListener("click", async e => { const b = e.target.closest(".nut-thich"); if (!b || !SB) return; const s = b.dataset.thich, mine = MY_LIKES.has(s), d = mine ? -1 : 1;
+  mine ? MY_LIKES.delete(s) : MY_LIKES.add(s); LIKES[s] = Math.max(0, (LIKES[s] || 0) + d); store.set("duyen-thich", [...MY_LIKES]); paintLikes();
+  if (d > 0 && !still){ b.classList.remove("nay"); void b.offsetWidth; b.classList.add("nay"); }
+  try { const {data, error} = await SB.rpc("thich", {p_slug: s, p_cong: d}); if (error) throw error; if (typeof data === "number") LIKES[s] = data; }
+  catch(err){ mine ? MY_LIKES.add(s) : MY_LIKES.delete(s); LIKES[s] = Math.max(0, (LIKES[s] || 0) - d); store.set("duyen-thich", [...MY_LIKES]); }
+  paintLikes(); });
 new MutationObserver(() => { const o = !$("#form").hidden; $("#b-nhan").textContent = o ? "Đóng" : "Để lại lời nhắn"; $("#b-nhan").setAttribute("aria-expanded", o); }).observe($("#form"), {attributes:true, attributeFilter:["hidden"]});
 $("#b-nhan").onclick = () => { const f = $("#form"); f.hidden = !f.hidden; $("#form-msg").hidden = true; if (!f.hidden) $("#ten-ban").focus(); };
 $("#form").addEventListener("submit", async e => {
@@ -1176,6 +1250,7 @@ function route(){
     $("#form").hidden = true; $$(".gay.ra").forEach(g => g.classList.remove("ra"));
     if (scene === "sach") openBook(arg, slug);
     if (scene === "nuoc") placeFlowers();
+    keHint();
     if (scene === "ke-sach") shelfMaybe();
   };
   if (first || still){ first = false; go(); return; }
@@ -1188,14 +1263,36 @@ $("#gay").addEventListener("click", e => { const g = e.target.closest(".gay"); i
   const h = (location.hash || "").slice(1); if (still || (h && h !== "nuoc")) return;
   const rem = document.createElement("div"); rem.id = "rem"; rem.setAttribute("aria-hidden","true");
   const r = rng(314), gr = ["#3F6B3A","#5E8E4E","#7FAE62","#4F7F45","#95C277","#2F5630"]; let html = "";
+  const M = 180, half = innerWidth / 2;
   ["t","p"].forEach(side => { let d = "";
-    for (let k = 0; k < 15; k++){ const x = (k + .2 + r()*.6) / 15 * 100, len = innerHeight * (.72 + r()*.4); let lv = "";
+    for (let k = 0; k < 19; k++){ const f = (k + .2 + r()*.6) / 15, x = (side === "t" ? f * half : M + (1 - f) * half) / (half + M) * 100, len = innerHeight * (.72 + r()*.4); let lv = "";
       for (let y = 6 + r()*20; y < len; y += 20 + r()*12){ const sd = r() < .5 ? -1 : 1, lh = 34 + r()*34;
         lv += `<i style="top:${y|0}px;height:${lh|0}px;background:${gr[(r()*6)|0]};transform:rotate(${(sd*(14 + r()*30))|0}deg);opacity:${(.78 + r()*.22).toFixed(2)}${r() < .22 ? ";filter:blur(2px)" : ""}"></i>`; }
-      d += `<div class="day" style="left:${x.toFixed(1)}%;height:${len|0}px;--a:${(-1.5 - r()*2).toFixed(1)}deg;--b:${(1.5 + r()*2.5).toFixed(1)}deg;animation-duration:${(4.5 + r()*4).toFixed(1)}s;animation-delay:-${(r()*5).toFixed(1)}s">${lv}</div>`; }
+      d += `<div class="day" data-gan="${Math.min(1, f).toFixed(3)}" style="left:${x.toFixed(1)}%;height:${len|0}px;--a:${(-1.5 - r()*2).toFixed(1)}deg;--b:${(1.5 + r()*2.5).toFixed(1)}deg;animation-duration:${(4.5 + r()*4).toFixed(1)}s;animation-delay:-${(r()*5).toFixed(1)}s">${lv}</div>`; }
     html += `<div class="canh ${side}">${d}</div>`; });
   rem.innerHTML = html; document.body.appendChild(rem); document.body.classList.add("mo-dau");
-  setTimeout(() => rem.classList.add("mo"), 1100);
+  /* open like silk: the seam is a moving wave (same shape as the garden's silk), the bottom trails the top,
+     and strands near the seam swing outward as the curtain parts */
+  const [L, R] = rem.querySelectorAll(".canh"), days = [...rem.querySelectorAll(".day")].map(el => ({el, g: +el.dataset.gan, s: el.parentNode === L ? -1 : 1}));
+  const wave = (y, t, k) => Math.sin(y*.006 + t*.5 + k)*20 + Math.sin(y*.017 - t*.8 + k*2)*8;
+  const ease = q => q < .5 ? 4*q*q*q : 1 - Math.pow(-2*q + 2, 3) / 2, T0 = performance.now(), OPEN = 1100, DUR = 3400;
+  (function tick(now){ if (!rem.isConnected) return;
+    const t = (now - T0) / 1000, q = Math.min(1, Math.max(0, (now - T0 - OPEN) / DUR)), e = ease(q), puff = Math.sin(Math.PI * q), H = innerHeight;
+    const amp = .45 + 1.3 * puff, lag = 110 * puff, shift = (half + M + 60) * e;
+    let pl = [], pr = [];
+    for (let y = -12; y <= H + 12; y += 24){ const yy = Math.max(0, Math.min(H, y)), trail = (yy / H) * lag;
+      const w = wave(yy, t, 0) * amp;
+      pl.push(`${(half + 3 + w + trail).toFixed(1)}px ${yy}px`);
+      pr.push(`${(M - 3 + w - trail).toFixed(1)}px ${yy}px`); }
+    L.style.clipPath = `polygon(0 0, ${pl.join(",")}, 0 100%)`;
+    R.style.clipPath = `polygon(${pr.join(",")}, 100% 100%, 100% 0)`;
+    L.style.transform = `translateX(${-shift}px)`; R.style.transform = `translateX(${shift}px)`;
+    const fade = 150 * puff, a = (1 - .85 * puff).toFixed(3);
+    L.style.webkitMaskImage = L.style.maskImage = `linear-gradient(to right,#000 ${(half - fade).toFixed(0)}px,rgba(0,0,0,${a}) ${(half + 70).toFixed(0)}px)`;
+    R.style.webkitMaskImage = R.style.maskImage = `linear-gradient(to right,rgba(0,0,0,${a}) ${(M - 70).toFixed(0)}px,#000 ${(M + fade).toFixed(0)}px)`;
+    days.forEach(d => d.el.style.setProperty("--xoay", (d.s * -1) * Math.pow(d.g, 2) * 16 * puff + "deg"));
+    requestAnimationFrame(tick); })(T0);
+  setTimeout(() => rem.classList.add("mo"), OPEN);
   setTimeout(() => { rem.remove(); }, 5200);
   setTimeout(() => document.body.classList.remove("mo-dau"), 7000);
 })();
@@ -1238,7 +1335,14 @@ addEventListener("hashchange", route);
 let rz = 0; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { placeFlowers(); shelfMaybe(); if (document.body.dataset.scene === "sach"){ const cur = currentPost(); sizeBook(); showPage(cur && B.page ? pageOf(cur.firstElementChild) : 0); } }, 150); });
 document.addEventListener("visibilitychange", () => { if (document.hidden){ water.stop(); silk.stop(); } else route0(); });
 function route0(){ const s = document.body.dataset.scene; if (s === "nuoc") water.start(); if (s === "vuon") silk.start(); }
+/* shelf on phones: header backdrop once scrolled, hint that more shelves are below */
+const keEl = $("#s-ke-sach");
+function keHint(){ const on = document.body.dataset.scene === "ke-sach";
+  document.body.classList.toggle("cuon", on && keEl.scrollTop > 8);
+  $("#con-nua").hidden = !(on && keEl.scrollTop < 40 && keEl.scrollHeight > keEl.clientHeight + 120); }
+keEl.addEventListener("scroll", keHint, {passive:true});
 placeFlowers(); shelfMaybe(); route();
+if (document.fonts) document.fonts.ready.then(() => { if (document.body.dataset.scene === "nuoc") placeFlowers(); });
 </script>
 </body>
 </html>

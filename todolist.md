@@ -36,14 +36,28 @@ A. Quick wins ✅
 - [X] Nav: "writings" → "bài viết"; book-scene flowers only along the sides, never behind header/back link/buttons
 - [X] Note form: green radios (`accent-color`), button becomes "Đóng" while open (`aria-expanded`)
 - [X] "GIỮ LẠI" ticket on one line (also fills page 1 better); "chép link bài này" and brand link 44px tall
-- [ ] No text under 11px: shelf spine labels at 360px. Moved to the shelf item below (needs spine layout work)
+- [X] Spine text at 360px: fine at 390px+ (shelf scales to 84%); untitled diary spines now show their year tag on touch
 
-B/C. Bigger
+B. Home + shelf ✅
 
-- [ ] Home: lily pads cover post titles and the tagline. Cards above pads, pads in the margins
-- [ ] Book on phones: scroll-to-read mode (or visible ‹ › + first-time swipe hint); fix the empty bottom of page 1
-- [ ] Shelf: fit or hint the hidden rows, smaller heading, label every spine, spine text ≥ 11px
-- [ ] Check body text spacing on a real iPhone/Android (looked uneven in headless Chrome)
+- [X] Home on phones: smaller pads in a measured column under the greeting; titles beside pads, no box, soft glow (cream at night)
+- [X] Phone titles fade after ~5s; touching the water near a pad shows its title again; tapping a pad opens the post
+- [X] Greeting wraps clear of the willow on phones
+- [X] Shelf: header gets a frosted background once scrolled; "còn sách ở dưới nữa ↓" hint; plant hangs over the frame, not the first spine
+
+C. Book on phones ✅ (kept the book, as Duyên asked: no scroll mode)
+
+- [X] Spine strip on the cover, page-edge stack on the right that thins as you read, stronger gutter shadow
+- [X] Folded page corners on touch screens; next-page corner pulses twice when the book opens
+- [X] Smaller type on phones: body 15px, post titles ~26px, home heading 36px; long post 15 → 11 pages
+- [ ] **Owner:** check body text spacing on a real iPhone/Android (looked uneven in headless Chrome)
+
+D. Extras from Duyên's feedback ✅
+
+- [X] "chép link bài này" → share button (phone share sheet, else copy link)
+- [X] Like button with count (Supabase `luot_thich` + `thich()` function, 300 clicks / 10 min site-wide cap); hidden until the SQL is run
+- [ ] **Owner:** run the new "Lượt thích" part of `supabase.sql` in Supabase → SQL Editor
+- [X] Opening leaf curtain parts like silk: wavy moving seam, bottom trails, strands near the seam swing aside, soft edges
 
 ## Phase 3: Supabase does more
 
