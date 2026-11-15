@@ -64,6 +64,7 @@ E. Duyên's direction: let visitors explore (replaces parts of B and C on phones
 - [X] Home on phones: back to scattered pads (desktop-style), **no post titles at all**; pads keep an `aria-label` for screen readers
 - [X] Book on phones: straight page (no tilt), one tall page you scroll, no page-flip effect/corners; counter shows "bài 2 / 5"; page-edge stack follows scroll
 - [X] Desktop unchanged: tilted two-page spread with page flip, hover titles on the pond
+- [X] Removed the phone-only hints added earlier: "còn sách ở dưới nữa ↓" pill on the shelf and the year tag on untitled diary spines
 
 ## Phase 3: Supabase does more
 

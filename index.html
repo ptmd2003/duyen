@@ -588,11 +588,7 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
 /* shelf on phones (Phase 2.5 B) */
 .top{transition:color .6s,background .3s,box-shadow .3s}
 body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(60,80,40,.12)}
-#con-nua{position:fixed;z-index:29;left:50%;bottom:calc(22px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);padding:10px 16px;border-radius:999px;background:rgba(38,48,31,.86);color:#FBF8EC;font-size:13px;letter-spacing:.04em;white-space:nowrap;pointer-events:none;animation:nhun 1.8s ease-in-out infinite}
-@keyframes nhun{50%{transform:translate(-50%,-5px)}}
-@media (prefers-reduced-motion:reduce){#con-nua{animation:none}}
 @media (max-width:619px){.treo{left:-13%}}
-@media (hover:none){.nhan-nam.luon{opacity:1;transform:translate(-50%,0)}}
 /* phone book: straight, one tall page you scroll; no page flip */
 .book.cuon-doc{transform:translate(-50%,-48%);margin-top:12px}
 .book.cuon-doc .trang{overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(76,90,65,.35) transparent}
@@ -707,7 +703,6 @@ body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-bac
 
 </main>
 
-<div id="con-nua" aria-hidden="true" hidden>còn sách ở dưới nữa ↓</div>
 <div id="anhsang" aria-hidden="true"></div>
 <button id="doi" type="button" aria-label="Đổi ánh sáng: sáng, chiều, tối"><i></i></button>
 <div id="wash" aria-hidden="true"></div>
@@ -918,7 +913,7 @@ function spineOf(d, i){
   if (d.colo) inner += `<span class="colo">${LA}</span>`;
   if (d.ke2) inner += `<i class="ke-mong" style="bottom:calc(30px*var(--k,1))"></i>`;
   if (!d.tac && !d.tranh && !d.nhan && d.ten && !d.colo) inner += `<i class="dau-nho"${d.gan ? ' style="bottom:calc(' + ((100 - Math.min(...d.gan.filter(p => p > 50)) + 4) / 100 * d.h).toFixed(1) + 'px*var(--k,1))"' : ""}></i>`;
-  if (nk) inner += `<span class="nhan-nam${!d.ten && !d.nhan ? " luon" : ""}" aria-hidden="true">${key.slice(3)}</span>`;
+  if (nk) inner += `<span class="nhan-nam" aria-hidden="true">${key.slice(3)}</span>`;
   const st = `--w:${d.w};--h:${d.h};--nen:${d.nen};color:${d.fg};margin-left:calc(${(d.gap || 1).toFixed(1)}px*var(--k,1))${d.lean ? `;--lean:${d.lean}deg;margin-right:calc(${(d.h * Math.sin(d.lean * Math.PI / 180) + 1).toFixed(1)}px*var(--k,1))` : ""}`;
   const cls = `bia sach2 ${d.mat}${d.lean ? " tua" : ""}${nk ? " so-tay" : ""}${interactive ? " gay" : " tinh"}`;
   return {w:d.w, html: interactive ? `<a class="${cls}" href="#sach-${key}" aria-label="${esc(label)}" style="${st}">${inner}</a>` : `<span class="${cls}" role="img" aria-label="${esc(label)}" style="${st}">${inner}</span>`};
@@ -1343,11 +1338,10 @@ addEventListener("hashchange", route);
 let rz = 0; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { placeFlowers(); shelfMaybe(); if (document.body.dataset.scene === "sach"){ const cur = currentPost(); sizeBook(); if (B.cuon){ flow.style.transform = ""; readHere(); } else showPage(cur && B.page ? pageOf(cur.firstElementChild) : 0); } }, 150); });
 document.addEventListener("visibilitychange", () => { if (document.hidden){ water.stop(); silk.stop(); } else route0(); });
 function route0(){ const s = document.body.dataset.scene; if (s === "nuoc") water.start(); if (s === "vuon") silk.start(); }
-/* shelf on phones: header backdrop once scrolled, hint that more shelves are below */
+/* shelf on phones: header backdrop once scrolled */
 const keEl = $("#s-ke-sach");
 function keHint(){ const on = document.body.dataset.scene === "ke-sach";
-  document.body.classList.toggle("cuon", on && keEl.scrollTop > 8);
-  $("#con-nua").hidden = !(on && keEl.scrollTop < 40 && keEl.scrollHeight > keEl.clientHeight + 120); }
+  document.body.classList.toggle("cuon", on && keEl.scrollTop > 8); }
 keEl.addEventListener("scroll", keHint, {passive:true});
 placeFlowers(); shelfMaybe(); route();
 if (document.fonts) document.fonts.ready.then(() => { if (document.body.dataset.scene === "nuoc") placeFlowers(); });
