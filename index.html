@@ -1003,27 +1003,36 @@ function turnTo(target, dir, manual){
     if (csh) csh.style.opacity = (tip > 90 ? .34 * Math.sin(tip * Math.PI / 180) : 0).toFixed(3); };
   const done = ok => { if (ok ? late : !late) showPage(ok ? target : from); leaf.remove(); cast.remove(); if (cover) cover.remove(); B.busy = false; };
   let cur = 0;
-  const run = (to, dur) => { const s0 = cur, t0 = performance.now();
-    const step = now => { const x = Math.min(1, (now - t0) / dur); cur = s0 + (to - s0) * (manual ? 1 - Math.pow(1 - x, 3) : x); render(cur);
+  let want = 0, raf = 0, over = false;
+  const run = (to, dur, lin) => { over = true; cancelAnimationFrame(raf); const s0 = cur, t0 = performance.now();
+    const step = now => { const x = Math.min(1, (now - t0) / dur); cur = s0 + (to - s0) * (lin ? x : 1 - Math.pow(1 - x, 3)); render(cur);
       if (x < 1) requestAnimationFrame(step); else done(to === 1); };
     requestAnimationFrame(step); };
   const DUR = one ? 950 : 1250;
   render(0);
-  if (!manual){ run(1, DUR); return null; }
-  return { set(t){ cur = Math.max(0, Math.min(1, t)); render(cur); }, end(ok){ run(ok ? 1 : 0, Math.max(220, DUR * .7 * (ok ? 1 - cur : cur))); } };
+  if (!manual){ run(1, DUR, true); return null; }
+  return { set(t){ if (over) return; want = Math.max(0, Math.min(.98, t)); if (!raf) raf = requestAnimationFrame(() => { raf = 0; if (!over){ cur = want; render(cur); } }); },
+    tap(){ if (!over) run(1, DUR, true); },
+    end(ok){ if (!over) run(ok ? 1 : 0, Math.max(240, DUR * .7 * (ok ? 1 - cur : cur))); } };
 }
-let dragged = false;
-$("#g-sau").onclick = () => { if (!dragged) turn(1); dragged = false; }; $("#g-truoc").onclick = () => { if (!dragged) turn(-1); dragged = false; };
+// press a corner: the leaf is lifted right away; drag to bend it, or just let go to turn it
+$("#g-sau").onclick = e => { if (!e.detail) turn(1); }; $("#g-truoc").onclick = e => { if (!e.detail) turn(-1); };
 ["#g-sau", "#g-truoc"].forEach(id => { const el = $(id), dir = id === "#g-sau" ? 1 : -1;
-  el.addEventListener("pointerdown", e => { if (still || B.busy) return; const x0 = e.clientX; let ctl = null, last = x0, lt = performance.now(), v = 0;
-    el.setPointerCapture(e.pointerId);
-    const span = () => B.n === 2 ? B.pw * 1.6 : B.pw * .9;
-    const mv = ev => { const dx = (ev.clientX - x0) * -dir; const now = performance.now(); v = (ev.clientX - last) * -dir / Math.max(1, now - lt); last = ev.clientX; lt = now;
-      if (!ctl){ if (dx < 8) return; ctl = turnTo(B.page + dir * B.n, dir, true); if (!ctl) return up(); dragged = true; }
-      ctl.set(dx / span()); };
-    const up = ev => { el.removeEventListener("pointermove", mv); el.removeEventListener("pointerup", up); el.removeEventListener("pointercancel", up);
-      if (ctl){ const dx = ev ? (ev.clientX - x0) * -dir : 0; ctl.end(dx / span() > .35 || v > .45); } };
-    el.addEventListener("pointermove", mv); el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up); });
+  el.addEventListener("pointerdown", e => { if (e.button > 0 || B.busy) return;
+    if (e.pointerType === "mouse") e.preventDefault();
+    if (still){ turn(dir); return; }
+    const x0 = e.clientX, pid = e.pointerId; let moved = false, last = x0, lt = performance.now(), v = 0, fin = false;
+    const ctl = turnTo(B.page + dir * B.n, dir, true); if (!ctl) return;
+    const span = B.n === 2 ? B.pw * 1.6 : B.pw * .9;
+    const mv = ev => { if (ev.pointerId !== pid) return; const dx = (ev.clientX - x0) * -dir, now = performance.now();
+      v = .7 * v + .3 * ((ev.clientX - last) * -dir / Math.max(1, now - lt)); last = ev.clientX; lt = now;
+      if (!moved && Math.abs(ev.clientX - x0) < 6) return; moved = true; ctl.set(dx / span); };
+    const up = ev => { if (fin || (ev && ev.pointerId !== pid)) return; fin = true;
+      removeEventListener("pointermove", mv); removeEventListener("pointerup", up); removeEventListener("pointercancel", up); removeEventListener("blur", up);
+      if (!moved){ ctl.tap(); return; }
+      const dx = ev && ev.type === "pointerup" ? (ev.clientX - x0) * -dir : 0;
+      ctl.end(ev && ev.type === "pointerup" && (dx / span > .3 || v > .35)); };
+    addEventListener("pointermove", mv); addEventListener("pointerup", up); addEventListener("pointercancel", up); addEventListener("blur", up); });
 });
 document.addEventListener("keydown", e => { if (document.body.dataset.scene !== "sach" || /INPUT|TEXTAREA/.test(e.target.tagName)) return; if (e.key === "ArrowRight") turn(1); if (e.key === "ArrowLeft") turn(-1); });
 flow.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (!b) return; const a = document.getElementById("p-" + b.dataset.go); if (a) jump(pageOf(a.firstElementChild)); });
