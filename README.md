@@ -25,6 +25,7 @@ Trang chạy tại https://ptmd2003.github.io/duyen/. Đẩy lên nhánh `main` 
 - Lời đề từ của một cuốn: thêm `de:"..."` vào cuốn đó trong `SKIN`.
 
 ## Nhật ký cập nhật
+- 2026-11-15: Trên điện thoại gọn hơn: nút đổi ánh sáng lên thanh trên cùng, nút nhạc có hình nốt nhạc, "writings" thành "bài viết". Hoa không còn che chữ ở đầu và cuối trang sách. Nút "Để lại lời nhắn" thành "Đóng" khi đang mở form. Vé "GIỮ LẠI" nằm gọn một dòng. Các nút đủ lớn để bấm bằng ngón tay.
 - 2026-11-15: Gửi link trang lên Messenger, Zalo, Facebook giờ hiện ảnh và lời giới thiệu. Có icon hoa trên tab. Cuối mỗi bài có nút "chép link bài này", tab trình duyệt hiện tên bài đang đọc. Sổ đọc sách giờ chỉ sửa ở một chỗ (`read.js`). Lời nhắn trên điện thoại gọn lại: tối đa 2 tờ, bấm vào để đọc hết.
 - 2026-11-15: Nối Supabase thật, lời nhắn giờ gửi được tới Duyên. Lời nhắn đã duyệt không còn hiện hai lần. Báo đúng khi chưa gửi được. Bỏ chữ mẫu `[LỜI ĐỀ TỪ CỦA BẠN]`, `[ẢNH CỦA BẠN]`. Thêm chống spam (bẫy bot, chờ 30 giây, giới hạn trong cơ sở dữ liệu). Thêm kiểm tra tự động và ghi chú dự án.
 - Trước đó: lật trang mềm hơn, sổ đọc sách từ Notion, kệ sách liền khối.
