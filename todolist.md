@@ -73,6 +73,16 @@ F. "Để lại lời nhắn" as a paper note ✅
 - [X] Round send button + Ctrl/⌘+Enter; the note flies away, the button confirms ("Đã gửi cho Duyên ✓" / "Đã dán, chờ Duyên duyệt ✓")
 - [X] Name remembered on this device for next time
 
+G. Reader like Kindle / Apple Books ✅
+
+- [X] Nav "bài viết" → "bookshelf"; removed the "← Kệ sách" back link (nav does the same)
+- [X] Phone book flips pages again (straight, no tilt), more side margin, taller page; tap left/right third to turn, swipe still works
+- [X] Tap the middle of the page → reading bar: contents icon + book name + notes toggle on top, post name + page slider + "2 / 13" at the bottom
+- [X] Contents panel lists the book's posts with page numbers, current one highlighted; tap to jump
+- [X] Phone: page counter removed (slider replaces it); notes toggle lives in the reading bar
+- [X] Like + share moved to the bottom bar next to "Để lại lời nhắn" (desktop + phone), acting on the post being read
+- [X] Dropped the pulsing page-corner hint on phones
+
 ## Phase 3: Supabase does more
 
 - [ ] Move `POSTS` and `READ` into Supabase tables (keep inline copy as offline fallback)

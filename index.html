@@ -582,10 +582,9 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
 .book[data-n="1"] .trang{box-shadow:2px 0 3px rgba(60,50,20,.18)}
 .book[data-n="1"] .trang::after{background:linear-gradient(90deg,rgba(90,75,35,.24),rgba(120,105,60,.08) 3%,rgba(120,105,60,0) 8%)}
 @media (hover:none){
-  .book[data-n="1"] .goc.sau::after{border-width:0 0 26px 26px;filter:drop-shadow(-2px -2px 2px rgba(60,50,20,.2));animation:goi-y 1.4s ease 1.2s 2}
+  .book[data-n="1"] .goc.sau::after{border-width:0 0 26px 26px;filter:drop-shadow(-2px -2px 2px rgba(60,50,20,.2))}
   .book[data-n="1"] .goc.truoc::after{border-width:0 22px 22px 0;filter:drop-shadow(2px -2px 2px rgba(60,50,20,.16))}
 }
-@keyframes goi-y{50%{border-width:0 0 42px 42px}}
 @media (max-width:520px){
   h1.big{font-size:36px}
   .nha{font-size:18px}
@@ -606,19 +605,36 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
 .top{transition:color .6s,background .3s,box-shadow .3s}
 body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 1px 0 rgba(60,80,40,.12)}
 @media (max-width:619px){.treo{left:-13%}}
-/* phone book: straight, one tall page you scroll; no page flip */
-.book.cuon-doc{transform:translate(-50%,-48%);margin-top:12px}
-.book.cuon-doc .trang{overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(76,90,65,.35) transparent}
-.book.cuon-doc .flow{columns:auto;column-width:auto;height:auto;min-height:100%;transform:none!important}
-.book.cuon-doc .bai{break-before:auto;margin-top:2.6em}
-.book.cuon-doc .goc,.book.cuon-doc #flip{display:none}
-.book.cuon-doc .trang{background:linear-gradient(90deg,rgba(90,75,35,.24),rgba(120,105,60,.08) 3%,rgba(120,105,60,0) 8%),var(--paper)}
-.book.cuon-doc .trang::after{display:none}
-/* share + like at the end of each post */
-.tac-vu{display:flex;gap:6px;margin:1.1em 0 0 -10px;break-inside:avoid}
-.nut-nho{display:inline-flex;align-items:center;gap:6px;min-width:44px;min-height:44px;padding:0 10px;border:0;border-radius:999px;background:none;color:#4C5A41;font-family:var(--f-ui);font-size:13px;letter-spacing:.04em;cursor:pointer;transition:background .2s,color .2s}
-.nut-nho:hover,.nut-nho:focus-visible{background:rgba(76,90,65,.1)}
-.nut-nho[hidden]{display:none}
+/* like + share in the bottom bar */
+.nut-tron{gap:6px;min-width:44px;padding:0 12px}
+.nut-tron .so-thich:empty{display:none}
+.nut[hidden]{display:none}
+#b-chia.xong::after{content:"✓";margin-left:2px}
+/* phone book: straight, tap zones, reading bar (contents + slider) */
+.book[data-n="1"]{transform:translate(-50%,-48%)}
+.book[data-n="1"] .goc{width:32%}
+.thanh{position:absolute;left:0;right:0;z-index:8;display:flex;align-items:center;gap:10px;padding:4px 10px;background:rgba(246,241,225,.96);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-family:var(--f-ui);font-size:12px;color:#4C5A41;opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+.thanh.tren{top:0;box-shadow:0 1px 0 rgba(76,90,65,.15)}
+.thanh.duoi-sach{bottom:0;flex-wrap:wrap;row-gap:0;padding-top:8px;box-shadow:0 -1px 0 rgba(76,90,65,.15)}
+.book.chrome .thanh{opacity:1;visibility:visible;transition:opacity .25s}
+.book[data-n="2"] .thanh,.book[data-n="2"] #muc{display:none}
+#nut-muc{display:grid;place-items:center;width:44px;height:44px;border:0;background:none;color:#26301F;cursor:pointer}
+#ten-sach{font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+#ten-dang{flex:1 1 100%;font-family:var(--f-display);font-size:14px;color:#26301F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#truot{flex:1;min-width:0;height:36px;margin:0;accent-color:#3A5C33}
+#vi-tri{flex:none;font-variant-numeric:tabular-nums}
+#muc{position:absolute;inset:0;z-index:9;display:flex;flex-direction:column;background:#FBF8EC;box-shadow:0 10px 30px rgba(20,40,15,.3)}
+#muc[hidden]{display:none}
+.muc-dau{display:flex;align-items:center;justify-content:space-between;padding:8px 6px 6px 18px;font-family:var(--f-display);font-size:22px;color:#26301F}
+.muc-dau b{font-weight:400}
+#dong-muc{width:44px;height:44px;border:0;background:none;color:#26301F;font-size:28px;line-height:1;cursor:pointer}
+#muc-ds{flex:1;margin:0;padding:0 8px 12px;list-style:none;overflow-y:auto}
+#muc-ds button{display:flex;align-items:baseline;justify-content:space-between;gap:12px;width:100%;min-height:44px;padding:9px 10px;border:0;border-bottom:1px solid rgba(76,90,65,.12);background:none;color:#26301F;font-family:var(--f-display);font-size:16px;line-height:1.3;text-align:left;cursor:pointer}
+#muc-ds button[aria-current]{background:rgba(201,111,130,.12)}
+#muc-ds small{flex:none;font-family:var(--f-ui);font-size:12px;color:#6B7C5E}
+#an-nhan{margin-left:auto;min-height:44px;padding:0 6px;border:0;background:none;color:#4C5A41;font-family:var(--f-ui);font-size:12px;letter-spacing:.04em;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+#an-nhan[hidden]{display:none}
+@media (max-width:819px){#so-trang,#b-an{display:none!important}.duoi{justify-content:flex-end}}
 .nut-thich svg{fill:transparent;transition:fill .2s}
 .nut-thich.da{color:#C2566E}.nut-thich.da svg{fill:currentColor}
 .nut-thich.nay svg{animation:dap .45s ease}
@@ -630,7 +646,7 @@ body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-bac
 <header class="top">
   <a class="brand" href="#nuoc">duyên</a>
   <nav aria-label="Chính">
-    <a href="#ke-sach" data-nav="viet">bài viết</a>
+    <a href="#ke-sach" data-nav="viet">bookshelf</a>
     <!-- projects: tạm ẩn -->
     <button id="dan" type="button" aria-pressed="false" aria-label="Tiếng đàn"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></button>
   </nav>
@@ -661,7 +677,6 @@ body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-bac
 <section class="scene" id="s-sach" aria-label="Nhật ký">
   <div class="deco" id="co" aria-hidden="true"></div>
   <canvas id="mua" aria-hidden="true"></canvas>
-  <a class="ve" href="#ke-sach">← Kệ sách</a>
   <div class="book" id="book" data-n="2">
     <div class="bia" aria-hidden="true"></div>
     <div class="ruot" aria-hidden="true"></div>
@@ -671,6 +686,9 @@ body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-bac
     <button id="ruy-sach" type="button" aria-label="Về trang đang đọc dở" hidden></button>
     <button class="goc truoc" id="g-truoc" type="button" aria-label="Trang trước"></button>
     <button class="goc sau" id="g-sau" type="button" aria-label="Trang sau"></button>
+    <div class="thanh tren"><button id="nut-muc" type="button" aria-label="Mục lục"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg></button><span id="ten-sach"></span><button id="an-nhan" type="button" hidden></button></div>
+    <div class="thanh duoi-sach"><span id="ten-dang"></span><input id="truot" type="range" min="1" max="1" value="1" aria-label="Kéo để tới trang"><span id="vi-tri"></span></div>
+    <div id="muc" role="dialog" aria-label="Mục lục" hidden><div class="muc-dau"><b>Mục lục</b><button id="dong-muc" type="button" aria-label="Đóng mục lục">×</button></div><ol id="muc-ds"></ol></div>
     <div id="giay"></div>
   </div>
   <form id="form" hidden novalidate aria-label="Lời nhắn cho Duyên">
@@ -687,6 +705,8 @@ body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-bac
   <div class="duoi">
     <span id="so-trang"></span>
     <button class="nut" id="b-an" type="button" hidden></button>
+    <button class="nut nut-tron nut-thich" id="b-thich" type="button" aria-pressed="false" aria-label="Thích bài này" hidden><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.2-9.6C1.6 7.4 3.8 4 7.2 4c2 0 3.5 1.1 4.8 2.8C13.3 5.1 14.8 4 16.8 4c3.4 0 5.6 3.4 4.4 6.9-1.7 5-9.2 9.6-9.2 9.6z"/></svg><span class="so-thich"></span></button>
+    <button class="nut nut-tron" id="b-chia" type="button" aria-label="Chia sẻ bài này" hidden><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button>
     <button class="nut dam" id="b-nhan" type="button" aria-expanded="false" aria-controls="form">Để lại lời nhắn</button>
     <span id="bao" class="an-chu" aria-live="polite"></span>
   </div>
@@ -1031,36 +1051,38 @@ function buildBook(year){
     const paras = p.p.map((x, i) => { let t = esc(x);
       if (p.q && !hit && x.includes(p.q)){ hit = true; t = esc(x).replace(esc(p.q), `<mark class="hl" style="--hc:${pi%2 ? "#CFC6F2" : "#F7BECB"}">${esc(p.q)}</mark>`); }
       return `<p>${t}</p>` + (i === 1 && p.p.length > 4 ? [p.img ? `<figure class="anh" style="--r:${(r()*6-3).toFixed(1)}deg"><div><img src="${esc(p.img)}" alt="${esc(p.alt || "")}" loading="lazy"></div></figure>` : `<div class="ve-xe" style="--r:${(r()*6-3).toFixed(1)}deg"><span>GIỮ LẠI</span><span>${d}.${m}.${y}</span></div>`, `<div class="ve-xe" style="--r:${(r()*6-3).toFixed(1)}deg"><span>GIỮ LẠI</span><span>${d}.${m}.${y}</span></div>`, `<span class="la-ep" style="--r:${(r()*30-15)|0}deg;width:max-content">${sprig("#6F9A55", 54, 68, "#F7BECB")}</span>`][pi % 3] : ""); }).join("");
-    h += `<article class="bai" id="p-${p.s}" data-slug="${p.s}"${/\bmưa\b/i.test(p.t + " " + p.p.join(" ")) ? " data-mua" : ""}><div class="dau"><span>${d}.${m}<br>${y}</span><span>${(CATS[p.c]||"").toUpperCase()}</span></div><span class="ep" style="--r:${(r()*40-20)|0}deg">${flower(54, pi%3 ? 6 : 8, ["#FFFFFF","#CFC6F2","#F7BECB"][pi%3], "#F2C53D")}</span><h2>${esc(p.t)}</h2>${paras}<div class="tac-vu"><button class="nut-nho nut-thich" type="button" data-thich="${p.s}" aria-pressed="false" aria-label="Thích bài này" hidden><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.6-9.2-9.6C1.6 7.4 3.8 4 7.2 4c2 0 3.5 1.1 4.8 2.8C13.3 5.1 14.8 4 16.8 4c3.4 0 5.6 3.4 4.4 6.9-1.7 5-9.2 9.6-9.2 9.6z"/></svg><span class="so-thich"></span></button><button class="nut-nho chia" type="button" data-link="${p.s}" aria-label="Chia sẻ bài này"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 7.5 12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><span class="nhan-nut">chia sẻ</span></button></div>${sprig("#26301F", 62, 78, "#B9A8E6")}</article>`;
+    h += `<article class="bai" id="p-${p.s}" data-slug="${p.s}"${/\bmưa\b/i.test(p.t + " " + p.p.join(" ")) ? " data-mua" : ""}><div class="dau"><span>${d}.${m}<br>${y}</span><span>${(CATS[p.c]||"").toUpperCase()}</span></div><span class="ep" style="--r:${(r()*40-20)|0}deg">${flower(54, pi%3 ? 6 : 8, ["#FFFFFF","#CFC6F2","#F7BECB"][pi%3], "#F2C53D")}</span><h2>${esc(p.t)}</h2>${paras}${sprig("#26301F", 62, 78, "#B9A8E6")}</article>`;
   });
   flow.innerHTML = h; B.year = year; B.page = 0; if (typeof paintLikes === "function") paintLikes();
   store.set("duyen-doc", year);
 }
 function sizeBook(){
   const vw = innerWidth, vh = innerHeight, n = vw < 820 ? 1 : 2;
-  const pw = n === 2 ? Math.min(520, (vw - 96)/2) : Math.min(520, vw - 48), ph = Math.max(360, Math.min(n === 2 ? 680 : 760, vh - (n === 2 ? 190 : 210)));
+  const pw = n === 2 ? Math.min(520, (vw - 96)/2) : Math.min(520, vw - 84), ph = Math.max(360, Math.min(n === 2 ? 680 : 760, vh - (n === 2 ? 190 : 200)));
   const pad = n === 1 ? Math.max(20, pw*.075) : Math.max(22, pw*.1);
   book.dataset.n = n; book.style.setProperty("--n", n); book.style.setProperty("--pw", pw + "px"); book.style.setProperty("--ph", ph + "px");
   flow.style.setProperty("--pad", pad + "px"); flow.style.setProperty("--pv", Math.max(26, ph*.065) + "px"); flow.style.setProperty("--fs", (pw < 400 ? 15 : 18.5) + "px");
-  B.n = n; B.pw = pw; B.cuon = n === 1; book.classList.toggle("cuon-doc", B.cuon);
-  B.pages = B.cuon ? 1 : Math.max(1, Math.ceil((flow.scrollWidth - 2) / pw));
+  B.n = n; B.pw = pw;
+  B.pages = Math.max(1, Math.ceil((flow.scrollWidth - 2) / pw));
 }
 const pageOf = el => Math.floor((el.getBoundingClientRect().left - flow.getBoundingClientRect().left + 4) / B.pw);
-function currentPost(){ let cur = null;
-  if (B.cuon){ const line = trang.getBoundingClientRect().top + trang.clientHeight * .35; $$(".bai", flow).forEach(a => { if (a.getBoundingClientRect().top <= line) cur = a; }); return cur; }
-  $$(".bai", flow).forEach(a => { if (pageOf(a.firstElementChild) <= B.page + B.n - 1) cur = a; }); return cur; }
-/* phones read by scrolling one tall page: keep notes, title, rain, bookmark and page-stack in step with the scroll */
-const trang = flow.parentNode; let docRaf = 0;
-function readHere(){ if (!B.cuon) return; const all = $$(".bai", flow), cp = currentPost(), dau = store.get("duyen-dau") || {}, cpost = cp && POSTS.find(x => x.s === cp.dataset.slug);
-  const max = Math.max(1, trang.scrollHeight - trang.clientHeight); book.style.setProperty("--con", (1 - trang.scrollTop / max).toFixed(3));
-  $("#so-trang").textContent = cp ? `bài ${all.indexOf(cp) + 1} / ${all.length}` : "";
-  document.title = cpost ? `${cpost.t} · duyên` : "duyên · hôm nay mình viết";
-  $("#s-sach").classList.toggle("mua", !!(cp && cp.hasAttribute("data-mua")));
-  if (cp && trang.scrollTop > 40){ dau[B.year] = cp.dataset.slug; store.set("duyen-dau", dau); }
-  const view = trang.getBoundingClientRect(); $$("mark.hl", flow).forEach(m => { const r = m.getBoundingClientRect(); if (r.top < view.bottom - 30 && r.bottom > view.top) m.classList.add("on"); });
-  drawNotes(); }
-trang.addEventListener("scroll", () => { if (!docRaf) docRaf = requestAnimationFrame(() => { docRaf = 0; readHere(); }); }, {passive:true});
-function goPost(a){ if (!a) return; if (B.cuon){ trang.scrollTo({top: Math.max(0, a.offsetTop - 8), behavior: still ? "auto" : "smooth"}); return; } jump(pageOf(a.firstElementChild)); }
+function currentPost(){ return postAt(B.page + B.n - 1); }
+function postAt(p){ let cur = null; $$(".bai", flow).forEach(a => { if (pageOf(a.firstElementChild) <= p) cur = a; }); return cur; }
+function goPost(a){ if (a) jump(pageOf(a.firstElementChild)); }
+/* phones read like a reading app: tap the sides to turn, tap the middle for the reading bar (contents + page slider) */
+const trang = flow.parentNode, truot = $("#truot");
+const tenBai = a => !a ? "Mục lục" : a.id === "p-so-doc" ? "Sổ đọc sách" : ((a.querySelector("h2") || {}).textContent || "");
+function syncChrome(p = B.page){ truot.max = B.pages; truot.value = p + 1; $("#vi-tri").textContent = `${p + 1} / ${B.pages}`; $("#ten-dang").textContent = tenBai(postAt(p)); $("#ten-sach").textContent = bookName(B.year); }
+function thanhDoc(on){ if (B.n !== 1) on = false; book.classList.toggle("chrome", !!on); if (on) syncChrome(); }
+trang.addEventListener("click", e => { if (B.n !== 1 || e.target.closest("a,button,input,label,mark,[data-go]")) return; thanhDoc(!book.classList.contains("chrome")); });
+truot.addEventListener("input", () => syncChrome(+truot.value - 1));
+truot.addEventListener("change", () => showPage(+truot.value - 1));
+$("#nut-muc").onclick = () => { const cp = currentPost();
+  $("#muc-ds").innerHTML = $$(".bai", flow).map(a => { const q = pageOf(a.firstElementChild); return `<li><button type="button" data-p="${q}"${a === cp ? ' aria-current="true"' : ""}><span>${esc(tenBai(a))}</span><small>${q + 1}</small></button></li>`; }).join("");
+  $("#muc").hidden = false; ($("#muc-ds [aria-current]") || $("#muc-ds button") || $("#dong-muc")).focus(); };
+$("#muc-ds").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (!b) return; $("#muc").hidden = true; thanhDoc(false); showPage(+b.dataset.p); });
+$("#dong-muc").onclick = () => { $("#muc").hidden = true; $("#nut-muc").focus(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#muc").hidden){ $("#muc").hidden = true; $("#nut-muc").focus(); } });
 function showPage(p){
   B.page = Math.max(0, Math.min(B.pages - 1, p)); if (B.n === 2) B.page -= B.page % 2;
   flow.style.transform = `translateX(${-B.page * B.pw}px)`; book.style.setProperty("--con", B.pages > B.n ? (1 - (B.page + B.n) / B.pages).toFixed(3) : 0); flow.parentNode.scrollLeft = 0; scrollTo(0,0);
@@ -1073,11 +1095,14 @@ function showPage(p){
   $("#s-sach").classList.toggle("mua", !!(cp && cp.hasAttribute("data-mua")));
   if (cp && B.page > 0){ dau[B.year] = cp.dataset.slug; store.set("duyen-dau", dau); }
   const rb = $("#ruy-sach"); rb.hidden = !(dau[B.year] && B.page === 0 && B.n === 2);
+  if (book.classList.contains("chrome")) syncChrome();
+  paintLikes();
 }
 $("#ruy-sach").onclick = () => { const sl = (store.get("duyen-dau") || {})[B.year]; goPost(sl && document.getElementById("p-" + sl)); };
-function turn(dir){ if (B.cuon) return; turnTo(B.page + dir * B.n, dir); }
+function turn(dir){ turnTo(B.page + dir * B.n, dir); }
 function turnTo(target, dir, manual){
   if (B.busy || target < 0 || target >= B.pages || target === B.page) return null;
+  thanhDoc(false);
   if (still){ showPage(target); return null; }
   if (B.n === 2) target -= target % 2;
   if (target === B.page) return null;
@@ -1153,8 +1178,8 @@ flow.addEventListener("click", e => { const b = e.target.closest("[data-go]"); i
 function jump(p){ if (B.n === 2) p -= p % 2; turnTo(p, p > B.page ? 1 : -1); }
 function openBook(year, slug){
   if (B.year !== year) buildBook(year);
+  thanhDoc(false); $("#muc").hidden = true;
   requestAnimationFrame(() => { sizeBook();
-    if (B.cuon){ flow.style.transform = ""; B.page = 0; const a = slug && document.getElementById("p-" + slug); trang.scrollTop = a ? Math.max(0, a.offsetTop - 8) : 0; scrollTo(0,0); readHere(); return; }
     let p = 0; if (slug){ flow.style.transform = "translateX(0)"; const a = document.getElementById("p-" + slug); if (a) p = pageOf(a.firstElementChild); } showPage(p); });
 }
 /* notes: shared through Supabase when config.js has keys; otherwise kept in this browser */
@@ -1171,7 +1196,8 @@ let SB = null; const MINE = store.get("duyen-nhan-cua-toi") || {};
 async function guiLoiNhan(row){ if (!SB) return false; const {error} = await SB.from("loi_nhan").insert(row); if (error) throw error; return true; }
 function drawNotes(){
   const cur = currentPost(), slug = cur ? cur.dataset.slug : "", list = (notes[slug] || []).concat(MINE[slug] || []), box = $("#giay"), b = $("#b-an");
-  b.hidden = !list.length; b.textContent = (B.show ? "Ẩn" : "Hiện") + (B.n === 1 ? "" : " lời nhắn") + ` (${list.length})`; b.setAttribute("aria-label", (B.show ? "Ẩn" : "Hiện") + ` lời nhắn (${list.length})`);
+  b.hidden = !list.length; b.textContent = (B.show ? "Ẩn" : "Hiện") + ` lời nhắn (${list.length})`;
+  const b2 = $("#an-nhan"); b2.hidden = !list.length; b2.textContent = (B.show ? "ẩn" : "hiện") + ` lời nhắn (${list.length})`; b2.setAttribute("aria-pressed", !B.show);
   box.innerHTML = "";
   if (B.n === 1){ box.style.cssText = "position:absolute;left:0;right:0;bottom:-18px;display:flex;gap:8px;z-index:7"; } else box.style.cssText = "";
   if (!B.show) return;
@@ -1180,22 +1206,21 @@ function drawNotes(){
     d.title = n.m; d.onclick = () => d.classList.toggle("mo");
     d.innerHTML = `<span class="loi">${esc(n.m)}</span><small>${esc(n.t)}${n.w ? " · chờ Duyên duyệt" : ""}</small>`; box.appendChild(d); });
 }
-$("#b-an").onclick = () => { B.show = !B.show; drawNotes(); };
-/* share: phone share sheet, else copy the link */
-flow.addEventListener("click", async e => { const b = e.target.closest("[data-link]"); if (!b) return; const slug = b.dataset.link, p = POSTS.find(x => x.s === slug);
-  const url = location.origin + location.pathname + "#bai-" + slug, lab = b.querySelector(".nhan-nut");
-  if (navigator.share){ try { await navigator.share({title: p ? p.t + " · duyên" : "duyên", url}); } catch(err){} return; }
-  try { await navigator.clipboard.writeText(url); lab.textContent = "đã chép link"; }
-  catch(err){ history.replaceState(null, "", "#bai-" + slug); lab.textContent = "link ở thanh địa chỉ"; }
-  setTimeout(() => (lab.textContent = "chia sẻ"), 2200); });
+$("#b-an").onclick = $("#an-nhan").onclick = () => { B.show = !B.show; drawNotes(); };
+/* share the post being read: phone share sheet, else copy the link */
+function postSlug(){ const cp = currentPost(); return cp && POSTS.some(x => x.s === cp.dataset.slug) ? cp.dataset.slug : null; }
+$("#b-chia").onclick = async () => { const slug = postSlug(), b = $("#b-chia"); if (!slug) return; const p = POSTS.find(x => x.s === slug), url = location.origin + location.pathname + "#bai-" + slug;
+  if (navigator.share){ try { await navigator.share({title: p.t + " · duyên", url}); } catch(err){} return; }
+  let ok = true; try { await navigator.clipboard.writeText(url); } catch(err){ ok = false; history.replaceState(null, "", "#bai-" + slug); }
+  $("#bao").textContent = b.title = ok ? "Đã chép link bài" : "Link bài ở thanh địa chỉ"; b.classList.add("xong"); setTimeout(() => b.classList.remove("xong"), 1800); };
 /* likes: counts live in Supabase (luot_thich); which posts I liked is kept in this browser */
 const LIKES = {}, MY_LIKES = new Set(store.get("duyen-thich") || []); let likesOn = false;
-function paintLikes(){ $$(".nut-thich", flow).forEach(b => { const s = b.dataset.thich, mine = MY_LIKES.has(s), n = LIKES[s] || 0;
-  b.hidden = !likesOn; b.setAttribute("aria-pressed", mine); b.classList.toggle("da", mine);
-  b.querySelector(".so-thich").textContent = n ? n : ""; b.setAttribute("aria-label", (mine ? "Bỏ thích" : "Thích") + " bài này" + (n ? `, ${n} lượt thích` : "")); }); }
+function paintLikes(){ const b = $("#b-thich"), s = postSlug(); $("#b-chia").hidden = !s; b.hidden = !likesOn || !s; if (!s) return;
+  const mine = MY_LIKES.has(s), n = LIKES[s] || 0; b.dataset.thich = s; b.setAttribute("aria-pressed", mine); b.classList.toggle("da", mine);
+  b.querySelector(".so-thich").textContent = n ? n : ""; b.setAttribute("aria-label", (mine ? "Bỏ thích" : "Thích") + " bài này" + (n ? `, ${n} lượt thích` : "")); }
 async function loadLikes(){ try { const {data, error} = await SB.from("luot_thich").select("slug,so"); if (error || !Array.isArray(data)) throw error;
   data.forEach(r => (LIKES[r.slug] = r.so)); likesOn = true; paintLikes(); } catch(e){ likesOn = false; } }
-flow.addEventListener("click", async e => { const b = e.target.closest(".nut-thich"); if (!b || !SB) return; const s = b.dataset.thich, mine = MY_LIKES.has(s), d = mine ? -1 : 1;
+$("#b-thich").addEventListener("click", async () => { const b = $("#b-thich"), s = b.dataset.thich; if (!s || !SB) return; const mine = MY_LIKES.has(s), d = mine ? -1 : 1;
   mine ? MY_LIKES.delete(s) : MY_LIKES.add(s); LIKES[s] = Math.max(0, (LIKES[s] || 0) + d); store.set("duyen-thich", [...MY_LIKES]); paintLikes();
   if (d > 0 && !still){ b.classList.remove("nay"); void b.offsetWidth; b.classList.add("nay"); }
   try { const {data, error} = await SB.rpc("thich", {p_slug: s, p_cong: d}); if (error) throw error; if (typeof data === "number") LIKES[s] = data; }
@@ -1359,7 +1384,7 @@ $("#gay").addEventListener("click", e => { const g = e.target.closest(".gay"); i
   addEventListener("resize", () => { if (raf) size(); });
 })();
 addEventListener("hashchange", route);
-let rz = 0; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { placeFlowers(); shelfMaybe(); if (document.body.dataset.scene === "sach"){ const cur = currentPost(); sizeBook(); if (B.cuon){ flow.style.transform = ""; readHere(); } else showPage(cur && B.page ? pageOf(cur.firstElementChild) : 0); } }, 150); });
+let rz = 0; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { placeFlowers(); shelfMaybe(); if (document.body.dataset.scene === "sach"){ const cur = currentPost(); sizeBook(); showPage(cur && B.page ? pageOf(cur.firstElementChild) : 0); } }, 150); });
 document.addEventListener("visibilitychange", () => { if (document.hidden){ water.stop(); silk.stop(); } else route0(); });
 function route0(){ const s = document.body.dataset.scene; if (s === "nuoc") water.start(); if (s === "vuon") silk.start(); }
 /* shelf on phones: header backdrop once scrolled */

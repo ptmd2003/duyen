@@ -41,10 +41,10 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   const meta = await p.evaluate(() => ['description', 'og:title', 'og:image', 'twitter:card'].every(n => document.querySelector(`meta[name="${n}"],meta[property="${n}"]`)));
   check('share meta tags present', meta);
   check('tab title shows the post', (await p.title()).startsWith(await p.evaluate(() => POSTS[0].t)), await p.title());
-  check('every post has share + like buttons', await p.evaluate(() => [...flow.querySelectorAll('article.bai[id^="p-"]:not(#p-so-doc)')].every(a => a.querySelector('.chia[data-link]') && a.querySelector('.nut-thich[data-thich]'))));
-  check('like button hidden without Supabase', await p.evaluate(() => flow.querySelector('.nut-thich').hidden));
-  await p.evaluate(() => flow.querySelector('.chia').click()); await p.waitForTimeout(200);
-  check('share button reacts', await p.evaluate(() => flow.querySelector('.chia .nhan-nut').textContent !== 'chia sẻ'), await p.evaluate(() => flow.querySelector('.chia .nhan-nut').textContent));
+  check('bottom bar has share for the post being read', await p.evaluate(() => !document.getElementById('b-chia').hidden));
+  check('like button hidden without Supabase', await p.evaluate(() => document.getElementById('b-thich').hidden));
+  await p.click('#b-chia'); await p.waitForTimeout(200);
+  check('share button reacts', await p.evaluate(() => document.getElementById('b-chia').classList.contains('xong') && !!document.getElementById('bao').textContent), await p.textContent('#bao'));
   for (const f of ['favicon.svg', 'favicon.png', 'apple-touch-icon.png', 'og.jpg']) check(`${f} served`, (await p.request.get(`http://localhost:${PORT}/${f}`)).ok());
   await send(p, 'Mai', 'hello');
   check('offline form says it was not sent', /chưa gửi/.test(await p.textContent('#form-msg')), await p.textContent('#form-msg'));
@@ -65,11 +65,11 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   check('local waiting copy cleared after approval', (await p.evaluate(() => localStorage.getItem('duyen-nhan-cua-toi'))) === '{}');
 
   p = await open(true, `window.__likes=[{slug:'cach-don-dung-luong-macbook',so:3}]`);
-  const like = () => p.evaluate(() => { const b = document.querySelector('.nut-thich[data-thich="cach-don-dung-luong-macbook"]'); return [b.hidden, b.getAttribute('aria-pressed'), b.querySelector('.so-thich').textContent]; });
+  const like = () => p.evaluate(() => { const b = document.getElementById('b-thich'); return [b.hidden, b.getAttribute('aria-pressed'), b.querySelector('.so-thich').textContent]; });
   check('like count shows from Supabase', JSON.stringify(await like()) === '[false,"false","3"]', await like());
-  await p.evaluate(() => document.querySelector('.nut-thich[data-thich="cach-don-dung-luong-macbook"]').click()); await p.waitForTimeout(200);
+  await p.evaluate(() => document.getElementById('b-thich').click()); await p.waitForTimeout(200);
   check('like adds one', JSON.stringify(await like()) === '[false,"true","4"]', await like());
-  await p.evaluate(() => document.querySelector('.nut-thich[data-thich="cach-don-dung-luong-macbook"]').click()); await p.waitForTimeout(200);
+  await p.evaluate(() => document.getElementById('b-thich').click()); await p.waitForTimeout(200);
   check('unlike removes it', JSON.stringify(await like()) === '[false,"false","3"]' && JSON.stringify(await p.evaluate(() => window.__rpc.map(a => a.p_cong))) === '[1,-1]', await like());
 
   p = await open(true); await send(p, '', 'không ký tên');
@@ -92,14 +92,20 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
     check('phone: pads are scattered, not a column', home.xs >= 4, home);
 
     await m.goto(`http://localhost:${PORT}/#sach-nk-2024`); await m.waitForTimeout(1200);
-    const bk = await m.evaluate(() => { const t = document.querySelector('#book .trang'); return { mode: book.classList.contains('cuon-doc'), tilt: getComputedStyle(book).transform, scrolls: t.scrollHeight > t.clientHeight + 100, corners: getComputedStyle(document.querySelector('#g-sau')).display }; });
-    check('phone: book is a scrolling page', bk.mode && bk.scrolls, bk);
+    const bk = await m.evaluate(() => ({ tilt: getComputedStyle(book).transform, pages: B.pages, corners: getComputedStyle(document.querySelector('#g-sau')).display, pager: getComputedStyle(document.querySelector('#so-trang')).display, back: !!document.querySelector('.ve') }));
     check('phone: book page is straight', /^matrix\(1, 0, 0, 1,/.test(bk.tilt), bk.tilt);
-    check('phone: no page-flip corners', bk.corners === 'none', bk.corners);
-    const before = await m.evaluate(() => [document.querySelector('#so-trang').textContent, getComputedStyle(book).getPropertyValue('--con')]);
-    await m.evaluate(() => { const go = flow.querySelector('[data-go]:not([data-go="so-doc"])'); go.click(); }); await m.waitForTimeout(500);
-    const after = await m.evaluate(() => [document.querySelector('#so-trang').textContent, getComputedStyle(book).getPropertyValue('--con'), document.querySelector('#book .trang').scrollTop]);
-    check('phone: contents link scrolls to the post', after[2] > 0 && after[0] !== before[0], { before, after });
+    check('phone: book flips pages again', bk.pages > 3 && bk.corners !== 'none', bk);
+    check('phone: no page counter, no back link', bk.pager === 'none' && !bk.back, bk);
+    const box = await m.evaluate(() => { const r = document.querySelector('#book .trang').getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; });
+    await m.touchscreen.tap(box[0], box[1]); await m.waitForTimeout(350);
+    check('phone: tapping the middle shows the reading bar', await m.evaluate(() => book.classList.contains('chrome') && getComputedStyle(document.querySelector('.thanh.duoi-sach')).visibility === 'visible'));
+    await m.evaluate(() => { const r = document.getElementById('truot'); r.value = r.max; r.dispatchEvent(new Event('input')); r.dispatchEvent(new Event('change')); }); await m.waitForTimeout(200);
+    check('phone: slider jumps to the last page', await m.evaluate(() => B.page === B.pages - 1), await m.evaluate(() => [B.page, B.pages]));
+    await m.click('#nut-muc'); await m.waitForTimeout(150);
+    const toc = await m.evaluate(() => ({ open: !document.getElementById('muc').hidden, items: document.querySelectorAll('#muc-ds button').length }));
+    check('phone: contents panel lists the posts', toc.open && toc.items > 1, toc);
+    await m.click('#muc-ds button'); await m.waitForTimeout(200);
+    check('phone: picking a post jumps there and closes the panel', await m.evaluate(() => document.getElementById('muc').hidden && !book.classList.contains('chrome') && B.page < B.pages - 1));
     await ctx.close(); }
 
   check('no page errors', errs.length === 0, errs);
