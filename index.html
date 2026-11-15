@@ -470,8 +470,7 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
   <a class="brand" href="#nuoc">duyên</a>
   <nav aria-label="Chính">
     <a href="#ke-sach" data-nav="viet">writings</a>
-    <a href="#vuon" data-nav="vuon">projects</a>
-    <a href="#ve-minh" data-nav="ve-minh">about me</a>
+    <!-- projects: tạm ẩn -->
     <button id="dan" type="button" aria-pressed="false" aria-label="Tiếng đàn"><svg width="24" height="20" viewBox="0 0 24 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="3" width="6" height="14" rx="1"/><rect x="9" y="3" width="6" height="14" rx="1"/><rect x="16" y="3" width="6" height="14" rx="1"/></svg></button>
   </nav>
 </header>
@@ -556,27 +555,7 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
   </div></div>
 </section>
 
-<section class="scene" id="s-ve-minh" aria-label="Về mình">
-  <div class="cua" aria-hidden="true"></div>
-  <div class="bong" id="bong-ve" aria-hidden="true"></div>
-  <div class="ve-trong">
-    <div class="o-cua" id="o-cua" aria-hidden="true"><div class="than-cay"></div></div>
-    <div class="cot">
-    <h1 class="big">Mình là Duyên, <em>một người bình thường.</em></h1>
-    <p>Mọi người có thể gọi mình là Grace hoặc Gracie như một cách gọi thân mật nha.</p>
-    <p>Mình sinh ra và lớn lên tại Sài Gòn. Mình viết chủ yếu để ghi lại những cảm xúc, suy nghĩ và những bài học mà mình tích luỹ được trong hành trình trưởng thành.</p>
-    <p>Chỉ cần mỉm cười và sống hết mình, thế là đủ.</p>
-    <h2>Dạo này mình đang</h2>
-    <ul class="gach"><li>học tiếng Nhật buổi tối, nhắm tới N2</li><li>ươm cửa hàng template đầu tiên</li><li>dọn blog cũ về ngôi nhà mới này</li><li>tập đàn piano, chậm thôi</li></ul>
-    <h2>Mình thích</h2>
-    <div class="thich"><span style="--r:-2deg">piano</span><span style="--r:1.5deg">lịch sử Đông Á</span><span style="--r:-1deg">tiếng Nhật</span><span style="--r:2deg">sách</span><span style="--r:-2.5deg">light novel và anime</span><span style="--r:1deg">mùi hương</span><span style="--r:-1.5deg">chiều mưa</span></div>
-    <h2>Đường mình đã đi</h2>
-    <ul class="cam" id="cam"></ul>
-    <h2>Hộp thư</h2>
-    <form id="hop-thu" novalidate><label for="thu">Gửi mình vài dòng</label><textarea id="thu" rows="3"></textarea><p id="thu-bao" role="status"></p><button type="submit">Bỏ vào hộp thư</button></form>
-    <p class="nho">Marketing · tiếng Nhật · một chút code<br>Tiếng Việt, tiếng Anh, tiếng Nhật, một ít tiếng Trung<br><a href="https://www.linkedin.com/in/phanthimyduyen/">linkedin.com/in/phanthimyduyen</a></p>
-  </div></div>
-</section>
+
 </main>
 
 <div id="anhsang" aria-hidden="true"></div>
@@ -848,7 +827,7 @@ function renderShelf(){
 }
 $("#the-nhanh").innerHTML = sprig("#26301F", 60, 76, "#B9A8E6");
 shadows($("#bong-ke"), 40, 23, [44,-4,58,80]);
-shadows($("#bong-ve"), 34, 77, [50,0,52,90]);
+if ($("#bong-ve")) shadows($("#bong-ve"), 34, 77, [50,0,52,90]);
 (function(){ const box = $("#hoa-mo"), r = rng(55); let h = ""; for (let i = 0; i < 9; i++) h += `<span style="left:${(r() * 22 - 4).toFixed(1)}%;bottom:${(r() * 26 - 6).toFixed(1)}%;filter:blur(${(3 + r() * 5).toFixed(1)}px);transform:rotate(${(r() * 70) | 0}deg)">${flower(60 + r() * 50, 5, "#FBF8EE", "#EBD9A0")}</span>`;
   for (let i = 0; i < 7; i++) h += `<i style="left:${(r() * 22 - 2).toFixed(1)}%;bottom:${(r() * 30 - 8).toFixed(1)}%;width:${(40 + r() * 50) | 0}px;height:${(16 + r() * 16) | 0}px;transform:rotate(${(r() * 180) | 0}deg)"></i>`; box.innerHTML = h; })();
 function fitShelf(rows){ rows = rows || +$("#gay").dataset.rows || 1; const vw = innerWidth, vh = innerHeight, mob = vw < 820;
@@ -996,7 +975,7 @@ $("#form").addEventListener("submit", async e => {
 (function(){
   const r = rng(8);
   $("#gia").innerHTML = VIEC.map((v, i) => `<button class="gia ${v.k}" type="button" data-i="${i}"><span class="khung" style="--r:${(r()*3-1.5).toFixed(1)}deg">${v.the ? `<span class="the ${v.k}">${v.the}</span>` : ""}<h3>${esc(v.ten)}</h3><p>${esc(v.dong)}</p></span></button>`).join("");
-  $("#cam").innerHTML = CAM.map(c => `<li style="--r:${(r()*3-1.5).toFixed(1)}deg"><b>${esc(c[0])}</b>${esc(c[1])}<br>${esc(c[2])}</li>`).join("");
+  if ($("#cam")) $("#cam").innerHTML = CAM.map(c => `<li style="--r:${(r()*3-1.5).toFixed(1)}deg"><b>${esc(c[0])}</b>${esc(c[1])}<br>${esc(c[2])}</li>`).join("");
   let opener = null;
   $("#gia").addEventListener("click", e => { const b = e.target.closest(".gia"); if (!b) return; const v = VIEC[b.dataset.i]; opener = b;
     $("#to-the").textContent = v.the; $("#to-the").hidden = !v.the; $("#to-the").className = "the " + v.k; $("#to-ten").textContent = v.ten; $("#to-vai").textContent = v.vai; $("#to-chi").innerHTML = v.chi.map(c => `<li>${esc(c)}</li>`).join("");
@@ -1031,7 +1010,7 @@ const silk = (function(){
 const wash = $("#wash"); let first = true; wash.innerHTML = `<span class="troi">${flower(120, 5, "#FFFFFF", "#F2C53D")}</span>`;
 function route(){
   let h = (location.hash || "#nuoc").slice(1), scene = "nuoc", arg = null, slug = null;
-  if (h === "ke-sach" || h === "vuon" || h === "ve-minh") scene = h;
+  if (h === "ke-sach") scene = h;
   else if (h.startsWith("sach-") && BOOKS.includes(h.slice(5))){ scene = "sach"; arg = h.slice(5); }
   else if (h.startsWith("bai-")){ const p = POSTS.find(x => x.s === h.slice(4)); if (p){ scene = "sach"; arg = bookOf(p); slug = p.s; } }
   const go = () => {
@@ -1071,13 +1050,16 @@ $("#gay").addEventListener("click", e => { const g = e.target.closest(".gay"); i
     [["triangle",1,1],["sine",2,.3]].forEach(([ty, mul, lv]) => { const o = ac.createOscillator(), og = ac.createGain(); o.type = ty; o.frequency.value = f * mul; og.gain.value = lv; o.connect(og); og.connect(g); o.start(t); o.stop(t + 3.5); }); };
   const play = () => { if (!on) return; const i = (Math.random() * N.length) | 0; note(N[i], .07); if (Math.random() < .35) setTimeout(() => on && note(N[(i + 2) % N.length] / 2, .05), 260); tm = setTimeout(play, 1500 + Math.random() * 2200); };
   $("#dan").onclick = function(){ try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); on = !on; this.setAttribute("aria-pressed", String(on)); clearTimeout(tm); if (on){ ac.resume(); play(); } } catch(e){ on = false; this.setAttribute("aria-pressed","false"); } };
-  const oc = $("#o-cua"), r = rng(88), gr = ["#7FAE62","#95C277","#5E8E4E","#B7D27E","#A9D07C"]; let h = "";
+  const oc = $("#o-cua"); if (oc){ const r = rng(88), gr = ["#7FAE62","#95C277","#5E8E4E","#B7D27E","#A9D07C"]; let h = "";
   for (let i = 0; i < 46; i++){ const w = 8 + r()*9; h += `<i style="left:${(22 + r()*72).toFixed(1)}%;top:${(4 + r()*52).toFixed(1)}%;width:${w.toFixed(1)}%;height:${(w*.62).toFixed(1)}%;background:${gr[(r()*5)|0]};opacity:${(.75 + r()*.25).toFixed(2)};--a:${(-4 - r()*5).toFixed(1)}deg;--b:${(3 + r()*6).toFixed(1)}deg;animation-duration:${(4 + r()*4).toFixed(1)}s;animation-delay:-${(r()*5).toFixed(1)}s"></i>`; }
   oc.insertAdjacentHTML("beforeend", h);
+  }
+  if ($("#hop-thu")){
   $("#hop-thu").addEventListener("submit", function(e){ e.preventDefault(); const v = $("#thu").value.trim(), b = $("#thu-bao");
     if (!v){ b.textContent = "Viết vài chữ trước đã nha."; return; }
     guiLoiNhan({slug:null, ten:null, loi:v, cong_khai:false}).then(sent => { if (!sent){ const hop = store.get("duyen-hop-thu") || []; hop.push({m:v, at:Date.now()}); store.set("duyen-hop-thu", hop); } $("#thu").value = ""; b.textContent = "Đã bỏ vào hộp thư."; }).catch(() => { b.textContent = "Chưa gửi được, thử lại sau nha."; }); });
   $("#thu").addEventListener("input", () => { $("#thu-bao").textContent = ""; });
+  }
 })();
 (function(){
   const c = $("#mua"), x = c.getContext("2d"); let drops = [], raf = 0, lt = 0, W = 0, H = 0;

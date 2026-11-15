@@ -1,6 +1,6 @@
 # duyên · hôm nay mình viết
 
-Trang cá nhân của Duyên: mặt nước, kệ sách nhật ký, khu vườn những việc mình làm.
+Trang cá nhân của Duyên: mặt nước và kệ sách nhật ký. (Khu vườn "projects" đang tạm ẩn.)
 
 - `index.html`: toàn bộ trang
 - `tex/`, `art/`: vân gỗ, vải, giấy và tranh gáy sách
