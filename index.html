@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Duyên, một buổi sáng có nắng</title>
+<title>duyên · hôm nay mình viết</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Mynerve&family=Lora:ital@0;1&family=Playfair+Display:ital@0;1&family=Josefin+Sans:wght@400;600&family=Quicksand:wght@500&family=Prata&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Spectral:ital@0;1&family=Shippori+Mincho:wght@500&display=swap">
@@ -544,7 +544,7 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
 <section class="scene" id="s-ke-sach" aria-label="Kệ sách">
   <div class="nang" aria-hidden="true"></div>
   <div class="bong" id="bong-ke" aria-hidden="true"></div>
-  <h1 class="big">Mỗi chuyện <em>một</em> cuốn.</h1>
+  <h1 class="big">Những gì mình<br>đã viết.</h1>
   <div class="tuong" aria-hidden="true"><div style="--r:3deg">hôm nay<br><em>mình viết</em><br>:)</div><div style="--r:-4deg;--pin:#A9C19A" id="the-nhanh"></div></div>
   <div class="gay-hang" id="gay"></div>
   <div class="hoa-mo" id="hoa-mo" aria-hidden="true"></div>
@@ -572,9 +572,9 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
     <label for="loi-nhan">Lời nhắn</label>
     <textarea id="loi-nhan" rows="3" maxlength="200" placeholder="Đọc xong muốn đi cà phê ngày mưa ghê."></textarea>
     <label class="chon" for="chi-duyen"><input id="chi-duyen" type="radio" name="hien" value="rieng" checked> Chỉ Duyên đọc</label>
-    <label class="chon" for="dan-len"><input id="dan-len" type="radio" name="hien" value="chung"> Cho dán lên trang, sau khi Duyên duyệt</label>
+    <label class="chon" for="dan-len"><input id="dan-len" type="radio" name="hien" value="chung"> Hiện trên trang (sau khi Duyên duyệt)</label>
     <p id="form-msg" hidden></p>
-    <button class="nut dam" type="submit">Kẹp lời nhắn vào sách</button>
+    <button class="nut dam" type="submit">Gửi</button>
   </form>
   <div class="duoi">
     <span id="so-trang"></span>
@@ -1020,7 +1020,7 @@ $("#form").addEventListener("submit", async e => {
   btn.disabled = true;
   try { const sent = await guiLoiNhan({slug, ten:t, loi:m, cong_khai:chung});
     if (chung){ (MINE[slug] = MINE[slug] || []).push({t, m, w:1}); store.set("duyen-nhan-cua-toi", MINE); B.show = true; drawNotes(); $("#form").hidden = true; }
-    else { msg.hidden = false; msg.textContent = sent ? "Đã kẹp vào sách. Chỉ Duyên đọc được." : "Đã kẹp vào sách (lưu trên máy này)."; }
+    else { msg.hidden = false; msg.textContent = sent ? "Đã gửi. Chỉ Duyên đọc được." : "Đã lưu trên máy này."; }
     $("#loi-nhan").value = "";
   } catch(err){ msg.hidden = false; msg.setAttribute("role","alert"); msg.textContent = "Chưa gửi được, bạn thử lại sau nha."; }
   btn.disabled = false;
