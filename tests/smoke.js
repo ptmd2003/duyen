@@ -30,7 +30,7 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
     await p.goto(URL); await p.waitForTimeout(1200); return p;
   }
   async function send(p, name, text, pub) { await p.click('#b-nhan'); await p.fill('#ten-ban', name); await p.fill('#loi-nhan', text);
-    if (pub) await p.click('#dan-len'); await p.click('#form button[type=submit]'); await p.waitForTimeout(250); }
+    if (pub) await p.click('.ghim'); await p.click('#form button[type=submit]'); await p.waitForTimeout(1000); }
 
   let p = await open(false);
   const all = await p.evaluate(() => BOOKS.map(y => (buildBook(y), flow.innerText)).join(' '));
@@ -53,9 +53,11 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   await send(p, 'Mai', 'hello', true);
   const ins = await p.evaluate(() => window.__ins);
   check('public note inserted with only allowed columns', JSON.stringify(ins) === JSON.stringify([{ slug:'cach-don-dung-luong-macbook', ten:'Mai', loi:'hello', cong_khai:true }]), ins);
+  check('send confirms on the button', /chờ Duyên duyệt ✓/.test(await p.textContent('#b-nhan')), await p.textContent('#b-nhan'));
   check('own note shows as waiting', /chờ Duyên duyệt/.test(await p.textContent('#giay')), await p.textContent('#giay'));
   await send(p, 'Mai', 'again');
   check('30s cooldown blocks a second send', (await p.evaluate(() => window.__ins.length)) === 1);
+  check('name is remembered for next time', (await p.evaluate(() => localStorage.getItem('duyen-ten'))) === '"Mai"');
   const mine = await p.evaluate(() => localStorage.getItem('duyen-nhan-cua-toi'));
 
   p = await open(true, `localStorage.setItem('duyen-nhan-cua-toi', ${JSON.stringify(mine)}); window.__rows=[{slug:'cach-don-dung-luong-macbook',ten:'Mai',loi:'hello'}];`);
@@ -69,6 +71,10 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   check('like adds one', JSON.stringify(await like()) === '[false,"true","4"]', await like());
   await p.evaluate(() => document.querySelector('.nut-thich[data-thich="cach-don-dung-luong-macbook"]').click()); await p.waitForTimeout(200);
   check('unlike removes it', JSON.stringify(await like()) === '[false,"false","3"]' && JSON.stringify(await p.evaluate(() => window.__rpc.map(a => a.p_cong))) === '[1,-1]', await like());
+
+  p = await open(true); await send(p, '', 'không ký tên');
+  check('name is optional (sent as null)', JSON.stringify(await p.evaluate(() => window.__ins)) === JSON.stringify([{ slug:'cach-don-dung-luong-macbook', ten:null, loi:'không ký tên', cong_khai:false }]), await p.evaluate(() => window.__ins));
+  await p.waitForTimeout(800); check('note flies away after sending', await p.evaluate(() => document.getElementById('form').hidden));
 
   p = await open(true); await p.evaluate(() => document.getElementById('web').value = 'http://x');
   await send(p, 'bot', 'spam');

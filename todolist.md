@@ -66,6 +66,13 @@ E. Duyên's direction: let visitors explore (replaces parts of B and C on phones
 - [X] Desktop unchanged: tilted two-page spread with page flip, hover titles on the pond
 - [X] Removed the phone-only hints added earlier: "còn sách ở dưới nữa ↓" pill on the shelf and the year tag on untitled diary spines
 
+F. "Để lại lời nhắn" as a paper note ✅
+
+- [X] Form is one lined paper note in handwriting: write first, optional "— ký tên" (blank = "một người bạn")
+- [X] One pin toggle "dán lên trang" (off = only Duyên reads) replaces the two radio options
+- [X] Round send button + Ctrl/⌘+Enter; the note flies away, the button confirms ("Đã gửi cho Duyên ✓" / "Đã dán, chờ Duyên duyệt ✓")
+- [X] Name remembered on this device for next time
+
 ## Phase 3: Supabase does more
 
 - [ ] Move `POSTS` and `READ` into Supabase tables (keep inline copy as offline fallback)
