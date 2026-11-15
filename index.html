@@ -134,7 +134,7 @@ body.mo-dau #hoa,body.mo-dau .top{animation:hien-mo 1.6s ease 4.4s both}
 /* book */
 #s-sach{background:radial-gradient(760px 520px at 82% 8%,#B7D27E 0%,rgba(183,210,126,0) 62%),linear-gradient(170deg,#6E9450 0%,#4C7340 55%,#3E6238 100%)}
 .ve{position:absolute;z-index:6;left:clamp(18px,5vw,56px);top:74px;display:inline-flex;align-items:center;min-height:44px;font-size:15px;text-decoration:none;color:var(--cream)}
-.book{position:absolute;left:50%;top:50%;transform:translate(-50%,-48%) rotate(-1deg);perspective:2400px;width:calc(var(--pw)*var(--n));height:var(--ph)}
+.book{position:absolute;left:50%;top:50%;transform:translate(-50%,-48%) rotate(-1deg);perspective:3000px;width:calc(var(--pw)*var(--n));height:var(--ph)}
 .book .bia{position:absolute;inset:-9px -14px -15px;background:var(--leaf);border-radius:6px;box-shadow:0 34px 60px rgba(20,40,15,.5)}
 .book .ruot{position:absolute;inset:4px -5px -6px;background:#E3DBC2;border-radius:3px}
 .trang{position:absolute;inset:0;overflow:hidden;background:var(--paper)}
@@ -639,6 +639,21 @@ body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-bac
 .nut-thich.da{color:#C2566E}.nut-thich.da svg{fill:currentColor}
 .nut-thich.nay svg{animation:dap .45s ease}
 @keyframes dap{40%{transform:scale(1.3)}}
+/* round 2 (2026-11-15): no pond titles anywhere, small day/afternoon toggle, compact shelf header, airy reading bar */
+.hoa .nhan{display:none}
+#doi{width:30px;height:30px;border-width:1.2px}
+#doi i{width:11px;height:11px}
+#doi::after{content:"";position:absolute;inset:-7px}
+body[data-light="chieu"] #doi i{box-shadow:inset -4px 0 0 0 rgba(31,51,35,.45)}
+@media (max-width:820px){#doi{top:calc(29px + env(safe-area-inset-top, 0px));transition:top .35s,border-color .6s}}
+.top{transition:color .6s,background .35s,box-shadow .35s,padding .35s}
+.top .brand{transition:font-size .35s}
+body.cuon[data-scene="ke-sach"] .top{padding-top:4px;padding-bottom:4px;background:rgba(236,240,222,.6);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:0 1px 0 rgba(60,80,40,.1),0 8px 20px rgba(40,60,30,.06)}
+body.cuon[data-scene="ke-sach"] .top .brand{font-size:22px}
+@media (max-width:820px){body.cuon[data-scene="ke-sach"] #doi{top:calc(11px + env(safe-area-inset-top, 0px))}}
+.thanh{background:rgba(246,241,225,.62);-webkit-backdrop-filter:blur(12px) saturate(1.3);backdrop-filter:blur(12px) saturate(1.3)}
+.book[data-n="1"] .goc::after{display:none}
+body.lat-trang #giay{opacity:0;transition:opacity .12s}
 </style>
 </head>
 <body data-scene="nuoc" data-light="sang">
@@ -794,9 +809,9 @@ function blobs(el, n, seed, colors, box){
 }
 
 /* ---------- light ---------- */
-const LIGHTS = ["sang","chieu","toi"];
-(function(){ const h = new Date().getHours(); document.body.dataset.light = h >= 5 && h < 15 ? "sang" : h < 18 ? "chieu" : "toi"; })();
-$("#doi").onclick = () => { const b = document.body; b.dataset.light = LIGHTS[(LIGHTS.indexOf(b.dataset.light)+1) % 3]; };
+const LIGHTS = ["sang","chieu"];
+(function(){ const h = new Date().getHours(); document.body.dataset.light = h >= 5 && h < 15 ? "sang" : "chieu"; })();
+$("#doi").onclick = () => { const b = document.body; b.dataset.light = LIGHTS[(LIGHTS.indexOf(b.dataset.light)+1) % LIGHTS.length]; };
 
 /* ---------- water (WebGL) ---------- */
 const water = (function(){
@@ -1100,13 +1115,28 @@ function showPage(p){
 }
 $("#ruy-sach").onclick = () => { const sl = (store.get("duyen-dau") || {})[B.year]; goPost(sl && document.getElementById("p-" + sl)); };
 function turn(dir){ turnTo(B.page + dir * B.n, dir); }
+/* phones read like Kindle/Apple Books: the next page simply slides in, and follows the finger while dragging */
+function slideTo(target, dir, manual){
+  B.busy = true; document.body.classList.add("lat-trang");
+  const from = B.page, pw = B.pw; let cur = 0, over = false;
+  const at = t => { flow.style.transform = `translateX(${(-(from + dir * t) * pw).toFixed(1)}px)`; };
+  const run = (to, dur) => { over = true; const s0 = cur, t0 = performance.now();
+    const step = now => { const x = Math.min(1, (now - t0) / dur); cur = s0 + (to - s0) * (1 - Math.pow(1 - x, 3)); at(cur);
+      if (x < 1) requestAnimationFrame(step); else { B.busy = false; document.body.classList.remove("lat-trang"); showPage(to === 1 ? target : from); } };
+    requestAnimationFrame(step); };
+  if (!manual){ run(1, 320); return null; }
+  return { set(t){ if (!over){ cur = Math.max(0, Math.min(1, t)); at(cur); } },
+    tap(){ if (!over) run(1, 320); },
+    end(ok){ if (!over) run(ok ? 1 : 0, Math.max(160, 340 * (ok ? 1 - cur : cur))); } };
+}
 function turnTo(target, dir, manual){
   if (B.busy || target < 0 || target >= B.pages || target === B.page) return null;
   thanhDoc(false);
   if (still){ showPage(target); return null; }
   if (B.n === 2) target -= target % 2;
   if (target === B.page) return null;
-  B.busy = true; const from = B.page, pw = B.pw, one = B.n === 1, N = one ? 18 : 24, w = pw / N, hinge = one ? 1 : dir;
+  if (B.n === 1) return slideTo(target, dir, manual);
+  B.busy = true; const from = B.page, pw = B.pw, one = B.n === 1, N = one ? 18 : 30, w = pw / N, hinge = one ? 1 : dir;
   const slice = page => { const kids = [...flow.children]; let hit = null, st = 0;
     for (const k of kids){ if (!k.classList.contains("bai")) continue; const p = pageOf(k.firstElementChild || k); if (p <= page){ hit = k; st = p; } else break; }
     const c = flow.cloneNode(false); c.removeAttribute("id");
@@ -1128,18 +1158,22 @@ function turnTo(target, dir, manual){
     const f = face(fSrc, fx, false), b = face(bSrc, bx, true); d.append(f, b); parent.appendChild(d); parent = d; strips.push({d, f:f.lastChild, b:b.lastChild}); }
   if (cover) book.append(cover); book.append(cast, leaf);
   const late = one && dir < 0; if (!late) showPage(target);
-  const ease = x => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3)/2, MAXA = one ? 150 : 180, sgn = hinge > 0 ? -1 : 1, WAVE = .3;
-  // paper: the free edge leads while lifting and trails while landing (an S-shaped flop), the fold catches light
-  const render = t => { const tt = late ? 1 - t : t, w2 = Math.sin(2 * Math.PI * tt) * .5, sw = Math.sin(Math.PI * tt); let prev = 0, tip = 0;
-    for (let k = 0; k < N; k++){ const u = k / (N - 1), sm = u * u * (3 - 2 * u);
-      const lt = Math.min(1, Math.max(0, tt + WAVE * sm * w2)), a = MAXA * ease(lt) + 10 * sw * sm * (1 - Math.abs(2 * lt - 1));
+  const ease = x => x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3)/2, MAXA = one ? 150 : 180, sgn = hinge > 0 ? -1 : 1, R = Math.PI / 180;
+  // paper, not card: the free edge leads while the sheet is lifted, then it flops over and the edge trails behind and lands last.
+  // the bend gathers toward the free edge; the pages underneath get a soft shadow that follows where the leaf hangs
+  const curl = t => t < .3 ? 32 * Math.sin(Math.PI * t / .3) * (1 - t) : -62 * Math.pow(Math.sin(Math.PI * (t - .3) / .7), 1.3) * (1 - .3 * (t - .3));
+  const shade = (el, x, k, deg) => { el.style.background = k > .004 ? `linear-gradient(${deg}deg,rgba(60,50,20,${(.4 * k).toFixed(3)}) 0px,rgba(60,50,20,${(.24 * k).toFixed(3)}) ${Math.max(0, x - 24).toFixed(0)}px,rgba(60,50,20,0) ${(x + 50).toFixed(0)}px)` : "none"; };
+  cast.style.opacity = 1; if (csh) csh.style.opacity = 1;
+  const render = t => { const tt = late ? 1 - t : t, th = MAXA * ease(tt), kc = curl(tt); let prev = 0, tip = 0, px = 0, pz = 0, hi = 0, lo = 0, top = 0;
+    for (let k = 0; k < N; k++){ const u = (k + .5) / N, a = Math.min(MAXA, Math.max(0, th + kc * Math.pow(u, 1.6)));
       const ck = Math.abs(a - prev); strips[k].d.style.transform = `rotateY(${(sgn * (a - prev)).toFixed(2)}deg)`; prev = a; tip = a;
-      const sn = Math.sin(a * Math.PI / 180), cs = Math.cos(a * Math.PI / 180);
-      strips[k].f.style.opacity = Math.min(.5, Math.max(0, .26 * sn * (1 - cs) * .5 + .06 * sn + .018 * ck)).toFixed(3);
-      strips[k].b.style.opacity = Math.max(0, .05 + .2 * sn * (1 + cs) * .5 - .012 * ck).toFixed(3); }
+      const sn = Math.sin(a * R), cs = Math.cos(a * R); px += w * cs; pz += w * sn; hi = Math.max(hi, px); lo = Math.min(lo, px); top = Math.max(top, pz);
+      strips[k].f.style.opacity = Math.min(.5, Math.max(0, .26 * sn * (1 - cs) * .5 + .06 * sn + .03 * ck)).toFixed(3);
+      strips[k].b.style.opacity = Math.max(0, .05 + .2 * sn * (1 + cs) * .5 - .02 * ck).toFixed(3); }
     if (one) leaf.style.opacity = tip > 110 ? Math.max(0, 1 - (tip - 110) / 40).toFixed(3) : "1";
-    cast.style.opacity = (tip < 90 ? .5 * Math.sin(tip * Math.PI / 180) : .15 * Math.sin(tip * Math.PI / 180)).toFixed(3);
-    if (csh) csh.style.opacity = (tip > 90 ? .34 * Math.sin(tip * Math.PI / 180) : 0).toFixed(3); };
+    const lift = Math.min(1, 1.3 * top / pw);
+    shade(cast, hi, lift * Math.min(1, hi / 30), hinge > 0 ? 90 : 270);
+    if (csh) shade(csh, -lo, lift * Math.min(1, -lo / 30), hinge > 0 ? 270 : 90); };
   const done = ok => { if (ok ? late : !late) showPage(ok ? target : from); leaf.remove(); cast.remove(); if (cover) cover.remove(); B.busy = false; };
   let cur = 0;
   let want = 0, raf = 0, over = false;
@@ -1147,7 +1181,7 @@ function turnTo(target, dir, manual){
     const step = now => { const x = Math.min(1, (now - t0) / dur); cur = s0 + (to - s0) * (lin ? x : 1 - Math.pow(1 - x, 3)); render(cur);
       if (x < 1) requestAnimationFrame(step); else done(to === 1); };
     requestAnimationFrame(step); };
-  const DUR = one ? 950 : 1250;
+  const DUR = one ? 950 : 1150;
   render(0);
   if (!manual){ run(1, DUR, true); return null; }
   return { set(t){ if (over) return; want = Math.max(0, Math.min(.98, t)); if (!raf) raf = requestAnimationFrame(() => { raf = 0; if (!over){ cur = want; render(cur); } }); },
@@ -1162,7 +1196,7 @@ $("#g-sau").onclick = e => { if (!e.detail) turn(1); }; $("#g-truoc").onclick = 
     if (still){ turn(dir); return; }
     const x0 = e.clientX, pid = e.pointerId; let moved = false, last = x0, lt = performance.now(), v = 0, fin = false;
     const ctl = turnTo(B.page + dir * B.n, dir, true); if (!ctl) return;
-    const span = B.n === 2 ? B.pw * 1.6 : B.pw * .9;
+    const span = B.n === 2 ? B.pw * 1.6 : B.pw;
     const mv = ev => { if (ev.pointerId !== pid) return; const dx = (ev.clientX - x0) * -dir, now = performance.now();
       v = .7 * v + .3 * ((ev.clientX - last) * -dir / Math.max(1, now - lt)); last = ev.clientX; lt = now;
       if (!moved && Math.abs(ev.clientX - x0) < 6) return; moved = true; ctl.set(dx / span); };

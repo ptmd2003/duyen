@@ -80,6 +80,14 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   await send(p, 'bot', 'spam');
   check('honeypot blocks bots', (await p.evaluate(() => (window.__ins || []).length)) === 0);
 
+  p = await open(true);
+  const desk = await p.evaluate(async () => { location.hash = '#nuoc'; await new Promise(r => setTimeout(r, 500));
+    const h = [...document.querySelectorAll('#hoa .hoa')], d = document.getElementById('doi'), L = [document.body.dataset.light];
+    d.click(); L.push(document.body.dataset.light); d.click(); L.push(document.body.dataset.light);
+    return { n: h.length, shown: h.filter(a => getComputedStyle(a.querySelector('.nhan')).display !== 'none').length, L, size: d.offsetWidth }; });
+  check('desktop: no post titles on the pond either', desk.n > 0 && desk.shown === 0, desk);
+  check('light toggle: day and afternoon only, small button', !desk.L.includes('toi') && desk.L[0] === desk.L[2] && desk.L[0] !== desk.L[1] && desk.size <= 32, desk);
+
   // phones: scattered pads with no titles (explore by tapping); book is a straight page you scroll, no page flip
   { const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' }), m = await ctx.newPage();
     m.on('pageerror', e => errs.push(e.message));
@@ -94,7 +102,7 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
     await m.goto(`http://localhost:${PORT}/#sach-nk-2024`); await m.waitForTimeout(1200);
     const bk = await m.evaluate(() => ({ tilt: getComputedStyle(book).transform, pages: B.pages, corners: getComputedStyle(document.querySelector('#g-sau')).display, pager: getComputedStyle(document.querySelector('#so-trang')).display, back: !!document.querySelector('.ve') }));
     check('phone: book page is straight', /^matrix\(1, 0, 0, 1,/.test(bk.tilt), bk.tilt);
-    check('phone: book flips pages again', bk.pages > 3 && bk.corners !== 'none', bk);
+    check('phone: book turns pages (tap zones present)', bk.pages > 3 && bk.corners !== 'none', bk);
     check('phone: no page counter, no back link', bk.pager === 'none' && !bk.back, bk);
     const box = await m.evaluate(() => { const r = document.querySelector('#book .trang').getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; });
     await m.touchscreen.tap(box[0], box[1]); await m.waitForTimeout(350);

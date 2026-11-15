@@ -29,7 +29,8 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 
 ## Gotchas
 - CSS class names collide easily in this one big file (e.g. `.so`, `.dem`, `.thich` were already taken). `grep` a class name before using it; prefix new ones (`nut-thich`, `so-thich`).
-- Phones get their own layouts. Home (<760px): pads scattered at `SPOTS_M`, post titles hidden on purpose (Duyên wants visitors to explore; don't add labels back). Book (<820px, `B.n === 1`): straight single page that flips; tap side thirds (`.goc`) to turn, tap the middle for the reading bar (`thanhDoc()`, `.book.chrome`: contents `#nut-muc`/`#muc`, slider `#truot`, notes toggle `#an-nhan`). Like/share live in the bottom bar (`#b-thich`, `#b-chia`) and follow `currentPost()` via `paintLikes()`. The light toggle `#doi` moves into the header. Check both 390px and 360px.
+- Phones get their own layouts. Home: post titles on the pond are hidden on every screen size on purpose (Duyên wants visitors to explore; don't add labels back); phones (<760px) scatter pads at `SPOTS_M`. Book (<820px, `B.n === 1`): straight single page that slides (`slideTo()`, no paper flip; desktop keeps the 3D leaf in `turnTo()`); tap side thirds (`.goc`) to turn, tap the middle for the reading bar (`thanhDoc()`, `.book.chrome`: contents `#nut-muc`/`#muc`, slider `#truot`, notes toggle `#an-nhan`). Like/share live in the bottom bar (`#b-thich`, `#b-chia`) and follow `currentPost()` via `paintLikes()`. The light toggle `#doi` moves into the header. Check both 390px and 360px.
+- Light modes are only `sang`/`chieu` (`LIGHTS`); old `toi` (night) CSS is dead code.
 - The intro curtain (`#rem`) is driven by rAF in JS (clip-path wave + mask), not CSS transitions. Screenshots can't capture it reliably; record a video (Playwright `recordVideo`) and pull frames with Playwright's ffmpeg.
 
 ## Workflow

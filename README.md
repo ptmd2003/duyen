@@ -29,6 +29,7 @@ Trang chạy tại https://ptmd2003.github.io/duyen/. Đẩy lên nhánh `main` 
 - Lời đề từ của một cuốn: thêm `de:"..."` vào cuốn đó trong `SKIN`.
 
 ## Nhật ký cập nhật
+- 2026-11-15: Mặt nước trên máy tính cũng không hiện tên bài nữa, giống điện thoại. Bỏ chế độ ban đêm, nút đổi ánh sáng nhỏ lại (chỉ còn sáng và chiều). Kéo kệ sách xuống thì thanh menu thu nhỏ và trong hơn. Thanh đọc trên điện thoại trong suốt hơn. Điện thoại: trang sách trượt sang như Kindle/Apple Books, không lật giấy nữa. Máy tính: lật trang mềm như giấy thật hơn (mép giấy nhấc lên trước, cong rồi rơi xuống, có bóng đổ theo trang).
 - 2026-11-15: Menu "bài viết" thành "bookshelf", bỏ nút "← Kệ sách". Sổ trên điện thoại lật trang lại như đọc Kindle/Apple Books: chạm hai bên để lật, chạm giữa trang để hiện thanh đọc (mục lục, thanh kéo trang, ẩn/hiện lời nhắn). Lề sách rộng hơn. Nút thích và chia sẻ chuyển xuống góc dưới bên phải, cạnh "Để lại lời nhắn".
 - 2026-11-15: "Để lại lời nhắn" giờ là một tờ giấy viết tay: viết trước, ký tên nếu muốn (không bắt buộc), ghim "dán lên trang" nếu muốn hiện lên trang. Gửi thì tờ giấy bay đi. Máy nhớ tên cho lần sau. Ctrl/⌘+Enter để gửi nhanh.
 - 2026-11-15: Bỏ hai nhãn gợi ý trên điện thoại: "còn sách ở dưới nữa" ở kệ sách và nhãn năm trên gáy sổ nhật ký.

@@ -50,7 +50,7 @@ C. Book on phones ✅ (kept the book, as Duyên asked: no scroll mode)
 - [X] Spine strip on the cover, page-edge stack on the right that thins as you read, stronger gutter shadow
 - [X] Folded page corners on touch screens; next-page corner pulses twice when the book opens
 - [X] Smaller type on phones: body 15px, post titles ~26px, home heading 36px; long post 15 → 11 pages
-- [ ] **Owner:** check body text spacing on a real iPhone/Android (looked uneven in headless Chrome)
+- [X] **Owner:** check body text spacing on a real iPhone/Android (looked uneven in headless Chrome)
 
 D. Extras from Duyên's feedback ✅
 
@@ -82,6 +82,15 @@ G. Reader like Kindle / Apple Books ✅
 - [X] Phone: page counter removed (slider replaces it); notes toggle lives in the reading bar
 - [X] Like + share moved to the bottom bar next to "Để lại lời nhắn" (desktop + phone), acting on the post being read
 - [X] Dropped the pulsing page-corner hint on phones
+
+H. Round 2 of Duyên's feedback ✅
+
+- [X] Pond: no post titles on desktop either (same as phones); pads keep their `aria-label`
+- [X] Light toggle: day ⇄ afternoon only (night removed), smaller button (30px, 44px tap area) on phone and desktop
+- [X] Shelf: when scrolled, the header shrinks into a slim, see-through frosted bar
+- [X] Phone reading bar is see-through (frosted) instead of solid
+- [X] Phone: pages slide in like Kindle/Apple Books (follows the finger when dragged); no paper flip, no folded corners
+- [X] Desktop: page turn bends like paper: the edge lifts first, the sheet flops over with the edge trailing, and a shadow follows the leaf onto the pages below
 
 ## Phase 3: Supabase does more
 
