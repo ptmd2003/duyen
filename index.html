@@ -577,21 +577,13 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
   .nut{font-size:14px;padding:0 16px}
 }
 @media (prefers-reduced-motion:reduce){.book .goc::after{animation:none!important}}
-/* home on phones: smaller pads, titles beside them (Phase 2.5 B) */
+/* home on phones: scattered pads, no titles; visitors explore by tapping */
 .hoa{--k:1}
 .hoa .be{width:calc(var(--s)*2.1px*var(--k));height:calc(var(--s)*1.15px*var(--k))}
 .hoa .be svg{width:calc(var(--s)*1px*var(--k));height:calc(var(--s)*1px*var(--k));margin-left:calc(var(--s)*-.5px*var(--k))}
 @media (max-width:759px){
-  .hoa{--k:.6}
   .chao{width:76vw}
-  .nhan,.hoa.trai .nhan,.hoa:hover .nhan,.hoa:focus-visible .nhan,.hoa.gan .nhan{left:100%;right:auto;top:50%;transform:translateY(-50%);margin-left:6px;opacity:1;max-width:calc(100vw - 150px);padding:7px 12px;min-height:44px}
-  .nhan b{font-size:15px;line-height:1.25}
-  .nhan small{font-size:11px;color:inherit;opacity:.8}
-  .nhan,.hoa.trai .nhan,.hoa:hover .nhan,.hoa:focus-visible .nhan,.hoa.gan .nhan{background:none;box-shadow:none;padding:4px 6px;color:var(--fg);--glow:rgba(236,245,234,.95);text-shadow:0 0 2px var(--glow),0 0 8px var(--glow),0 0 16px var(--glow)}
-  body[data-light="toi"] .nhan{--glow:rgba(12,28,20,.9)}
-  .nhan{transition:opacity .9s ease}
-  #hoa.lang .hoa .nhan{opacity:0}
-  #hoa.lang .hoa.gan .nhan,#hoa.lang .hoa:focus-visible .nhan{opacity:1;transition-duration:.3s}
+  .hoa .nhan{display:none}
 }
 /* shelf on phones (Phase 2.5 B) */
 .top{transition:color .6s,background .3s,box-shadow .3s}
@@ -601,6 +593,14 @@ body.cuon[data-scene="ke-sach"] .top{background:rgba(228,233,212,.9);-webkit-bac
 @media (prefers-reduced-motion:reduce){#con-nua{animation:none}}
 @media (max-width:619px){.treo{left:-13%}}
 @media (hover:none){.nhan-nam.luon{opacity:1;transform:translate(-50%,0)}}
+/* phone book: straight, one tall page you scroll; no page flip */
+.book.cuon-doc{transform:translate(-50%,-48%);margin-top:12px}
+.book.cuon-doc .trang{overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(76,90,65,.35) transparent}
+.book.cuon-doc .flow{columns:auto;column-width:auto;height:auto;min-height:100%;transform:none!important}
+.book.cuon-doc .bai{break-before:auto;margin-top:2.6em}
+.book.cuon-doc .goc,.book.cuon-doc #flip{display:none}
+.book.cuon-doc .trang{background:linear-gradient(90deg,rgba(90,75,35,.24),rgba(120,105,60,.08) 3%,rgba(120,105,60,0) 8%),var(--paper)}
+.book.cuon-doc .trang::after{display:none}
 /* share + like at the end of each post */
 .tac-vu{display:flex;gap:6px;margin:1.1em 0 0 -10px;break-inside:avoid}
 .nut-nho{display:inline-flex;align-items:center;gap:6px;min-width:44px;min-height:44px;padding:0 10px;border:0;border-radius:999px;background:none;color:#4C5A41;font-family:var(--f-ui);font-size:13px;letter-spacing:.04em;cursor:pointer;transition:background .2s,color .2s}
@@ -814,12 +814,12 @@ c=mix(c,nt,uN);gl_FragColor=vec4(c,1.);}`;
 })();
 
 /* ---------- home: flowers on the water ---------- */
-const SPOTS = [[56,20],[73,37],[50,54],[76,64],[60,80],[88,18]], SPOTS_M = [[3,37],[11,46],[3,55],[11,64],[3,73],[11,82]];
+const SPOTS = [[56,20],[73,37],[50,54],[76,64],[60,80],[88,18]], SPOTS_M = [[6,41],[50,46],[22,57],[52,64],[4,73],[38,82]];
 const floaters = [];
 (function(){
   const box = $("#hoa"), r = rng(3);
   POSTS.slice(0,6).forEach((p, i) => {
-    const a = document.createElement("a"); a.className = "hoa"; a.href = "#bai-" + p.s;
+    const a = document.createElement("a"); a.className = "hoa"; a.href = "#bai-" + p.s; a.setAttribute("aria-label", p.t + ", " + p.d.split("-").reverse().join("."));
     const s = 56 + (r()*16|0), [y,m,d] = p.d.split("-");
     a.innerHTML = `<span class="be" style="--s:${s}"><span class="la-sen" style="background:${["#86B777","#93C083","#7FB26F","#8DBB7E"][i%4]}"></span>${flower(s, 5, "#FFFFFF", "#F2C53D", i%2 ? "" : "#FFEDEA")}</span><span class="nhan"><small>${d}.${m}.${y} · ${CATS[p.c]||""}</small><b>${esc(p.t)}</b></span>`;
     box.appendChild(a);
@@ -836,22 +836,14 @@ const floaters = [];
 })();
 function placeFlowers(){
   const m = innerWidth < 760, S = m ? SPOTS_M : SPOTS;
-  if (m){ // phones: stack pads under the greeting, measured, so cards never overlap
-    $("#hoa").classList.remove("lang"); clearTimeout(placeFlowers.t); placeFlowers.t = setTimeout(() => $("#hoa").classList.add("lang"), document.body.classList.contains("mo-dau") ? 9500 : 5000);
-    let y = $(".chao").getBoundingClientRect().bottom + 28; const H = $("#s-nuoc").clientHeight - 20;
-    floaters.forEach((f, i) => { const el = f.el; el.classList.remove("trai"); el.style.left = (i % 2 ? 11 : 3) + "%"; const pad = el.firstElementChild.offsetHeight, lab = el.querySelector(".nhan").offsetHeight, h = Math.max(pad, lab);
-      el.style.top = (y + Math.max(0, (lab - pad) / 2)) + "px"; el.hidden = y + h > H; y += h + 12; });
-    return; }
-  floaters.forEach(f => { f.el.hidden = false; const [x,y] = S[f.i]; f.el.style.left = x + "%"; f.el.style.top = y + "%"; f.el.classList.toggle("trai", !m && x > 70); });
+  floaters.forEach(f => { const [x,y] = S[f.i]; f.el.style.left = x + "%"; f.el.style.top = y + "%"; f.el.classList.toggle("trai", !m && x > 70); });
 }
 let lastMove = 0;
 $("#s-nuoc").addEventListener("pointermove", e => {
   const t = performance.now(); if (t - lastMove > 140){ lastMove = t; water.ripple(e.clientX, e.clientY); }
   floaters.forEach(f => { const b = f.el.firstElementChild.getBoundingClientRect(); f.el.classList.toggle("gan", Math.hypot(e.clientX - (b.left + b.width/2), e.clientY - (b.top + b.height/2)) < 150); });
 });
-$("#s-nuoc").addEventListener("pointerdown", e => { water.ripple(e.clientX, e.clientY);
-  floaters.forEach(f => { const b = f.el.firstElementChild.getBoundingClientRect(); f.el.classList.toggle("gan", Math.hypot(e.clientX - (b.left + b.width/2), e.clientY - (b.top + b.height/2)) < 170); }); });
-$("#s-nuoc").addEventListener("pointerup", e => { if (e.pointerType === "mouse") return; clearTimeout(placeFlowers.g); placeFlowers.g = setTimeout(() => floaters.forEach(f => f.el.classList.remove("gan")), 2600); });
+$("#s-nuoc").addEventListener("pointerdown", e => water.ripple(e.clientX, e.clientY));
 function floatLoop(tm){
   const t = tm/1000;
   if (document.body.dataset.scene === "nuoc" && !still) floaters.forEach(f => {
@@ -1037,11 +1029,25 @@ function sizeBook(){
   const pad = n === 1 ? Math.max(20, pw*.075) : Math.max(22, pw*.1);
   book.dataset.n = n; book.style.setProperty("--n", n); book.style.setProperty("--pw", pw + "px"); book.style.setProperty("--ph", ph + "px");
   flow.style.setProperty("--pad", pad + "px"); flow.style.setProperty("--pv", Math.max(26, ph*.065) + "px"); flow.style.setProperty("--fs", (pw < 400 ? 15 : 18.5) + "px");
-  B.n = n; B.pw = pw;
-  B.pages = Math.max(1, Math.ceil((flow.scrollWidth - 2) / pw));
+  B.n = n; B.pw = pw; B.cuon = n === 1; book.classList.toggle("cuon-doc", B.cuon);
+  B.pages = B.cuon ? 1 : Math.max(1, Math.ceil((flow.scrollWidth - 2) / pw));
 }
 const pageOf = el => Math.floor((el.getBoundingClientRect().left - flow.getBoundingClientRect().left + 4) / B.pw);
-function currentPost(){ let cur = null; $$(".bai", flow).forEach(a => { if (pageOf(a.firstElementChild) <= B.page + B.n - 1) cur = a; }); return cur; }
+function currentPost(){ let cur = null;
+  if (B.cuon){ const line = trang.getBoundingClientRect().top + trang.clientHeight * .35; $$(".bai", flow).forEach(a => { if (a.getBoundingClientRect().top <= line) cur = a; }); return cur; }
+  $$(".bai", flow).forEach(a => { if (pageOf(a.firstElementChild) <= B.page + B.n - 1) cur = a; }); return cur; }
+/* phones read by scrolling one tall page: keep notes, title, rain, bookmark and page-stack in step with the scroll */
+const trang = flow.parentNode; let docRaf = 0;
+function readHere(){ if (!B.cuon) return; const all = $$(".bai", flow), cp = currentPost(), dau = store.get("duyen-dau") || {}, cpost = cp && POSTS.find(x => x.s === cp.dataset.slug);
+  const max = Math.max(1, trang.scrollHeight - trang.clientHeight); book.style.setProperty("--con", (1 - trang.scrollTop / max).toFixed(3));
+  $("#so-trang").textContent = cp ? `bài ${all.indexOf(cp) + 1} / ${all.length}` : "";
+  document.title = cpost ? `${cpost.t} · duyên` : "duyên · hôm nay mình viết";
+  $("#s-sach").classList.toggle("mua", !!(cp && cp.hasAttribute("data-mua")));
+  if (cp && trang.scrollTop > 40){ dau[B.year] = cp.dataset.slug; store.set("duyen-dau", dau); }
+  const view = trang.getBoundingClientRect(); $$("mark.hl", flow).forEach(m => { const r = m.getBoundingClientRect(); if (r.top < view.bottom - 30 && r.bottom > view.top) m.classList.add("on"); });
+  drawNotes(); }
+trang.addEventListener("scroll", () => { if (!docRaf) docRaf = requestAnimationFrame(() => { docRaf = 0; readHere(); }); }, {passive:true});
+function goPost(a){ if (!a) return; if (B.cuon){ trang.scrollTo({top: Math.max(0, a.offsetTop - 8), behavior: still ? "auto" : "smooth"}); return; } jump(pageOf(a.firstElementChild)); }
 function showPage(p){
   B.page = Math.max(0, Math.min(B.pages - 1, p)); if (B.n === 2) B.page -= B.page % 2;
   flow.style.transform = `translateX(${-B.page * B.pw}px)`; book.style.setProperty("--con", B.pages > B.n ? (1 - (B.page + B.n) / B.pages).toFixed(3) : 0); flow.parentNode.scrollLeft = 0; scrollTo(0,0);
@@ -1055,8 +1061,8 @@ function showPage(p){
   if (cp && B.page > 0){ dau[B.year] = cp.dataset.slug; store.set("duyen-dau", dau); }
   const rb = $("#ruy-sach"); rb.hidden = !(dau[B.year] && B.page === 0 && B.n === 2);
 }
-$("#ruy-sach").onclick = () => { const sl = (store.get("duyen-dau") || {})[B.year], a = sl && document.getElementById("p-" + sl); if (a) jump(pageOf(a.firstElementChild)); };
-function turn(dir){ turnTo(B.page + dir * B.n, dir); }
+$("#ruy-sach").onclick = () => { const sl = (store.get("duyen-dau") || {})[B.year]; goPost(sl && document.getElementById("p-" + sl)); };
+function turn(dir){ if (B.cuon) return; turnTo(B.page + dir * B.n, dir); }
 function turnTo(target, dir, manual){
   if (B.busy || target < 0 || target >= B.pages || target === B.page) return null;
   if (still){ showPage(target); return null; }
@@ -1130,11 +1136,13 @@ $("#g-sau").onclick = e => { if (!e.detail) turn(1); }; $("#g-truoc").onclick = 
     addEventListener("pointermove", mv); addEventListener("pointerup", up); addEventListener("pointercancel", up); addEventListener("blur", up); });
 });
 document.addEventListener("keydown", e => { if (document.body.dataset.scene !== "sach" || /INPUT|TEXTAREA/.test(e.target.tagName)) return; if (e.key === "ArrowRight") turn(1); if (e.key === "ArrowLeft") turn(-1); });
-flow.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (!b) return; const a = document.getElementById("p-" + b.dataset.go); if (a) jump(pageOf(a.firstElementChild)); });
+flow.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (!b) return; goPost(document.getElementById("p-" + b.dataset.go)); });
 function jump(p){ if (B.n === 2) p -= p % 2; turnTo(p, p > B.page ? 1 : -1); }
 function openBook(year, slug){
   if (B.year !== year) buildBook(year);
-  requestAnimationFrame(() => { sizeBook(); let p = 0; if (slug){ flow.style.transform = "translateX(0)"; const a = document.getElementById("p-" + slug); if (a) p = pageOf(a.firstElementChild); } showPage(p); });
+  requestAnimationFrame(() => { sizeBook();
+    if (B.cuon){ flow.style.transform = ""; B.page = 0; const a = slug && document.getElementById("p-" + slug); trang.scrollTop = a ? Math.max(0, a.offsetTop - 8) : 0; scrollTo(0,0); readHere(); return; }
+    let p = 0; if (slug){ flow.style.transform = "translateX(0)"; const a = document.getElementById("p-" + slug); if (a) p = pageOf(a.firstElementChild); } showPage(p); });
 }
 /* notes: shared through Supabase when config.js has keys; otherwise kept in this browser */
 let SB = null; const MINE = store.get("duyen-nhan-cua-toi") || {};
@@ -1332,7 +1340,7 @@ $("#gay").addEventListener("click", e => { const g = e.target.closest(".gay"); i
   addEventListener("resize", () => { if (raf) size(); });
 })();
 addEventListener("hashchange", route);
-let rz = 0; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { placeFlowers(); shelfMaybe(); if (document.body.dataset.scene === "sach"){ const cur = currentPost(); sizeBook(); showPage(cur && B.page ? pageOf(cur.firstElementChild) : 0); } }, 150); });
+let rz = 0; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { placeFlowers(); shelfMaybe(); if (document.body.dataset.scene === "sach"){ const cur = currentPost(); sizeBook(); if (B.cuon){ flow.style.transform = ""; readHere(); } else showPage(cur && B.page ? pageOf(cur.firstElementChild) : 0); } }, 150); });
 document.addEventListener("visibilitychange", () => { if (document.hidden){ water.stop(); silk.stop(); } else route0(); });
 function route0(){ const s = document.body.dataset.scene; if (s === "nuoc") water.start(); if (s === "vuon") silk.start(); }
 /* shelf on phones: header backdrop once scrolled, hint that more shelves are below */

@@ -74,18 +74,26 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   await send(p, 'bot', 'spam');
   check('honeypot blocks bots', (await p.evaluate(() => (window.__ins || []).length)) === 0);
 
-  // phones: lily titles show, fade after a few seconds, and come back when you touch near a pad
+  // phones: scattered pads with no titles (explore by tapping); book is a straight page you scroll, no page flip
   { const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' }), m = await ctx.newPage();
     m.on('pageerror', e => errs.push(e.message));
     await m.route('**/supabase.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
     await m.goto(`http://localhost:${PORT}/`); await m.waitForTimeout(1000);
-    const op = () => m.evaluate(() => getComputedStyle(document.querySelector('#hoa .hoa .nhan')).opacity);
-    check('phone: lily titles visible at first', (await op()) === '1', await op());
-    await m.waitForTimeout(5600);
-    check('phone: lily titles fade after a few seconds', (await op()) === '0', await op());
-    const box = await m.evaluate(() => { const r = document.querySelector('#hoa .hoa .be').getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; });
-    await m.touchscreen.tap(box[0] + 40, box[1] + 60); await m.waitForTimeout(150);
-    check('phone: touching near a pad shows its title', await m.evaluate(() => document.querySelector('#hoa .hoa').classList.contains('gan')));
+    const home = await m.evaluate(() => { const h = [...document.querySelectorAll('#hoa .hoa')];
+      return { shown: h.filter(a => getComputedStyle(a.querySelector('.nhan')).display !== 'none').length, labelled: h.every(a => a.getAttribute('aria-label')), xs: new Set(h.map(a => a.style.left)).size }; });
+    check('phone: no post titles on the pond', home.shown === 0, home);
+    check('phone: pads still announce their post', home.labelled);
+    check('phone: pads are scattered, not a column', home.xs >= 4, home);
+
+    await m.goto(`http://localhost:${PORT}/#sach-nk-2024`); await m.waitForTimeout(1200);
+    const bk = await m.evaluate(() => { const t = document.querySelector('#book .trang'); return { mode: book.classList.contains('cuon-doc'), tilt: getComputedStyle(book).transform, scrolls: t.scrollHeight > t.clientHeight + 100, corners: getComputedStyle(document.querySelector('#g-sau')).display }; });
+    check('phone: book is a scrolling page', bk.mode && bk.scrolls, bk);
+    check('phone: book page is straight', /^matrix\(1, 0, 0, 1,/.test(bk.tilt), bk.tilt);
+    check('phone: no page-flip corners', bk.corners === 'none', bk.corners);
+    const before = await m.evaluate(() => [document.querySelector('#so-trang').textContent, getComputedStyle(book).getPropertyValue('--con')]);
+    await m.evaluate(() => { const go = flow.querySelector('[data-go]:not([data-go="so-doc"])'); go.click(); }); await m.waitForTimeout(500);
+    const after = await m.evaluate(() => [document.querySelector('#so-trang').textContent, getComputedStyle(book).getPropertyValue('--con'), document.querySelector('#book .trang').scrollTop]);
+    check('phone: contents link scrolls to the post', after[2] > 0 && after[0] !== before[0], { before, after });
     await ctx.close(); }
 
   check('no page errors', errs.length === 0, errs);

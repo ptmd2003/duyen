@@ -56,8 +56,14 @@ D. Extras from Duyên's feedback ✅
 
 - [X] "chép link bài này" → share button (phone share sheet, else copy link)
 - [X] Like button with count (Supabase `luot_thich` + `thich()` function, 300 clicks / 10 min site-wide cap); hidden until the SQL is run
-- [ ] **Owner:** run the new "Lượt thích" part of `supabase.sql` in Supabase → SQL Editor
+- [X] **Owner:** run the new "Lượt thích" part of `supabase.sql` in Supabase → SQL Editor
 - [X] Opening leaf curtain parts like silk: wavy moving seam, bottom trails, strands near the seam swing aside, soft edges
+
+E. Duyên's direction: let visitors explore (replaces parts of B and C on phones) ✅
+
+- [X] Home on phones: back to scattered pads (desktop-style), **no post titles at all**; pads keep an `aria-label` for screen readers
+- [X] Book on phones: straight page (no tilt), one tall page you scroll, no page-flip effect/corners; counter shows "bài 2 / 5"; page-edge stack follows scroll
+- [X] Desktop unchanged: tilted two-page spread with page flip, hover titles on the pond
 
 ## Phase 3: Supabase does more
 

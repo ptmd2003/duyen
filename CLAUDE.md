@@ -29,7 +29,7 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 
 ## Gotchas
 - CSS class names collide easily in this one big file (e.g. `.so`, `.dem`, `.thich` were already taken). `grep` a class name before using it; prefix new ones (`nut-thich`, `so-thich`).
-- Phones (<760px) get their own layouts: home pads are stacked in JS (`placeFlowers`), the book is 1-page with spine/page-stack (`.book[data-n="1"]`), the light toggle `#doi` moves into the header. Check both 390px and 360px.
+- Phones get their own layouts. Home (<760px): pads scattered at `SPOTS_M`, post titles hidden on purpose (Duyên wants visitors to explore; don't add labels back). Book (<820px, `B.cuon`, `.book.cuon-doc`): straight single page that scrolls vertically; no page flip, `turn()` is a no-op, use `goPost()` to jump and `readHere()` to sync notes/title/counter. The light toggle `#doi` moves into the header. Check both 390px and 360px.
 - The intro curtain (`#rem`) is driven by rAF in JS (clip-path wave + mask), not CSS transitions. Screenshots can't capture it reliably; record a video (Playwright `recordVideo`) and pull frames with Playwright's ffmpeg.
 
 ## Workflow
