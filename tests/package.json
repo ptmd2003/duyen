@@ -1,0 +1,6 @@
+{
+  "name": "duyen-tests",
+  "private": true,
+  "scripts": { "test": "node smoke.js" },
+  "devDependencies": { "playwright": "1.47.2" }
+}

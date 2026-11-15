@@ -133,6 +133,7 @@ mark.hl.on{background-size:100% 100%}
 .anh{break-inside:avoid;position:relative;width:64%;margin:1.1em auto 1.4em;transform:rotate(var(--r,2deg))}
 .anh::before{content:"";position:absolute;left:34%;top:-13px;width:34%;height:24px;background:rgba(185,168,230,.8);transform:rotate(-5deg)}
 .anh div{display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;border:8px solid #fff;background:#C6D4B6;box-shadow:0 8px 18px rgba(50,60,30,.3);font-family:var(--f-ui);font-size:12px;letter-spacing:.1em;color:#33402B}
+.anh img{display:block;width:100%;height:100%;object-fit:cover}
 .nhanh{display:block;margin:.6em 0 0;break-before:avoid}
 .ep{float:right;margin:-6px -8px 4px 12px;transform:rotate(var(--r,12deg));filter:drop-shadow(0 5px 4px rgba(40,50,25,.3))}
 .bia-trong{display:block}
@@ -583,6 +584,7 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
     <textarea id="loi-nhan" rows="3" maxlength="200" placeholder="Đọc xong muốn đi cà phê ngày mưa ghê."></textarea>
     <label class="chon" for="chi-duyen"><input id="chi-duyen" type="radio" name="hien" value="rieng" checked> Chỉ Duyên đọc</label>
     <label class="chon" for="dan-len"><input id="dan-len" type="radio" name="hien" value="chung"> Hiện trên trang (sau khi Duyên duyệt)</label>
+    <input id="web" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
     <p id="form-msg" hidden></p>
     <button class="nut dam" type="submit">Gửi</button>
   </form>
@@ -924,14 +926,14 @@ function readLog(){
 }
 function buildBook(year){
   const posts = byYear(year), nk = year.startsWith("nk-"), r = rng(year.length * 131 + year.charCodeAt(year.length - 1) * 17);
-  let h = `<section class="bia-trong"><div class="so"${nk ? "" : ' style="font-size:3.2em;line-height:1.05"'}>${nk ? year.slice(3) : esc(SKIN[year].ten)}</div><div class="ky">${nk ? "DIARY · " : ""}HÔM NAY MÌNH VIẾT</div><p class="de-tu">[LỜI ĐỀ TỪ CỦA BẠN]</p><ul class="muc">` +
+  let h = `<section class="bia-trong"><div class="so"${nk ? "" : ' style="font-size:3.2em;line-height:1.05"'}>${nk ? year.slice(3) : esc(SKIN[year].ten)}</div><div class="ky">${nk ? "DIARY · " : ""}HÔM NAY MÌNH VIẾT</div>${(SKIN[year]||{}).de ? `<p class="de-tu">${esc(SKIN[year].de)}</p>` : ""}<ul class="muc">` +
     (year === "doc-sach" && READ.length ? `<li><button type="button" data-go="so-doc"><small></small><span>Sổ đọc sách</span></button></li>` : "") + posts.map(p => `<li><button type="button" data-go="${p.s}"><small>${nk ? p.d.slice(8) + "." + p.d.slice(5,7) : p.d.slice(5,7) + "." + p.d.slice(2,4)}</small><span>${esc(p.t)}</span></button></li>`).join("") + `</ul></section>`;
   if (year === "doc-sach" && READ.length) h += readLog();
   posts.forEach((p, pi) => {
     const [y,m,d] = p.d.split("-"); let hit = false;
     const paras = p.p.map((x, i) => { let t = esc(x);
       if (p.q && !hit && x.includes(p.q)){ hit = true; t = esc(x).replace(esc(p.q), `<mark class="hl" style="--hc:${pi%2 ? "#CFC6F2" : "#F7BECB"}">${esc(p.q)}</mark>`); }
-      return `<p>${t}</p>` + (i === 1 && p.p.length > 4 ? [`<figure class="anh" style="--r:${(r()*6-3).toFixed(1)}deg"><div>[ẢNH CỦA BẠN]</div></figure>`, `<div class="ve-xe" style="--r:${(r()*6-3).toFixed(1)}deg"><span>GIỮ LẠI</span><span>${d}.${m}.${y}</span></div>`, `<span class="la-ep" style="--r:${(r()*30-15)|0}deg;width:max-content">${sprig("#6F9A55", 54, 68, "#F7BECB")}</span>`][pi % 3] : ""); }).join("");
+      return `<p>${t}</p>` + (i === 1 && p.p.length > 4 ? [p.img ? `<figure class="anh" style="--r:${(r()*6-3).toFixed(1)}deg"><div><img src="${esc(p.img)}" alt="${esc(p.alt || "")}" loading="lazy"></div></figure>` : `<div class="ve-xe" style="--r:${(r()*6-3).toFixed(1)}deg"><span>GIỮ LẠI</span><span>${d}.${m}.${y}</span></div>`, `<div class="ve-xe" style="--r:${(r()*6-3).toFixed(1)}deg"><span>GIỮ LẠI</span><span>${d}.${m}.${y}</span></div>`, `<span class="la-ep" style="--r:${(r()*30-15)|0}deg;width:max-content">${sprig("#6F9A55", 54, 68, "#F7BECB")}</span>`][pi % 3] : ""); }).join("");
     h += `<article class="bai" id="p-${p.s}" data-slug="${p.s}"${/\bmưa\b/i.test(p.t + " " + p.p.join(" ")) ? " data-mua" : ""}><div class="dau"><span>${d}.${m}<br>${y}</span><span>${(CATS[p.c]||"").toUpperCase()}</span></div><span class="ep" style="--r:${(r()*40-20)|0}deg">${flower(54, pi%3 ? 6 : 8, ["#FFFFFF","#CFC6F2","#F7BECB"][pi%3], "#F2C53D")}</span><h2>${esc(p.t)}</h2>${paras}${sprig("#26301F", 62, 78, "#B9A8E6")}</article>`;
   });
   flow.innerHTML = h; B.year = year; B.page = 0;
@@ -1048,6 +1050,8 @@ let SB = null; const MINE = store.get("duyen-nhan-cua-toi") || {};
     const {data, error} = await SB.from("loi_nhan").select("slug,ten,loi").eq("cong_khai", true).eq("da_duyet", true).not("slug", "is", null).order("tao_luc", {ascending:true}).limit(500);
     if (error) throw error; for (const k in notes) delete notes[k];
     data.forEach(n => (notes[n.slug] = notes[n.slug] || []).push({t:n.ten || "một người bạn", m:n.loi}));
+    for (const s in MINE){ MINE[s] = MINE[s].filter(x => !(notes[s] || []).some(n => n.m === x.m && n.t === x.t)); if (!MINE[s].length) delete MINE[s]; }
+    store.set("duyen-nhan-cua-toi", MINE);
     if (document.body.dataset.scene === "sach") drawNotes();
   } catch(e){ SB = null; } })();
 async function guiLoiNhan(row){ if (!SB) return false; const {error} = await SB.from("loi_nhan").insert(row); if (error) throw error; return true; }
@@ -1067,10 +1071,15 @@ $("#form").addEventListener("submit", async e => {
   e.preventDefault(); const t = $("#ten-ban").value.trim(), m = $("#loi-nhan").value.trim(), msg = $("#form-msg"), btn = e.target.querySelector("button[type=submit]");
   if (!t || !m){ msg.hidden = false; msg.setAttribute("role","alert"); msg.textContent = !t ? "Bạn chưa ghi tên." : "Bạn chưa viết lời nhắn."; return; }
   msg.removeAttribute("role"); const cur = currentPost(), slug = cur ? cur.dataset.slug : "", chung = $("#dan-len").checked;
+  if ($("#web").value){ $("#form").hidden = true; return; }
+  const last = store.get("duyen-gui-luc") || 0;
+  if (Date.now() - last < 30000){ msg.hidden = false; msg.setAttribute("role","alert"); msg.textContent = "Bạn vừa gửi rồi, đợi chút xíu nha."; return; }
   btn.disabled = true;
   try { const sent = await guiLoiNhan({slug, ten:t, loi:m, cong_khai:chung});
+    if (!sent){ msg.hidden = false; msg.setAttribute("role","alert"); msg.textContent = "Hộp thư chưa mở nên lời nhắn chưa gửi đi được."; btn.disabled = false; return; }
+    store.set("duyen-gui-luc", Date.now());
     if (chung){ (MINE[slug] = MINE[slug] || []).push({t, m, w:1}); store.set("duyen-nhan-cua-toi", MINE); B.show = true; drawNotes(); $("#form").hidden = true; }
-    else { msg.hidden = false; msg.textContent = sent ? "Đã gửi. Chỉ Duyên đọc được." : "Đã lưu trên máy này."; }
+    else { msg.hidden = false; msg.textContent = "Đã gửi. Chỉ Duyên đọc được."; }
     $("#loi-nhan").value = "";
   } catch(err){ msg.hidden = false; msg.setAttribute("role","alert"); msg.textContent = "Chưa gửi được, bạn thử lại sau nha."; }
   btn.disabled = false;
@@ -1162,7 +1171,7 @@ $("#gay").addEventListener("click", e => { const g = e.target.closest(".gay"); i
   if ($("#hop-thu")){
   $("#hop-thu").addEventListener("submit", function(e){ e.preventDefault(); const v = $("#thu").value.trim(), b = $("#thu-bao");
     if (!v){ b.textContent = "Viết vài chữ trước đã nha."; return; }
-    guiLoiNhan({slug:null, ten:null, loi:v, cong_khai:false}).then(sent => { if (!sent){ const hop = store.get("duyen-hop-thu") || []; hop.push({m:v, at:Date.now()}); store.set("duyen-hop-thu", hop); } $("#thu").value = ""; b.textContent = "Đã bỏ vào hộp thư."; }).catch(() => { b.textContent = "Chưa gửi được, thử lại sau nha."; }); });
+    guiLoiNhan({slug:null, ten:null, loi:v, cong_khai:false}).then(sent => { if (!sent){ b.textContent = "Hộp thư chưa mở nên thư chưa gửi đi được."; return; } $("#thu").value = ""; b.textContent = "Đã bỏ vào hộp thư."; }).catch(() => { b.textContent = "Chưa gửi được, thử lại sau nha."; }); });
   $("#thu").addEventListener("input", () => { $("#thu-bao").textContent = ""; });
   }
 })();
