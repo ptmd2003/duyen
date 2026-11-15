@@ -1,4 +1,5 @@
-[
+// Sổ đọc sách. st:"doc" = đang đọc; y = năm đọc xong; r = điểm /5; lai:1 = muốn đọc lại.
+window.READ = [
 {"t":"Lolita","a":"Vladimir Nabokov","st":"doc"},
 {"t":"Sức mạnh của hiện tại","a":"Eckhart Tolle","st":"doc"},
 {"t":"そして、その日まで君を愛する","a":"Koichi Nitori","st":"doc"},
@@ -50,4 +51,4 @@
 {"t":"Khuyến học","a":"Fukuzawa Yukichi","r":4},
 {"t":"7 Habits of Highly Effective People","a":"Stephen R. Covey","lai":1},
 {"t":"Hành trình về phương Đông","a":"Baird T. Spalding","lai":1}
-]
+];

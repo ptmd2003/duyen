@@ -7,7 +7,9 @@ Trang chạy tại https://ptmd2003.github.io/duyen/. Đẩy lên nhánh `main` 
 ## Các file
 - `index.html`: toàn bộ trang (giao diện, bài viết, sổ đọc sách)
 - `tex/`, `art/`: vân gỗ, vải, giấy và tranh gáy sách
+- `read.js`: sổ đọc sách (sửa ở đây là đủ)
 - `config.js`: địa chỉ Supabase và khoá publishable (công khai được)
+- `og.jpg`, `favicon.*`, `apple-touch-icon.png`: ảnh xem trước khi chia sẻ link và icon trên tab
 - `supabase.sql`: bảng `loi_nhan`, luật phân quyền và chống spam. Sửa xong thì chạy lại trong Supabase → SQL Editor
 - `tests/`: kiểm tra tự động (`cd tests && npm install && npx playwright install chromium && npm test`)
 - `todolist.md`: việc đã làm và sắp làm
@@ -23,5 +25,6 @@ Trang chạy tại https://ptmd2003.github.io/duyen/. Đẩy lên nhánh `main` 
 - Lời đề từ của một cuốn: thêm `de:"..."` vào cuốn đó trong `SKIN`.
 
 ## Nhật ký cập nhật
+- 2026-11-15: Gửi link trang lên Messenger, Zalo, Facebook giờ hiện ảnh và lời giới thiệu. Có icon hoa trên tab. Cuối mỗi bài có nút "chép link bài này", tab trình duyệt hiện tên bài đang đọc. Sổ đọc sách giờ chỉ sửa ở một chỗ (`read.js`). Lời nhắn trên điện thoại gọn lại: tối đa 2 tờ, bấm vào để đọc hết.
 - 2026-11-15: Nối Supabase thật, lời nhắn giờ gửi được tới Duyên. Lời nhắn đã duyệt không còn hiện hai lần. Báo đúng khi chưa gửi được. Bỏ chữ mẫu `[LỜI ĐỀ TỪ CỦA BẠN]`, `[ẢNH CỦA BẠN]`. Thêm chống spam (bẫy bot, chờ 30 giây, giới hạn trong cơ sở dữ liệu). Thêm kiểm tra tự động và ghi chú dự án.
 - Trước đó: lật trang mềm hơn, sổ đọc sách từ Notion, kệ sách liền khối.

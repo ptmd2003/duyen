@@ -4,8 +4,10 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 
 ## Layout
 - `index.html`: the whole site: CSS (top `<style>`), markup, and one `<script>` with all data and logic.
-  - Data constants near the top of the script: `POSTS` (diary posts), `READ` (reading log, mirrors `read.json`), `CATS`, `VIEC` (garden projects), `CAM`, `SKIN` (book covers).
+  - Data constants near the top of the script: `POSTS` (diary posts), `READ` (reading log, loaded from `read.js` as `window.READ`), `CATS`, `VIEC` (garden projects), `CAM`, `SKIN` (book covers).
   - Scenes: `#s-nuoc` (water), `#s-ke-sach` (bookshelf), `#s-sach` (open book), `#s-vuon` (garden, currently closed). Routing is hash-based in `route()`: `#ke-sach`, `#sach-<book>`, `#bai-<slug>`.
+- `read.js`: the reading log. The only place to edit books.
+- `og.jpg` (1200×630 share preview, a screenshot of the water scene), `favicon.svg/png`, `apple-touch-icon.png`. Regenerate `og.jpg` if the home scene changes a lot.
 - `config.js`: Supabase URL + **publishable** key (safe to commit). Never put a `service_role`/secret key in the repo.
 - `supabase.sql`: schema + RLS for `loi_nhan` (guestbook notes and inbox). Idempotent; re-run in SQL Editor after edits.
 - `tests/smoke.js`: Playwright smoke test with a fake Supabase. Run before every commit.
