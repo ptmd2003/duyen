@@ -710,17 +710,17 @@ const bookOf = p => p.c === "diary" ? "nk-" + p.d.slice(0,4) : (TOPIC[p.c] || "g
 const G = "linear-gradient(90deg,";
 const SKIN = {
   nk:[["#E4DBC8,#F1EADB 18%,#ECE4D3 82%,#DDD3BF","#6B5B3E"],["#BFCDB4,#D2DEC8 18%,#C9D6BF 82%,#B6C5AB","#3F5238"],["#CDBFAE,#DDD1C2 18%,#D5C8B8 82%,#C4B5A3","#56483A"],["#DEDCD3,#ECEAE2 18%,#E5E3DA 82%,#D5D3C9","#55584E"],["#E3C3C3,#F0D5D4 18%,#EACCCB 82%,#DBB9B9","#7A4A4E"],["#BFD0DC,#D3E0E9 18%,#C9D8E2 82%,#B5C7D4","#3E5566"]],
-  "lon-len":{ten:"Lớn lên", bg:"#E3C3C3,#F0D5D4 18%,#EACCCB 82%,#DBB9B9", fg:"#7A4A4E", pat:"", h:440},
+  "lon-len":{ten:"Growing Up", bg:"#E3C3C3,#F0D5D4 18%,#EACCCB 82%,#DBB9B9", fg:"#7A4A4E", pat:"", h:440},
   "marketing":{ten:"Marketing", bg:"#BFD0DC,#D3E0E9 18%,#C9D8E2 82%,#B5C7D4", fg:"#3E5566", pat:"", h:480},
-  "doc-sach":{ten:"Sách mình đọc", bg:"#EBD9B4,#F5E7C8 18%,#F0E0BE 82%,#E3CFA6", fg:"#7A6332", pat:"", h:500},
-  "tieng-nhat":{ten:"Tiếng Nhật", bg:"#D6C8DA,#E5D9E8 18%,#DDD0E1 82%,#CCBDD1", fg:"#5E4A66", pat:"", h:420},
-  "ghi-chu":{ten:"Ghi chú nhỏ", bg:"#C5D3B8,#D6E1CB 18%,#CEDAC2 82%,#BCCBAE", fg:"#3F5238", pat:"repeating-linear-gradient(0deg,rgba(255,255,255,.5) 0 7px,rgba(0,0,0,0) 7px 14px),repeating-linear-gradient(90deg,rgba(255,255,255,.5) 0 7px,rgba(0,0,0,0) 7px 14px)", h:400}
+  "doc-sach":{ten:"Books I Read", bg:"#EBD9B4,#F5E7C8 18%,#F0E0BE 82%,#E3CFA6", fg:"#7A6332", pat:"", h:500},
+  "tieng-nhat":{ten:"Japanese", bg:"#D6C8DA,#E5D9E8 18%,#DDD0E1 82%,#CCBDD1", fg:"#5E4A66", pat:"", h:420},
+  "ghi-chu":{ten:"Little Notes", bg:"#C5D3B8,#D6E1CB 18%,#CEDAC2 82%,#BCCBAE", fg:"#3F5238", pat:"repeating-linear-gradient(0deg,rgba(255,255,255,.5) 0 7px,rgba(0,0,0,0) 7px 14px),repeating-linear-gradient(90deg,rgba(255,255,255,.5) 0 7px,rgba(0,0,0,0) 7px 14px)", h:400}
 };
 const FONT = {"nk-2021":"'Playfair Display',Georgia,serif","nk-2022":"Mynerve,var(--f-ui)","nk-2023":"'Josefin Sans',var(--f-ui)","nk-2024":"Lora,Georgia,serif","nk-2025":"'Cormorant Garamond',Georgia,serif","nk-2026":"Quicksand,var(--f-ui)",
   "lon-len":"Lora,Georgia,serif","marketing":"'Josefin Sans',var(--f-ui)","doc-sach":"Prata,Georgia,serif","tieng-nhat":"Spectral,Georgia,serif","ghi-chu":"Mynerve,var(--f-ui)"};
 const BOOKS = [...new Set(POSTS.filter(p => p.c === "diary").map(p => "nk-" + p.d.slice(0,4)))].sort().concat(["lon-len","marketing","doc-sach","tieng-nhat","ghi-chu"].filter(k => POSTS.some(p => bookOf(p) === k)));
 const byYear = k => POSTS.filter(p => bookOf(p) === k).sort((a,b) => a.d < b.d ? -1 : 1);
-const bookName = k => k.startsWith("nk-") ? "Nhật ký " + k.slice(3) : SKIN[k].ten;
+const bookName = k => k.startsWith("nk-") ? "Diary " + k.slice(3) : SKIN[k].ten;
 const CAY = `<svg viewBox="0 0 120 130" aria-hidden="true"><g fill="#6FA257"><ellipse cx="60" cy="40" rx="9" ry="22"/><ellipse cx="40" cy="48" rx="8" ry="20" transform="rotate(-32 40 48)"/><ellipse cx="80" cy="48" rx="8" ry="20" transform="rotate(32 80 48)"/><ellipse cx="26" cy="64" rx="7" ry="17" transform="rotate(-58 26 64)"/><ellipse cx="94" cy="64" rx="7" ry="17" transform="rotate(58 94 64)"/></g><g fill="#8DBB7E"><ellipse cx="50" cy="56" rx="6" ry="15" transform="rotate(-14 50 56)"/><ellipse cx="70" cy="56" rx="6" ry="15" transform="rotate(14 70 56)"/></g><path d="M34 78 h52 l-6 46 a6 6 0 0 1 -6 6 h-28 a6 6 0 0 1 -6 -6 z" fill="#FBF8EC"/><path d="M34 78 h52 v8 h-52 z" fill="#EDE6D0"/></svg>`;
 const VAT = [
   `<svg viewBox="0 0 90 150" aria-hidden="true"><g stroke="#8A9A74" stroke-width="1.6" fill="none"><path d="M45 96 C 40 60, 30 40, 22 22"/><path d="M45 96 C 46 60, 50 36, 52 14"/><path d="M45 96 C 52 64, 62 46, 72 30"/></g><g fill="#FFFFFF"><circle cx="22" cy="20" r="6"/><circle cx="30" cy="34" r="5"/><circle cx="52" cy="12" r="6"/><circle cx="46" cy="30" r="5"/><circle cx="72" cy="28" r="6"/><circle cx="62" cy="44" r="5"/><circle cx="36" cy="50" r="4.5"/></g><path d="M26 92 h38 c8 14 8 40 -2 54 h-34 c-10 -14 -10 -40 -2 -54 z" fill="#FBF8EC"/><path d="M26 92 h38 v6 h-38 z" fill="#EDE6D0"/></svg>`,
@@ -754,10 +754,10 @@ function noteSpine(k, i, r){
   if (d === "caro"){ nen = "#A3BA95"; chat = "m-vai m-caro"; }
   if (d === "theu"){ nen = "#EDE4D0"; inner = `<span class="theu">${sprig("#7E9A6B", 30, 40, "#E3AEB4")}</span><i class="day-ruy"></i>`; }
   if (d === "khau"){ nen = "#D6C4A8"; inner = `<i class="khau"></i><span class="theu giua">${flower(26, 5, "#F4EFE2", "#C9A46A")}</span>`; }
-  return {w, html:`<a href="#sach-${k}" aria-label="Nhật ký ${y}" ${hoSo("gay so-tay " + chat, w, h, nen, "#3F4A38", r, van ? ";--van:" + van : "")}>${dinh(r)}${inner}<span class="nhan-nam" aria-hidden="true">${y}</span></a>`};
+  return {w, html:`<a href="#sach-${k}" aria-label="Diary ${y}" ${hoSo("gay so-tay " + chat, w, h, nen, "#3F4A38", r, van ? ";--van:" + van : "")}>${dinh(r)}${inner}<span class="nhan-nam" aria-hidden="true">${y}</span></a>`};
 }
 function topicSpine(k, r){
-  const L = TOPIC_LOOK[k], name = SKIN[k].ten, flat = !L.art && Math.max(...name.split(" ").map(x => x.length)) <= 5 && r() < .6;
+  const L = TOPIC_LOOK[k], name = SKIN[k].ten, flat = !L.art && Math.max(...name.split(" ").map(x => x.length)) <= 4 && r() < .6;
   const title = `<span class="tieu${flat ? " ngang" : ""}" style="font-family:${FONT[k]};font-size:calc(${(L.art ? 15 + r() * 2 : 16 + r() * 5).toFixed(1)}px*var(--k,1))">${flat ? name.split(" ").join("<br>") : name}</span>`;
   return {w:L.w, html:`<a href="#sach-${k}" aria-label="${name}" ${hoSo("gay " + L.chat + (L.noi ? " m-noi" : "") + (L.art ? " co-tranh" : " vt-" + L.vt), L.w, L.h, L.nen, L.fg, r)}>${dinh(r)}<i class="gan tren"></i>${title}${L.jp ? `<span class="tac jp">${L.jp}</span>` : ""}${L.art ? `<i class="tranh${L.art.startsWith("hoa") ? " vua" : ""}" style="background-image:url(art/${L.art}.webp);--ar:${L.art === "hoa2" ? 1.83 : 1.94}"></i>` : `<i class="gan duoi"></i>`}</a>`};
 }
@@ -849,7 +849,7 @@ const notes = store.get("duyen-nhan") || {};
 })();
 function buildBook(year){
   const posts = byYear(year), nk = year.startsWith("nk-"), r = rng(year.length * 131 + year.charCodeAt(year.length - 1) * 17);
-  let h = `<section class="bia-trong"><div class="so"${nk ? "" : ' style="font-size:3.2em;line-height:1.05"'}>${nk ? year.slice(3) : esc(SKIN[year].ten)}</div><div class="ky">${nk ? "NHẬT KÝ · " : ""}HÔM NAY MÌNH VIẾT</div><p class="de-tu">[LỜI ĐỀ TỪ CỦA BẠN]</p><ul class="muc">` +
+  let h = `<section class="bia-trong"><div class="so"${nk ? "" : ' style="font-size:3.2em;line-height:1.05"'}>${nk ? year.slice(3) : esc(SKIN[year].ten)}</div><div class="ky">${nk ? "DIARY · " : ""}HÔM NAY MÌNH VIẾT</div><p class="de-tu">[LỜI ĐỀ TỪ CỦA BẠN]</p><ul class="muc">` +
     posts.map(p => `<li><button type="button" data-go="${p.s}"><small>${nk ? p.d.slice(8) + "." + p.d.slice(5,7) : p.d.slice(5,7) + "." + p.d.slice(2,4)}</small><span>${esc(p.t)}</span></button></li>`).join("") + `</ul></section>`;
   posts.forEach((p, pi) => {
     const [y,m,d] = p.d.split("-"); let hit = false;
