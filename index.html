@@ -451,6 +451,35 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
 .bia .tieu.nho{white-space:normal;max-height:calc(var(--h)*1px*var(--k,1) - 120px*var(--k,1));font-size:calc(12px*var(--k,1));line-height:1.35;letter-spacing:.12em}
 .bia .tac{margin-bottom:calc(4px*var(--k,1))}
 
+/* ===== collection v5 ===== */
+.bia.sach2{width:calc(var(--w)*1px*var(--k,1));padding:0;justify-content:flex-start;gap:0;align-items:center}
+.sach2 .tt{position:relative;z-index:2;display:block;text-align:center;line-height:1.12;color:inherit;max-width:calc(100% - 8px*var(--k,1))}
+.sach2 .tt.ngang{margin-top:calc(40px*var(--k,1));letter-spacing:.01em}
+.sach2 .tt.ngang small{display:block;margin-top:calc(6px*var(--k,1));font-size:.85em;letter-spacing:.12em;font-family:'Shippori Mincho',serif}
+.sach2 .tt.doc{writing-mode:vertical-rl;margin-top:calc(46px*var(--k,1));white-space:nowrap;letter-spacing:.03em;line-height:1}
+.sach2 .tt.noi{text-shadow:0 1px 0 rgba(255,255,255,.5),0 -1px 0 rgba(50,40,20,.22);opacity:.85}
+.sach2 .tt.vang,.sach2 .ta.vang{color:#D6BE84;text-shadow:0 1px 0 rgba(0,0,0,.35),0 -.5px 0 rgba(255,236,190,.55)}
+.sach2 .tt.bang{margin-top:calc(16px*var(--k,1));padding:calc(7px*var(--k,1)) calc(3px*var(--k,1));background:#F4EEDF;width:calc(100% - 8px*var(--k,1));box-shadow:0 1px 0 rgba(90,70,40,.15)}
+.sach2 .ta{position:relative;z-index:2;margin-top:auto;margin-bottom:calc(16px*var(--k,1));font-family:var(--f-ui);font-size:calc(7.5px*var(--k,1));letter-spacing:.06em;text-transform:uppercase;text-align:center;line-height:1.3;opacity:.8;max-width:calc(100% - 6px*var(--k,1))}
+.sach2 .ta.doc{writing-mode:vertical-rl;font-size:calc(9px*var(--k,1));text-transform:none;letter-spacing:.04em;margin-bottom:calc(22px*var(--k,1))}
+.sach2 .ke-mong{position:absolute;left:calc(9px*var(--k,1));right:calc(9px*var(--k,1));height:1px;background:currentColor;opacity:.4}
+.sach2 .gan-noi{position:absolute;left:0;right:0;height:calc(7px*var(--k,1));z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(255,255,255,.22) 35%,rgba(255,255,255,.1) 60%,rgba(0,0,0,.3));border-radius:2px}
+.sach2 .dau-nho{position:absolute;bottom:calc(20px*var(--k,1));left:50%;width:calc(6px*var(--k,1));height:calc(6px*var(--k,1));margin-left:calc(-3px*var(--k,1));border:1px solid currentColor;transform:rotate(45deg);opacity:.5}
+.sach2 .motif{position:absolute;bottom:calc(26px*var(--k,1));left:50%;width:calc(20px*var(--k,1));margin-left:calc(-10px*var(--k,1));opacity:.55;filter:drop-shadow(0 1px 0 rgba(255,255,255,.4))}
+.sach2 .tranh2{position:absolute;background-size:cover;background-position:center;z-index:1}
+.sach2 .tranh2.day{left:0;right:0;top:0;bottom:0}
+.sach2 .tranh2.day::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(60,45,22,.18),rgba(255,255,255,.12) 70%,rgba(60,45,22,.12));mix-blend-mode:multiply}
+.sach2 .tranh2.duoi{left:calc(5px*var(--k,1));right:calc(5px*var(--k,1));bottom:calc(14px*var(--k,1));height:48%;box-shadow:0 0 0 1px rgba(255,255,255,.6),0 0 0 2px rgba(90,70,40,.18)}
+.sach2 .tranh2.co-khung{height:auto;aspect-ratio:1/var(--ar);background-size:100% auto;box-shadow:0 0 0 2px #F6F0E2,0 0 0 3px rgba(90,70,40,.22)}
+.sach2 .tranh2.giua{left:calc(9px*var(--k,1));right:calc(9px*var(--k,1));top:44%}
+.sach2 .tranh2.duoi.co-khung{left:calc(9px*var(--k,1));right:calc(9px*var(--k,1))}
+.sach2.m-da{background:url(tex/leather.webp),linear-gradient(var(--nen),var(--nen));background-size:calc(150px*var(--k,1)) auto,auto;background-blend-mode:multiply,normal}
+.sach2.m-hoa{background:var(--floral),url(tex/paper.webp),linear-gradient(var(--nen),var(--nen));background-size:calc(30px*var(--k,1)) auto,180px 180px,auto;background-blend-mode:normal,multiply,normal}
+.sach2 .nhan-sach{position:relative;z-index:2;margin-top:calc(60px*var(--k,1));padding:calc(6px*var(--k,1)) calc(4px*var(--k,1));width:calc(100% - 14px*var(--k,1));background:#FBF8EE;border:1px solid rgba(110,90,60,.35);box-shadow:inset 0 0 0 2px #FBF8EE,inset 0 0 0 3px rgba(110,90,60,.2);font-family:'Cormorant Garamond',Georgia,serif;font-size:calc(14px*var(--k,1));text-align:center;color:#5A4A33}
+.sach2 .tt.vi-tren{margin-top:calc(22px*var(--k,1))}
+.sach2.so-tay .tranh2.giua{top:46%}
+.sach2.so-tay .nhan-nam{top:calc(8px*var(--k,1))}
+
 @media (max-width:760px){
   .chao{top:96px}
   .duoi{left:66px}
@@ -728,48 +757,45 @@ const VAT = [
   `<svg viewBox="0 0 90 120" aria-hidden="true"><rect x="8" y="10" width="74" height="100" fill="#D9B978"/><rect x="16" y="18" width="58" height="84" fill="#F3F6E4"/><g transform="translate(45 60)"><g fill="#FFFFFF" stroke="#D8DCC6" stroke-width=".6"><ellipse cy="-13" rx="7" ry="13"/><ellipse cy="-13" rx="7" ry="13" transform="rotate(72)"/><ellipse cy="-13" rx="7" ry="13" transform="rotate(144)"/><ellipse cy="-13" rx="7" ry="13" transform="rotate(216)"/><ellipse cy="-13" rx="7" ry="13" transform="rotate(288)"/></g><circle r="4.5" fill="#F2C53D"/></g></svg>`
 ];
 let SHELF_W = 600;
+document.documentElement.style.setProperty("--floral", "url(\"data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="34" height="40" viewBox="0 0 34 40"><g fill="#B9C9A6"><ellipse cx="8" cy="10" rx="2.4" ry="4" transform="rotate(30 8 10)"/><ellipse cx="25" cy="30" rx="2.4" ry="4" transform="rotate(-30 25 30)"/></g><g fill="#E8C9C4"><circle cx="11" cy="8" r="2.4"/><circle cx="14" cy="10" r="2.4"/><circle cx="11" cy="12" r="2.4"/></g><g fill="#F6F0E2"><circle cx="27" cy="27" r="2.2"/><circle cx="30" cy="29" r="2.2"/><circle cx="27" cy="31" r="2.2"/></g><circle cx="12" cy="10" r="1.1" fill="#C9A46A"/><circle cx="28" cy="29" r="1" fill="#C9A46A"/></svg>') + "\")");
 /* books on the shelf: diaries are plain notebooks, topic books are "books by Duyên", read books are static */
-const DOC = [
-  {t:"Atomic Habits", a:"James Clear", nen:"#E4E0D2", fg:"#3D4A3A", f:"Lora,Georgia,serif", ngang:true, w:60, h:418, chat:"m-giay", noi:true},
-  {t:"Thất lạc cõi người", a:"Dazai Osamu", nen:"#3F5A43", fg:"#E2D3A6", f:"'Cormorant Garamond',Georgia,serif", w:36, h:392, chat:"m-vai", kim:true},
-  {t:"7 Habits of Highly Effective People", a:"Stephen R. Covey", nen:"#F4F0E5", fg:"#4A5640", f:"'Josefin Sans',var(--f-ui)", w:52, h:440, nho:true, chat:"m-giay", nghieng:true},
-  {t:"Cô gái văn chương", a:"", nen:"#D7C8AC", fg:"#4D3F2A", f:"Spectral,Georgia,serif", w:42, h:376, chat:"m-vai"}
+/* ===== the collection: thirteen individually designed books ===== */
+const FLORAL = "url(\"data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="34" height="40" viewBox="0 0 34 40"><g fill="#B9C9A6"><ellipse cx="8" cy="10" rx="2.4" ry="4" transform="rotate(30 8 10)"/><ellipse cx="25" cy="30" rx="2.4" ry="4" transform="rotate(-30 25 30)"/></g><g fill="#E8C9C4"><circle cx="11" cy="8" r="2.4"/><circle cx="14" cy="10" r="2.4"/><circle cx="11" cy="12" r="2.4"/></g><g fill="#F6F0E2"><circle cx="27" cy="27" r="2.2"/><circle cx="30" cy="29" r="2.2"/><circle cx="27" cy="31" r="2.2"/></g><circle cx="12" cy="10" r="1.1" fill="#C9A46A"/><circle cx="28" cy="29" r="1" fill="#C9A46A"/></svg>') + "\")";
+const DESIGNS = [
+  {k:"nk-2022", w:44, h:398, nen:"#A3BA95", fg:"#3F4A38", mat:"m-vai m-caro"},
+  {k:"nk-2021", w:56, h:430, nen:"#C9D3B6", fg:"#4A5A40", mat:"m-vai", ten:{kieu:"ngang", chu:"2021", f:"'Cormorant Garamond',Georgia,serif", co:15, noi:true, vi:"tren"}, tranh:{src:"hoa1", ar:1.94, khung:true, vi:"giua"}},
+  {doc:"Atomic Habits", w:60, h:418, nen:"#ECE8DC", fg:"#2F3A2C", mat:"m-giay", ten:{kieu:"ngang", chu:"Atomic<br>Habits", f:"'Josefin Sans',var(--f-ui)", co:12.5, nang:600}, tac:"James Clear", ke:true},
+  {k:"lon-len", w:54, h:404, nen:"#F1EBDD", fg:"#4A5640", mat:"m-giay", ten:{kieu:"ngang", chu:"Growing<br>Up", f:"Lora,Georgia,serif", co:12.5}, tranh:{src:"vuon", vi:"duoi"}},
+  {doc:"Thất lạc cõi người", w:40, h:394, nen:"#3E5640", fg:"#D6BE84", mat:"m-da", ten:{kieu:"doc", chu:"Thất lạc cõi người", f:"'Cormorant Garamond',Georgia,serif", co:15}, tac:"Dazai Osamu", vang:true, gan:[9,17,84]},
+  {k:"marketing", w:62, h:428, nen:"#FAF7EF", fg:"#3D4A3A", mat:"m-giay", ten:{kieu:"ngang", chu:"MARKETING", f:"'Josefin Sans',var(--f-ui)", co:8.6, ls:".05em"}, ke:true, ke2:true},
+  {k:"doc-sach", w:58, h:414, nen:"#B5C6A3", fg:"#2F3F2C", mat:"m-vai", ten:{kieu:"ngang", chu:"Books<br><i>I Read</i>", f:"Prata,Georgia,serif", co:12.5, noi:true}, motif:"la"},
+  {k:"nk-2023", w:50, h:446, nen:"#F3EDE0", fg:"#4D4030", mat:"m-giay m-hoa", nhan:"2023"},
+  {doc:"The 7 Habits of Highly Effective People", w:44, h:440, nen:"#DCD7C9", fg:"#3D4A3A", mat:"m-giay", ten:{kieu:"doc", chu:"The 7 Habits of Highly Effective People", f:"'Josefin Sans',var(--f-ui)", co:10}, tac:"Stephen R. Covey"},
+  {k:"tieng-nhat", w:56, h:446, nen:"#EFE6D2", fg:"#4D4030", mat:"m-giay", ten:{kieu:"ngang", chu:"Japanese", f:"Spectral,Georgia,serif", co:10.8, phu:"日本語", bang:true}, tranh:{src:"ho", vi:"day", tu:"22%"}},
+  {k:"nk-2024", w:48, h:414, nen:"#C9C2A8", fg:"#3F4A38", mat:"m-vai", tranh:{src:"nui", vi:"day"}},
+  {doc:"Cô gái văn chương", w:42, h:378, nen:"#D9C1B8", fg:"#5A3F38", mat:"m-vai", ten:{kieu:"doc", chu:"Cô gái văn chương", f:"Lora,Georgia,serif", co:14}, gan:[8,88]},
+  {k:"ghi-chu", w:52, h:376, nen:"#D9CBAE", fg:"#4D4030", mat:"m-giay", ten:{kieu:"ngang", chu:"<i>Little<br>Notes</i>", f:"Lora,Georgia,serif", co:13}, tranh:{src:"hoa2", ar:1.83, khung:true, vi:"duoi"}}
 ];
-const NK_DESIGN = ["tranh-hoa","caro","theu","tranh-nui"];
-const TOPIC_LOOK = {
-  "lon-len":{nen:"#F3EEE2", fg:"#4A5640", h:404, w:58, chat:"m-giay", vt:"tren", art:"vuon"},
-  "marketing":{nen:"#FAF7EF", fg:"#3D4A3A", h:428, w:50, chat:"m-giay", vt:"giua"},
-  "doc-sach":{nen:"#B5C6A3", fg:"#2F3F2C", h:414, w:54, chat:"m-vai", vt:"tren", noi:true},
-  "tieng-nhat":{nen:"#EFE6D2", fg:"#4D4030", h:446, w:52, chat:"m-giay", vt:"tren", jp:"日本語", art:"ho"},
-  "ghi-chu":{nen:"#E2D6BF", fg:"#4D4030", h:376, w:48, chat:"m-vai", vt:"tren", art:"hoa2"}
-};
 const dinh = r => `<i class="dinh" style="height:calc(${(3 + r() * 3).toFixed(1)}px*var(--k,1))"></i>`;
-const hoSo = (cls, w, h, nen, fg, r, extra) => `class="bia ${cls}" style="--w:${w};--h:${h};--nen:${nen};color:${fg};margin-left:calc(${(r() * 7).toFixed(1)}px*var(--k,1))${extra || ""}"`;
-function noteSpine(k, i, r){
-  const d = NK_DESIGN[i % 4], y = k.slice(3), h = [430, 398, 446, 414][i % 4], w = 58 + byYear(k).length * 3;
-  let nen = "#EEE6D3", van = "", inner = "", chat = "m-vai";
-  if (d === "tranh-hoa"){ nen = "#E9DFC9"; inner = `<i class="khau"></i><i class="tranh vua" style="background-image:url(art/hoa1.webp);--ar:1.94"></i>`; }
-  if (d === "tranh-nui"){ nen = "#C9C2A8"; inner = `<i class="tranh day-du" style="background-image:url(art/nui.webp)"></i>`; }
-  if (d === "hoa"){ nen = "#6F8F69"; inner = `<svg class="minh-hoa" viewBox="0 0 60 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M30 400 C 22 330, 38 270, 28 200 S 34 80, 30 0" fill="none" stroke="#C9D8B4" stroke-width="1.4" opacity=".8"/>${[70,150,240,320].map((yy, j) => `<g transform="translate(${j % 2 ? 40 : 20} ${yy}) rotate(${(r() * 70) | 0})" opacity=".95">${[0,72,144,216,288].map(a => `<ellipse cx="0" cy="-7" rx="4.2" ry="7" fill="#F4EFE2" transform="rotate(${a})"/>`).join("")}<circle r="2.6" fill="#E3C27A"/></g>`).join("")}${[110,190,280].map((yy, j) => `<ellipse cx="${j % 2 ? 22 : 38}" cy="${yy}" rx="8" ry="3.4" fill="#A9C092" transform="rotate(${j % 2 ? -30 : 30} ${j % 2 ? 22 : 38} ${yy})"/>`).join("")}</svg>`; }
-  if (d === "caro"){ nen = "#A3BA95"; chat = "m-vai m-caro"; }
-  if (d === "theu"){ nen = "#EDE4D0"; inner = `<span class="theu">${sprig("#7E9A6B", 30, 40, "#E3AEB4")}</span><i class="day-ruy"></i>`; }
-  if (d === "khau"){ nen = "#D6C4A8"; inner = `<i class="khau"></i><span class="theu giua">${flower(26, 5, "#F4EFE2", "#C9A46A")}</span>`; }
-  return {w, html:`<a href="#sach-${k}" aria-label="Diary ${y}" ${hoSo("gay so-tay " + chat, w, h, nen, "#3F4A38", r, van ? ";--van:" + van : "")}>${dinh(r)}${inner}<span class="nhan-nam" aria-hidden="true">${y}</span></a>`};
-}
-function topicSpine(k, r){
-  const L = TOPIC_LOOK[k], name = SKIN[k].ten, flat = !L.art && Math.max(...name.split(" ").map(x => x.length)) <= 4 && r() < .6;
-  const title = `<span class="tieu${flat ? " ngang" : ""}" style="font-family:${FONT[k]};font-size:calc(${(L.art ? 15 + r() * 2 : 16 + r() * 5).toFixed(1)}px*var(--k,1))">${flat ? name.split(" ").join("<br>") : name}</span>`;
-  return {w:L.w, html:`<a href="#sach-${k}" aria-label="${name}" ${hoSo("gay " + L.chat + (L.noi ? " m-noi" : "") + (L.art ? " co-tranh" : " vt-" + L.vt), L.w, L.h, L.nen, L.fg, r)}>${dinh(r)}<i class="gan tren"></i>${title}${L.jp ? `<span class="tac jp">${L.jp}</span>` : ""}${L.art ? `<i class="tranh${L.art.startsWith("hoa") ? " vua" : ""}" style="background-image:url(art/${L.art}.webp);--ar:${L.art === "hoa2" ? 1.83 : 1.94}"></i>` : `<i class="gan duoi"></i>`}</a>`};
-}
-function readSpine(b, r){
-  const title = b.ngang ? `<span class="tieu ngang" style="font-family:${b.f}">${b.t.split(" ").join("<br>")}</span>` : `<span class="tieu${b.nho ? " nho" : ""}" style="font-family:${b.f}">${b.t}</span>`;
-  return {w:b.w, html:`<span role="img" aria-label="${b.t}${b.a ? ", " + b.a : ""}" ${hoSo("tinh " + b.chat + (b.noi ? " m-noi" : "") + (b.kim ? " m-kim" : "") + (b.nghieng ? " nghieng" : ""), b.w, b.h, b.nen, b.fg, r)}>${dinh(r)}${title}${b.a ? `<span class="tac" style="font-family:${b.f}">${b.a}</span>` : ""}</span>`};
-}
-function shelfOrder(){
-  const nk = BOOKS.filter(k => k.startsWith("nk-")), tp = BOOKS.filter(k => !k.startsWith("nk-")), out = []; let ni = 0, ti = 0, di = 0;
-  ["nk","doc","tp","nk","doc","tp","tp","nk","doc","tp","nk","doc","tp"].forEach(p => { if (p === "nk" && ni < nk.length) out.push({k:nk[ni], nk:ni++}); else if (p === "tp" && ti < tp.length) out.push({k:tp[ti++]}); else if (p === "doc" && di < DOC.length) out.push({doc:DOC[di++]}); });
-  while (ni < nk.length) out.push({k:nk[ni], nk:ni++}); while (ti < tp.length) out.push({k:tp[ti++]}); while (di < DOC.length) out.push({doc:DOC[di++]});
-  return out;
+const LA = `<svg class="motif" viewBox="0 0 30 40" aria-hidden="true"><path d="M15 38 C 15 26, 15 14, 15 4" fill="none" stroke="currentColor" stroke-width="1"/><g fill="none" stroke="currentColor" stroke-width=".9"><path d="M15 30 C 9 28, 6 24, 6 20 C 10 21, 14 25, 15 30"/><path d="M15 22 C 21 20, 24 16, 24 12 C 20 13, 16 17, 15 22"/><path d="M15 14 C 10 12, 8 9, 8 6 C 11 7, 14 10, 15 14"/></g></svg>`;
+function spineOf(d, i){
+  const r = rng(i * 17 + 5), key = d.k, interactive = !!key, nk = key && key.startsWith("nk-");
+  const label = d.doc ? d.doc + (d.tac ? ", " + d.tac : "") : (nk ? "Diary " + key.slice(3) : SKIN[key].ten);
+  let inner = dinh(r);
+  (d.gan || []).forEach(p => inner += `<i class="gan-noi" style="top:${p}%"></i>`);
+  if (d.tranh){ const t = d.tranh; inner += `<i class="tranh2 ${t.vi}${t.khung ? " co-khung" : ""}" style="background-image:url(art/${t.src}.webp)${t.ar ? ";--ar:" + t.ar : ""}${t.tu ? ";top:" + t.tu : ""}"></i>`; }
+  if (d.ke) inner += `<i class="ke-mong" style="top:calc(34px*var(--k,1))"></i>`;
+  if (d.ten){ const t = d.ten;
+    inner += `<span class="tt ${t.kieu}${t.noi ? " noi" : ""}${d.vang ? " vang" : ""}${t.bang ? " bang" : ""}${t.vi ? " vi-" + t.vi : ""}" style="font-family:${t.f};font-size:calc(${t.co}px*var(--k,1))${t.ls ? ";letter-spacing:" + t.ls : ""}${t.nang ? ";font-weight:" + t.nang : ""}">${t.chu}${t.phu ? `<small>${t.phu}</small>` : ""}</span>`; }
+  if (d.motif === "la") inner += LA;
+  if (d.nhan) inner += `<span class="nhan-sach">${d.nhan}</span>`;
+  if (d.tac) inner += `<span class="ta${d.ten && d.ten.kieu === "doc" ? " doc" : ""}${d.vang ? " vang" : ""}">${d.tac}</span>`;
+  if (d.ke2) inner += `<i class="ke-mong" style="bottom:calc(30px*var(--k,1))"></i>`;
+  if (!d.tac && !d.tranh && !d.nhan && d.ten && !d.motif) inner += `<i class="dau-nho"></i>`;
+  if (nk) inner += `<span class="nhan-nam" aria-hidden="true">${key.slice(3)}</span>`;
+  const st = `--w:${d.w};--h:${d.h};--nen:${d.nen};color:${d.fg};margin-left:calc(${(r() * 6).toFixed(1)}px*var(--k,1))${d.lech ? ";transform:rotate(" + d.lech + "deg)" : ""}`;
+  const cls = `bia sach2 ${d.mat}${nk ? " so-tay" : ""}${interactive ? " gay" : " tinh"}`;
+  return {w:d.w, html: interactive ? `<a class="${cls}" href="#sach-${key}" aria-label="${esc(label)}" style="${st}">${inner}</a>` : `<span class="${cls}" role="img" aria-label="${esc(label)}" style="${st}">${inner}</span>`};
 }
 /* objects: one light from the upper right, soft contact shadows, no glow */
 const BONG = id => `<filter id="${id}" x="-30%" y="-200%" width="160%" height="500%"><feGaussianBlur stdDeviation="2.4"/></filter>`;
@@ -816,10 +842,10 @@ ${back}${crown}
 <path d="M50 60 q36 6 72 0" stroke="rgba(150,135,105,.25)" fill="none"/>
 ${front}</svg>`; }
 function renderShelf(){
-  const vw = innerWidth, rows = vw < 620 ? 3 : vw < 900 ? 2 : 1, items = shelfOrder(), r = rng(2026);
-  const sp = items.map((it, i) => it.doc ? readSpine(it.doc, rng(i * 13 + 3)) : it.nk != null ? noteSpine(it.k, it.nk, rng(it.nk + 5)) : topicSpine(it.k, rng(it.k.length * 7)));
+  const vw = innerWidth, rows = vw < 620 ? 3 : vw < 900 ? 2 : 1, r = rng(2026);
+  const sp = DESIGNS.filter(d => !d.k || BOOKS.includes(d.k)).map(spineOf);
   const per = Math.ceil(sp.length / rows); let h = "", maxW = 0;
-  for (let t = 0; t < rows; t++){ const part = sp.slice(t * per, (t + 1) * per); let tw = 0; const row = part.map(x => { tw += x.w * .86 + 6; return x.html; }).join("");
+  for (let t = 0; t < rows; t++){ const part = sp.slice(t * per, (t + 1) * per); let tw = 0; const row = part.map(x => { tw += x.w + 5; return x.html; }).join("");
     maxW = Math.max(maxW, tw + (rows === 1 ? 40 : 90)); h += `<div class="tang">${row}${rows > 1 && t === rows - 1 ? `<span class="vat" style="width:calc(58px*var(--k,1))">${PEN_SVG}</span>` : ""}</div>`; }
   h += `<span class="treo">${treoSVG(rng(7))}</span><span class="meo">${CAT_SVG}</span><span class="nen">${NEN_SVG}</span>`;
   if (rows === 1) h += `<span class="ong-but">${PEN_SVG}</span>`;
