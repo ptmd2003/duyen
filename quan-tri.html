@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>lời nhắn · duyên</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Mynerve&display=swap">
+<style>
+:root{
+  --ink:#1F3323; --paper:#F6F1E1; --paper-2:#FBF8EC; --leaf:#3F5C3B; --water:#A8CDB2; --lilac:#B9A8E6; --pink:#F7BECB; --muted:#4C5A41;
+  --f-display:"EB Garamond",Georgia,serif; --f-ui:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif; --f-hand:"Mynerve","Be Vietnam Pro",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--water);color:var(--ink);font-family:var(--f-ui);font-size:15px;-webkit-font-smoothing:antialiased}
+main{max-width:720px;margin:0 auto;padding:28px 16px 60px}
+h1{font-family:var(--f-display);font-weight:400;font-size:38px;margin:0 0 4px}
+a{color:inherit}
+button,input,textarea{font:inherit;color:inherit}
+button{min-height:40px;padding:0 16px;border:0;border-radius:999px;background:var(--ink);color:var(--paper-2);cursor:pointer}
+button.nhe{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px rgba(31,51,35,.35)}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:2px solid var(--leaf);outline-offset:2px}
+.dau-qt{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.dau-qt p{margin:0;color:var(--muted);font-size:13px}
+#dang-nhap{display:flex;flex-direction:column;gap:10px;max-width:360px;padding:22px;background:var(--paper-2);box-shadow:0 12px 24px rgba(50,95,70,.25);transform:rotate(-.6deg)}
+#dang-nhap label{font-size:13px;font-weight:500}
+#dang-nhap input{width:100%;min-height:42px;padding:0 12px;border:1px solid #6B7C5E;background:#fff;border-radius:3px}
+#dang-nhap button{align-self:flex-start;margin-top:4px}
+.bao-qt{min-height:1.3em;margin:0;font-size:13px;color:#8A3B4F}
+.tab-qt{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px;padding:0;list-style:none}
+.tab-qt button{min-height:36px;background:rgba(251,248,236,.55);color:var(--ink)}
+.tab-qt button[aria-pressed="true"]{background:var(--paper-2);box-shadow:0 4px 10px rgba(50,95,70,.2)}
+.tab-qt .dem-qt{margin-left:6px;font-size:12px;color:var(--muted)}
+#ds{display:flex;flex-direction:column;gap:14px;margin:0;padding:0;list-style:none}
+.the-qt{padding:16px 18px;background:var(--paper-2);box-shadow:0 8px 18px rgba(50,95,70,.22);border-radius:2px}
+.the-qt:nth-child(even){background:#F2F6E6}
+.the-qt .loi-qt{margin:0 0 10px;font-family:var(--f-hand);font-size:19px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}
+.the-qt .meta-qt{display:flex;flex-wrap:wrap;gap:4px 12px;margin:0 0 12px;font-size:12px;letter-spacing:.03em;color:var(--muted)}
+.nhan-qt{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;letter-spacing:.06em;background:#E3DCF5}
+.nhan-qt.cho{background:var(--pink)}
+.nhan-qt.hien{background:#CFE3C0}
+.the-qt .tl-qt{margin:0 0 12px;padding:8px 12px;border-left:3px solid var(--lilac);background:rgba(185,168,230,.12);font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.nut-qt{display:flex;flex-wrap:wrap;gap:8px}
+.viet-qt{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.viet-qt textarea{width:100%;min-height:80px;padding:10px 12px;border:1px solid #6B7C5E;background:#fff;border-radius:3px;resize:vertical;font-size:15px}
+.viet-qt div{display:flex;gap:8px}
+.trong-qt{padding:30px 18px;text-align:center;color:var(--muted);background:rgba(251,248,236,.5)}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion: reduce){#dang-nhap{transform:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="dau-qt">
+    <div><h1>lời nhắn</h1><p><a href="./">← về trang chính</a></p></div>
+    <p id="toi" hidden><span id="toi-email"></span> <button type="button" class="nhe" id="dang-xuat">Đăng xuất</button></p>
+  </div>
+
+  <form id="dang-nhap" hidden novalidate>
+    <label for="email">Email</label><input id="email" type="email" autocomplete="username" required>
+    <label for="mat-khau">Mật khẩu</label><input id="mat-khau" type="password" autocomplete="current-password" required>
+    <p class="bao-qt" id="bao-dn" role="alert"></p>
+    <button type="submit">Vào</button>
+  </form>
+
+  <section id="hop" hidden>
+    <ul class="tab-qt" role="list">
+      <li><button type="button" data-loc="cho" aria-pressed="true">Chờ duyệt<span class="dem-qt"></span></button></li>
+      <li><button type="button" data-loc="hien" aria-pressed="false">Đang hiện<span class="dem-qt"></span></button></li>
+      <li><button type="button" data-loc="rieng" aria-pressed="false">Thư riêng<span class="dem-qt"></span></button></li>
+      <li><button type="button" data-loc="het" aria-pressed="false">Tất cả<span class="dem-qt"></span></button></li>
+    </ul>
+    <p class="bao-qt" id="bao" role="status"></p>
+    <ul id="ds"></ul>
+  </section>
+  <p class="bao-qt" id="bao-cau-hinh" hidden>Chưa có config.js nên chưa vào được.</p>
+</main>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" integrity="sha384-0w2KAL2YHP6wKOkUDzkCDGgVvfmHnj02DHeQ6XcHOgTfFsGyonKOpShMH1x6nk9o" crossorigin="anonymous"></script>
+<script>
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const COT = "id,slug,ten,loi,cong_khai,da_duyet,tao_luc,tra_loi,tra_loi_luc";
+const LOC = {
+  cho:   n => n.cong_khai && !n.da_duyet,
+  hien:  n => n.cong_khai && n.da_duyet,
+  rieng: n => !n.cong_khai,
+  het:   () => true
+};
+let SB = null, DS = [], loc = "cho", xoaCho = null;
+
+function ngay(t){ try { return new Date(t).toLocaleString("vi-VN", {day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit"}); } catch(e){ return ""; } }
+function baiCua(slug){ return slug ? `<a href="./#bai-${encodeURIComponent(slug)}" target="_blank" rel="noopener">${esc(slug.replace(/-/g, " "))}</a>` : "hộp thư"; }
+function bao(t){ $("#bao").textContent = t || ""; }
+
+function ve(){
+  $$(".tab-qt button").forEach(b => { b.setAttribute("aria-pressed", b.dataset.loc === loc); b.querySelector(".dem-qt").textContent = DS.filter(LOC[b.dataset.loc]).length; });
+  const list = DS.filter(LOC[loc]), ul = $("#ds");
+  if (!list.length){ ul.innerHTML = `<li class="trong-qt">${loc === "cho" ? "Không có lời nhắn nào đang chờ." : "Chưa có gì ở đây."}</li>`; return; }
+  ul.innerHTML = list.map(n => {
+    const trangThai = !n.cong_khai ? `<span class="nhan-qt">chỉ mình đọc</span>` : n.da_duyet ? `<span class="nhan-qt hien">đang hiện</span>` : `<span class="nhan-qt cho">chờ duyệt</span>`;
+    const nutDuyet = n.cong_khai ? `<button type="button" data-viec="${n.da_duyet ? "an" : "duyet"}" ${n.da_duyet ? 'class="nhe"' : ""}>${n.da_duyet ? "Ẩn khỏi trang" : "Duyệt, cho hiện"}</button>` : "";
+    return `<li class="the-qt" data-id="${n.id}">
+      <p class="loi-qt">${esc(n.loi)}</p>
+      <p class="meta-qt"><span>${esc(n.ten || "một người bạn")}</span><span>${baiCua(n.slug)}</span><span>${esc(ngay(n.tao_luc))}</span>${trangThai}</p>
+      ${n.tra_loi ? `<p class="tl-qt"><b>Mình trả lời:</b> ${esc(n.tra_loi)}</p>` : ""}
+      <div class="nut-qt">${nutDuyet}
+        <button type="button" class="nhe" data-viec="tra-loi" aria-expanded="false">${n.tra_loi ? "Sửa trả lời" : "Trả lời"}</button>
+        <button type="button" class="nhe" data-viec="xoa" aria-label="Xoá lời nhắn của ${esc(n.ten || "một người bạn")}">${xoaCho === n.id ? "Chắc chưa? Bấm lần nữa để xoá" : "Xoá"}</button>
+      </div>
+      <div class="viet-qt" hidden>
+        <label class="meta-qt" for="tl-${n.id}">${n.cong_khai ? "Trả lời sẽ hiện dưới lời nhắn trên trang (khi đã duyệt)." : "Thư riêng: người gửi không thấy được trả lời, chỉ để mình ghi chú."}</label>
+        <textarea id="tl-${n.id}" maxlength="1000">${esc(n.tra_loi || "")}</textarea>
+        <div><button type="button" data-viec="luu-tl">Lưu</button>${n.tra_loi ? `<button type="button" class="nhe" data-viec="bo-tl">Bỏ trả lời</button>` : ""}</div>
+      </div>
+    </li>`; }).join("");
+}
+
+async function tai(){
+  bao("Đang tải…");
+  const {data, error} = await SB.from("loi_nhan").select(COT).order("tao_luc", {ascending:false}).limit(1000);
+  if (error){ bao("Chưa tải được: " + error.message); return; }
+  DS = data || []; bao(""); ve();
+}
+
+async function sua(id, doi, xong){
+  bao("Đang lưu…");
+  const {data, error} = await SB.from("loi_nhan").update(doi).eq("id", id).select(COT);
+  if (error || !data || !data.length){ bao("Chưa lưu được" + (error ? ": " + error.message : ", có thể tài khoản này không có quyền.")); return; }
+  DS = DS.map(n => n.id === id ? data[0] : n); bao(xong); ve();
+}
+
+$("#ds").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-viec]"); if (!b) return;
+  const li = b.closest("[data-id]"), id = Number(li.dataset.id), v = b.dataset.viec;
+  if (v !== "xoa") xoaCho = null;
+  if (v === "duyet") return sua(id, {da_duyet:true}, "Đã cho hiện trên trang.");
+  if (v === "an") return sua(id, {da_duyet:false}, "Đã ẩn khỏi trang.");
+  if (v === "tra-loi"){ const w = li.querySelector(".viet-qt"); w.hidden = !w.hidden; b.setAttribute("aria-expanded", !w.hidden); if (!w.hidden) w.querySelector("textarea").focus(); return; }
+  if (v === "luu-tl"){ const t = li.querySelector("textarea").value.trim(); return sua(id, {tra_loi: t || null, tra_loi_luc: t ? new Date().toISOString() : null}, t ? "Đã lưu trả lời." : "Đã bỏ trả lời."); }
+  if (v === "bo-tl") return sua(id, {tra_loi:null, tra_loi_luc:null}, "Đã bỏ trả lời.");
+  if (v === "xoa"){
+    if (xoaCho !== id){ xoaCho = id; ve(); const nb = $(`[data-id="${id}"] [data-viec="xoa"]`); nb && nb.focus(); return; }
+    xoaCho = null; bao("Đang xoá…");
+    const {data, error} = await SB.from("loi_nhan").delete().eq("id", id).select("id");
+    if (error || !data || !data.length){ bao("Chưa xoá được" + (error ? ": " + error.message : ".")); ve(); return; }
+    DS = DS.filter(n => n.id !== id); bao("Đã xoá."); ve();
+  }
+});
+$$(".tab-qt button").forEach(b => b.onclick = () => { loc = b.dataset.loc; xoaCho = null; bao(""); ve(); });
+
+async function vao(session){
+  if (!session){ $("#hop").hidden = $("#toi").hidden = true; $("#dang-nhap").hidden = false; return; }
+  const {data: la, error} = await SB.rpc("la_quan_tri");
+  if (error || la !== true){ await SB.auth.signOut(); $("#dang-nhap").hidden = false; $("#hop").hidden = $("#toi").hidden = true;
+    $("#bao-dn").textContent = error ? "Chưa kiểm tra được quyền: " + error.message : "Tài khoản này không phải tài khoản quản trị."; return; }
+  $("#toi-email").textContent = session.user.email || ""; $("#dang-nhap").hidden = true; $("#hop").hidden = $("#toi").hidden = false; tai();
+}
+
+$("#dang-nhap").addEventListener("submit", async e => {
+  e.preventDefault(); const em = $("#email").value.trim(), mk = $("#mat-khau").value, btn = e.target.querySelector("button");
+  if (!em || !mk){ $("#bao-dn").textContent = "Điền email và mật khẩu nha."; return; }
+  btn.disabled = true; $("#bao-dn").textContent = "";
+  const {data, error} = await SB.auth.signInWithPassword({email: em, password: mk});
+  btn.disabled = false;
+  if (error){ $("#bao-dn").textContent = error.status === 400 ? "Sai email hoặc mật khẩu." : "Chưa đăng nhập được: " + error.message; return; }
+  $("#mat-khau").value = ""; vao(data.session);
+});
+$("#dang-xuat").onclick = async () => { await SB.auth.signOut(); DS = []; $("#ds").innerHTML = ""; vao(null); };
+
+(async function(){
+  const c = window.DUYEN_SB || {};
+  if (!c.url || !c.key || !window.supabase){ $("#bao-cau-hinh").hidden = false; return; }
+  SB = window.supabase.createClient(c.url, c.key, {auth:{persistSession:true, storageKey:"duyen-quan-tri", storage: window.sessionStorage}});
+  const {data} = await SB.auth.getSession(); vao(data && data.session);
+})();
+</script>
+</body>
+</html>

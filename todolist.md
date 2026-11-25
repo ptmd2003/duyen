@@ -103,7 +103,10 @@ I. Embeds and links lost in the WordPress import ✅
 
 - [ ] Move `POSTS` and `READ` into Supabase tables (keep inline copy as offline fallback)
 - [ ] Notion → Supabase sync for posts/reading log (Edge Function or script)
-- [ ] Private admin page (Supabase Auth, only Duyên) to approve / hide / reply to notes
+- [X] Private admin page `quan-tri.html` (Supabase Auth email + password, only users in `quan_tri`): tabs waiting / shown / private / all; approve, hide, reply, delete (two clicks)
+- [X] Replies (`tra_loi`) show under approved public notes on the book page
+- [X] `supabase.sql` re-runnable from top to bottom (the two first policies now `drop … if exists`)
+- [ ] **Owner:** run `supabase.sql` again, create your login, add yourself to `quan_tri`, turn off sign-ups (README → "Mở trang quản trị lần đầu")
 - [ ] Email notification on new note (Database Webhook → Edge Function)
 - [ ] Show the inbox (`#hop-thu`) form again; its code is already there
 

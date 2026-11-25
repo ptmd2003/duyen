@@ -6,6 +6,7 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 - `index.html`: the whole site: CSS (top `<style>`), markup, and one `<script>` with all data and logic.
   - Data constants near the top of the script: `POSTS` (diary posts), `READ` (reading log, loaded from `read.js` as `window.READ`), `CATS`, `VIEC` (garden projects), `CAM`, `SKIN` (book covers).
   - Scenes: `#s-nuoc` (water), `#s-ke-sach` (bookshelf), `#s-sach` (open book), `#s-vuon` (garden, currently closed). Routing is hash-based in `route()`: `#ke-sach`, `#sach-<book>`, `#bai-<slug>`.
+- `quan-tri.html`: private admin page for notes (Supabase Auth; own client with `storageKey: "duyen-quan-tri"`, the main site stays anon with `persistSession:false`). Access = row in `quan_tri` checked by `la_quan_tri()`; never hardcode an email in the repo.
 - `read.js`: the reading log. The only place to edit books.
 - `og.jpg` (1200×630 share preview, a screenshot of the water scene), `favicon.svg/png`, `apple-touch-icon.png`. Regenerate `og.jpg` if the home scene changes a lot.
 - `config.js`: Supabase URL + **publishable** key (safe to commit). Never put a `service_role`/secret key in the repo.
@@ -17,7 +18,7 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 ## Supabase
 - Project ref `jrhaxqrfnnfesspkjaqt`. MCP server configured in `.mcp.json` (needs `/mcp` → Authenticate in a terminal).
 - `loi_nhan` rules: anon may insert only `slug, ten, loi, cong_khai`; anon may read only rows with `cong_khai and da_duyet`. Trigger `chan_spam` caps 20 inserts / 10 min site-wide and rejects duplicate text within 1 day.
-- Duyên approves notes in Table Editor → `loi_nhan` → `da_duyet = true`.
+- Duyên approves notes in `quan-tri.html` (or Table Editor → `loi_nhan` → `da_duyet = true`). Authenticated admins may select/delete and update only `da_duyet, cong_khai, tra_loi, tra_loi_luc`; `tra_loi` is shown under public approved notes.
 - `luot_thich` (likes): anon can only `select`; writes go through `thich(p_slug, p_cong ±1)` (security definer, slug regex, 300 clicks/10 min via private `luot_bam` log). Client hides the like button if the table is missing.
 - Don't create test rows on the live DB unless needed; if you do, say so and tell the owner to delete them.
 
@@ -25,7 +26,7 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 - UI copy and identifiers are Vietnamese (`loi_nhan`, `ten`, `da_duyet`, `gui`, `doc`…). Keep that style; write copy in Duyên's casual voice, no AI-sounding phrasing.
 - Vanilla JS, no framework, no bundler. Helpers: `$`, `$$`, `esc` (always escape user/post text into HTML), `store` (try/catch localStorage), `rng(seed)` (deterministic decoration).
 - Respect `prefers-reduced-motion` (`still`).
-- Pin CDN versions (supabase-js is `@2.45.4`).
+- Pin CDN versions (supabase-js is `@2.45.4`). `quan-tri.html` also pins it with an SRI `integrity` hash and keeps the admin session in `sessionStorage` (the github.io origin is shared); recompute the hash if you bump the version.
 
 ## Gotchas
 - CSS class names collide easily in this one big file (e.g. `.so`, `.dem`, `.thich` were already taken). `grep` a class name before using it; prefix new ones (`nut-thich`, `so-thich`).

@@ -1,4 +1,4 @@
--- Chạy một lần trong Supabase → SQL Editor.
+-- Chạy trong Supabase → SQL Editor. Chạy lại cả file nhiều lần cũng được.
 create table if not exists public.loi_nhan (
   id bigint generated always as identity primary key,
   slug text,                      -- bài viết; null = hộp thư
@@ -11,10 +11,12 @@ create table if not exists public.loi_nhan (
 alter table public.loi_nhan enable row level security;
 
 -- Ai cũng gửi được, nhưng không tự duyệt được cho mình.
+drop policy if exists "gui loi nhan" on public.loi_nhan;
 create policy "gui loi nhan" on public.loi_nhan for insert to anon
   with check (da_duyet = false);
 
 -- Người ngoài chỉ đọc được lời nhắn công khai đã duyệt.
+drop policy if exists "doc loi nhan da duyet" on public.loi_nhan;
 create policy "doc loi nhan da duyet" on public.loi_nhan for select to anon
   using (cong_khai = true and da_duyet = true);
 -- Không có policy update/delete cho anon: người ngoài không sửa, không xoá được.
@@ -84,3 +86,36 @@ begin
 end $$;
 revoke all on function public.thich(text, integer) from public;
 grant execute on function public.thich(text, integer) to anon;
+
+-- ---------- Trang quản trị quan-tri.html (chạy lại được nhiều lần) ----------
+-- Duyên trả lời lời nhắn; lời trả lời hiện dưới lời nhắn đã dán lên trang.
+alter table public.loi_nhan add column if not exists tra_loi text;
+alter table public.loi_nhan drop constraint if exists loi_nhan_tra_loi_len;
+alter table public.loi_nhan add constraint loi_nhan_tra_loi_len check (tra_loi is null or char_length(tra_loi) <= 1000);
+alter table public.loi_nhan add column if not exists tra_loi_luc timestamptz;
+-- Người ngoài vẫn chỉ ghi được 4 cột (slug, ten, loi, cong_khai) như trên, không ghi được tra_loi.
+
+-- Danh sách tài khoản quản trị. Không ai đọc/ghi bảng này qua API; Duyên tự thêm mình bằng SQL (xem README).
+create table if not exists public.quan_tri (user_id uuid primary key references auth.users(id) on delete cascade);
+alter table public.quan_tri enable row level security;
+revoke all on public.quan_tri from anon, authenticated;
+
+create or replace function public.la_quan_tri() returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.quan_tri where user_id = auth.uid());
+$$;
+revoke all on function public.la_quan_tri() from public, anon;
+grant execute on function public.la_quan_tri() to authenticated;
+
+-- Quản trị đọc hết, duyệt/ẩn/trả lời, xoá được. Tài khoản đăng nhập khác không làm gì được.
+drop policy if exists "quan tri doc" on public.loi_nhan;
+create policy "quan tri doc" on public.loi_nhan for select to authenticated using ((select public.la_quan_tri()));
+drop policy if exists "quan tri sua" on public.loi_nhan;
+create policy "quan tri sua" on public.loi_nhan for update to authenticated using ((select public.la_quan_tri())) with check ((select public.la_quan_tri()));
+drop policy if exists "quan tri xoa" on public.loi_nhan;
+create policy "quan tri xoa" on public.loi_nhan for delete to authenticated using ((select public.la_quan_tri()));
+revoke insert, update on public.loi_nhan from authenticated;
+-- Người ngoài không bao giờ cần sửa/xoá; thu luôn quyền cho chắc (RLS vốn đã chặn).
+revoke update, delete on public.loi_nhan from anon;
+grant select, delete on public.loi_nhan to authenticated;
+grant update (da_duyet, cong_khai, tra_loi, tra_loi_luc) on public.loi_nhan to authenticated;

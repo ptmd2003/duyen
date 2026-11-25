@@ -198,6 +198,7 @@ mark.hl.on{background-size:100% 100%}
 .giay{position:absolute;z-index:7;width:190px;padding:14px 16px;background:#FFFDF2;box-shadow:0 10px 20px rgba(30,45,20,.35);font-family:var(--f-hand);font-size:17px;line-height:1.35;color:#26301F;transform:rotate(var(--r,-4deg));animation:roi .7s cubic-bezier(.2,.8,.2,1) both;overflow-wrap:break-word}
 .giay:nth-child(even){background:#EAF2DA}
 .giay .loi{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:6;overflow:hidden}.giay.mo .loi{-webkit-line-clamp:unset}.giay{cursor:pointer}.giay.mo{z-index:9}
+.giay .tl-duyen{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;margin-top:8px;padding-top:6px;border-top:1px dashed rgba(76,90,65,.4);font-size:.88em;color:#5B4A8A}.giay.mo .tl-duyen{-webkit-line-clamp:unset}
 .giay small{display:block;margin-top:8px;font-family:var(--f-ui);font-size:11px;letter-spacing:.08em;color:#4C5A41}
 @keyframes roi{from{opacity:0;transform:translateY(-30px) rotate(calc(var(--r,-4deg) - 10deg))}}
 .duoi{position:absolute;z-index:8;left:clamp(74px,9vw,120px);right:clamp(14px,4vw,56px);bottom:22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
@@ -563,7 +564,7 @@ body[data-light="toi"] .do.den{box-shadow:0 0 90px 40px rgba(255,220,140,.8)}
   .chao{top:96px}
   .duoi{left:66px}
   .giay{position:relative;width:auto;flex:1 1 0;min-width:0;font-size:15px}
-  .giay .loi{-webkit-line-clamp:3}
+  .giay .loi{-webkit-line-clamp:3} .giay .tl-duyen{-webkit-line-clamp:2}
   .gia{width:calc(50% - 13px)}.gia:nth-child(even){margin-top:30px}
   .khung h3{font-size:22px}
 }
@@ -1232,9 +1233,9 @@ function openBook(year, slug){
 let SB = null; const MINE = store.get("duyen-nhan-cua-toi") || {};
 (async function(){ const c = window.DUYEN_SB || {}; if (!c.url || !c.key || !window.supabase) return;
   try { SB = window.supabase.createClient(c.url, c.key, {auth:{persistSession:false}}); loadLikes();
-    const {data, error} = await SB.from("loi_nhan").select("slug,ten,loi").eq("cong_khai", true).eq("da_duyet", true).not("slug", "is", null).order("tao_luc", {ascending:true}).limit(500);
+    const {data, error} = await SB.from("loi_nhan").select("slug,ten,loi,tra_loi").eq("cong_khai", true).eq("da_duyet", true).not("slug", "is", null).order("tao_luc", {ascending:true}).limit(500);
     if (error) throw error; for (const k in notes) delete notes[k];
-    data.forEach(n => (notes[n.slug] = notes[n.slug] || []).push({t:n.ten || "một người bạn", m:n.loi}));
+    data.forEach(n => (notes[n.slug] = notes[n.slug] || []).push({t:n.ten || "một người bạn", m:n.loi, r:n.tra_loi || ""}));
     for (const s in MINE){ MINE[s] = MINE[s].filter(x => !(notes[s] || []).some(n => n.m === x.m && n.t === x.t)); if (!MINE[s].length) delete MINE[s]; }
     store.set("duyen-nhan-cua-toi", MINE);
     if (document.body.dataset.scene === "sach") drawNotes();
@@ -1250,7 +1251,7 @@ function drawNotes(){
   list.slice(B.n === 1 ? -2 : -4).forEach((n, i) => { const d = document.createElement("div"); d.className = "giay"; d.style.setProperty("--r", (i%2 ? 4 : -5) + "deg");
     if (B.n === 2){ d.style.top = (22 + (i>>1)*34) + "%"; d.style[i%2 ? "right" : "left"] = "-104px"; }
     d.title = n.m; d.onclick = () => d.classList.toggle("mo");
-    d.innerHTML = `<span class="loi">${esc(n.m)}</span><small>${esc(n.t)}${n.w ? " · chờ Duyên duyệt" : ""}</small>`; box.appendChild(d); });
+    d.innerHTML = `<span class="loi">${esc(n.m)}</span><small>${esc(n.t)}${n.w ? " · chờ Duyên duyệt" : ""}</small>${n.r ? `<span class="tl-duyen">Duyên: ${esc(n.r)}</span>` : ""}`; box.appendChild(d); });
 }
 $("#b-an").onclick = $("#an-nhan").onclick = () => { B.show = !B.show; drawNotes(); };
 /* share the post being read: phone share sheet, else copy the link */

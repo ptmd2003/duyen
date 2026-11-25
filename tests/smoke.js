@@ -72,6 +72,10 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   check('approved note shows once', (await p.textContent('#b-an')) === 'Ẩn lời nhắn (1)', await p.textContent('#b-an'));
   check('local waiting copy cleared after approval', (await p.evaluate(() => localStorage.getItem('duyen-nhan-cua-toi'))) === '{}');
 
+  p = await open(true, `window.__rows=[{slug:'cach-don-dung-luong-macbook',ten:'Mai',loi:'hay quá',tra_loi:'<b>cảm ơn</b> nha'}];`);
+  const rep = await p.evaluate(() => { const t = document.querySelector('#giay .tl-duyen'); return t && [t.textContent, t.querySelector('b') === null]; });
+  check("Duyên's reply shows under the note, escaped", rep && rep[0] === 'Duyên: <b>cảm ơn</b> nha' && rep[1], rep);
+
   p = await open(true, `window.__likes=[{slug:'cach-don-dung-luong-macbook',so:3}]`);
   const like = () => p.evaluate(() => { const b = document.getElementById('b-thich'); return [b.hidden, b.getAttribute('aria-pressed'), b.querySelector('.so-thich').textContent]; });
   check('like count shows from Supabase', JSON.stringify(await like()) === '[false,"false","3"]', await like());
@@ -123,6 +127,53 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
     await m.click('#muc-ds button'); await m.waitForTimeout(200);
     check('phone: picking a post jumps there and closes the panel', await m.evaluate(() => document.getElementById('muc').hidden && !book.classList.contains('chrome') && B.page < B.pages - 1));
     await ctx.close(); }
+
+  // admin page: fake supabase with auth; window.__admin decides whether la_quan_tri() says yes
+  const FAKE_QT = `(function(){let ses=null;const rows=[
+   {id:1,slug:'cach-don-dung-luong-macbook',ten:'Mai',loi:'<img src=x onerror=alert(1)>chờ',cong_khai:true,da_duyet:false,tao_luc:'2026-11-20T10:00:00Z',tra_loi:null,tra_loi_luc:null},
+   {id:2,slug:'cach-don-dung-luong-macbook',ten:null,loi:'đang hiện',cong_khai:true,da_duyet:true,tao_luc:'2026-11-19T10:00:00Z',tra_loi:null,tra_loi_luc:null},
+   {id:3,slug:null,ten:null,loi:'thư riêng',cong_khai:false,da_duyet:false,tao_luc:'2026-11-18T10:00:00Z',tra_loi:null,tra_loi_luc:null}];
+   window.__ops=[];
+   window.supabase={createClient(){return{
+    auth:{getSession(){return Promise.resolve({data:{session:ses}})},
+     signInWithPassword(c){if(c.password!=='dung')return Promise.resolve({data:{},error:{message:'Invalid login credentials',status:400}});ses={user:{email:c.email}};return Promise.resolve({data:{session:ses},error:null})},
+     signOut(){ses=null;return Promise.resolve({})}},
+    rpc(fn){return Promise.resolve({data:fn==='la_quan_tri'&&!!window.__admin,error:null})},
+    from(){let op='select',val=null,id=null;const q={select(){return q},order(){return q},limit(){return q},
+     update(v){op='update';val=v;return q},delete(){op='delete';return q},eq(k,v){id=v;return q},
+     then(ok,no){window.__ops.push([op,id,val]);let data=rows;
+      if(op==='update'){const r=rows.find(x=>x.id===id);Object.assign(r,val);data=[r]}
+      if(op==='delete'){const i=rows.findIndex(x=>x.id===id);data=rows.splice(i,1)}
+      return Promise.resolve({data,error:null}).then(ok,no)}};return q}}}};})();`;
+  async function admin(isAdmin) { const q = await (await b.newContext()).newPage(); q.on('pageerror', e => errs.push(e.message)); q.on('dialog', d => { errs.push('dialog: ' + d.message()); d.dismiss(); });
+    await q.route('**/config.js', r => r.fulfill({ contentType:'text/javascript', body:'window.DUYEN_SB={url:"https://x.supabase.co",key:"k"}' }));
+    await q.route('**/supabase.js', r => r.fulfill({ contentType:'text/javascript', body: FAKE_QT }));
+    // the real page pins supabase-js with SRI; serve it without that so the fake loads
+    await q.route('**/quan-tri.html', async r => { const res = await r.fetch(); r.fulfill({ response: res, body: (await res.text()).replace(/ integrity="[^"]+"/, '') }); });
+    await q.addInitScript(`window.__admin=${isAdmin}`); await q.goto(`http://localhost:${PORT}/quan-tri.html`); await q.waitForTimeout(400); return q; }
+  let q = await admin(false);
+  check('admin: supabase-js pinned with SRI', /supabase-js@2\.45\.4\/dist\/umd\/supabase\.js" integrity="sha384-/.test(fs.readFileSync(path.join(ROOT, 'quan-tri.html'), 'utf8')));
+  check('admin: login form first', await q.isVisible('#dang-nhap') && !(await q.isVisible('#hop')));
+  check('admin: page is not indexed', await q.evaluate(() => /noindex/.test(document.querySelector('meta[name=robots]').content)));
+  await q.fill('#email', 'a@b.c'); await q.fill('#mat-khau', 'sai'); await q.click('#dang-nhap button'); await q.waitForTimeout(200);
+  check('admin: wrong password is refused', /Sai/.test(await q.textContent('#bao-dn')) && !(await q.isVisible('#hop')));
+  await q.fill('#mat-khau', 'dung'); await q.click('#dang-nhap button'); await q.waitForTimeout(200);
+  check('admin: a non-admin account is turned away', /không phải/.test(await q.textContent('#bao-dn')) && !(await q.isVisible('#hop')));
+  q = await admin(true);
+  await q.fill('#email', 'a@b.c'); await q.fill('#mat-khau', 'dung'); await q.click('#dang-nhap button'); await q.waitForTimeout(300);
+  check('admin: waiting notes listed, text escaped', await q.isVisible('#hop') && (await q.$$('#ds .the-qt')).length === 1 && !(await q.$('#ds img')) && /chờ/.test(await q.textContent('#ds')), await q.textContent('#ds'));
+  check('admin: tab counts', (await q.$$eval('.tab-qt .dem-qt', e => e.map(x => x.textContent).join())) === '1,1,1,3', await q.$$eval('.tab-qt .dem-qt', e => e.map(x => x.textContent).join()));
+  await q.click('[data-viec=duyet]'); await q.waitForTimeout(200);
+  check('admin: approve sets da_duyet and moves it out of waiting', JSON.stringify((await q.evaluate(() => __ops)).pop()) === '["update",1,{"da_duyet":true}]' && (await q.$$('#ds .the-qt')).length === 0);
+  await q.click('[data-loc=hien]'); await q.click('[data-id="1"] [data-viec=tra-loi]'); await q.fill('#tl-1', 'cảm ơn nha'); await q.click('[data-id="1"] [data-viec=luu-tl]'); await q.waitForTimeout(200);
+  const op = (await q.evaluate(() => __ops)).pop();
+  check('admin: reply is saved', op[0] === 'update' && op[1] === 1 && op[2].tra_loi === 'cảm ơn nha' && !!op[2].tra_loi_luc && /cảm ơn nha/.test(await q.textContent('[data-id="1"] .tl-qt')), op);
+  await q.click('[data-id="2"] [data-viec=an]'); await q.waitForTimeout(200);
+  check('admin: hide clears da_duyet', JSON.stringify((await q.evaluate(() => __ops)).pop()) === '["update",2,{"da_duyet":false}]');
+  await q.click('[data-loc=rieng]'); await q.click('[data-id="3"] [data-viec=xoa]'); await q.waitForTimeout(100);
+  check('admin: delete asks for a second click', (await q.evaluate(() => __ops)).pop()[0] !== 'delete' && /Chắc chưa/.test(await q.textContent('[data-id="3"]')));
+  await q.click('[data-id="3"] [data-viec=xoa]'); await q.waitForTimeout(200);
+  check('admin: second click deletes', JSON.stringify((await q.evaluate(() => __ops)).pop()) === '["delete",3,null]' && !(await q.$('[data-id="3"]')));
 
   check('no page errors', errs.length === 0, errs);
   await b.close(); server.close();

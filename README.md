@@ -8,6 +8,7 @@ Trang chạy tại https://ptmd2003.github.io/duyen/. Đẩy lên nhánh `main` 
 - `index.html`: toàn bộ trang (giao diện, bài viết, sổ đọc sách)
 - `tex/`, `art/`: vân gỗ, vải, giấy và tranh gáy sách
 - `read.js`: sổ đọc sách (sửa ở đây là đủ)
+- `quan-tri.html`: trang riêng của Duyên để duyệt, ẩn, trả lời, xoá lời nhắn (cần đăng nhập)
 - `config.js`: địa chỉ Supabase và khoá publishable (công khai được)
 - `og.jpg`, `favicon.*`, `apple-touch-icon.png`: ảnh xem trước khi chia sẻ link và icon trên tab
 - `supabase.sql`: bảng `loi_nhan`, luật phân quyền và chống spam. Sửa xong thì chạy lại trong Supabase → SQL Editor
@@ -16,7 +17,16 @@ Trang chạy tại https://ptmd2003.github.io/duyen/. Đẩy lên nhánh `main` 
 - `CLAUDE.md`, `.claude/`, `.mcp.json`: ghi chú và công cụ cho Claude Code
 
 ## Lời nhắn
-- Duyệt lời nhắn: Supabase → Table Editor → `loi_nhan` → bật `da_duyet`.
+- Duyệt lời nhắn: mở https://ptmd2003.github.io/duyen/quan-tri.html, đăng nhập. Có các ngăn "Chờ duyệt", "Đang hiện", "Thư riêng". Bấm "Duyệt, cho hiện", "Ẩn khỏi trang", "Trả lời" hoặc "Xoá" (bấm hai lần mới xoá).
+- Trả lời của mình hiện dưới lời nhắn trên trang (chỉ với lời nhắn đã dán lên trang và đã duyệt).
+- Vẫn duyệt được kiểu cũ: Supabase → Table Editor → `loi_nhan` → bật `da_duyet`.
+
+### Mở trang quản trị lần đầu (làm một lần)
+1. Supabase → SQL Editor: chạy lại cả file `supabase.sql`.
+2. Authentication → Users → Add user → Create new user: email + mật khẩu của mình, tick "Auto Confirm User".
+3. SQL Editor, chạy (thay email):
+   `insert into public.quan_tri (user_id) select id from auth.users where email = 'email-cua-minh@...' on conflict do nothing;`
+4. Authentication → Sign In / Providers: tắt "Allow new users to sign up" để không ai tự tạo tài khoản được. (Có tạo được thì cũng không vào được trang quản trị, chỉ tài khoản trong bảng `quan_tri` mới vào được.)
 - Lời nhắn "Chỉ Duyên đọc" có `cong_khai = false`, không bao giờ hiện trên trang.
 - Cả trang nhận tối đa 20 lời nhắn mỗi 10 phút; lời giống hệt lời đã gửi trong ngày sẽ bị chặn.
 
@@ -31,6 +41,7 @@ Trang chạy tại https://ptmd2003.github.io/duyen/. Đẩy lên nhánh `main` 
 - Lời đề từ của một cuốn: thêm `de:"..."` vào cuốn đó trong `SKIN`.
 
 ## Nhật ký cập nhật
+- 2026-11-25: Có trang riêng `quan-tri.html` để duyệt, ẩn, trả lời và xoá lời nhắn ngay trên điện thoại, không cần vào Supabase nữa. Trả lời của mình hiện dưới tờ giấy lời nhắn trên trang. (Cần làm 4 bước "Mở trang quản trị lần đầu" ở trên.)
 - 2026-11-17: Bài có video YouTube giờ hiện video (bấm vào mới tải, như bài "cách dọn dung lượng macbook"). Link trong bài bấm được và mở tab mới. Gắn lại các link bị rơi lúc chuyển từ WordPress: thư viện sách nói, uTorrent/OmniPlayer trong bài học tiếng Nhật, danh sách tài liệu UX/UI.
 - 2026-11-15: Mặt nước trên máy tính cũng không hiện tên bài nữa, giống điện thoại. Bỏ chế độ ban đêm, nút đổi ánh sáng nhỏ lại (chỉ còn sáng và chiều). Kéo kệ sách xuống thì thanh menu thu nhỏ và trong hơn. Thanh đọc trên điện thoại trong suốt hơn. Điện thoại: trang sách trượt sang như Kindle/Apple Books, không lật giấy nữa. Máy tính: lật trang mềm như giấy thật hơn (mép giấy nhấc lên trước, cong rồi rơi xuống, có bóng đổ theo trang).
 - 2026-11-15: Menu "bài viết" thành "bookshelf", bỏ nút "← Kệ sách". Sổ trên điện thoại lật trang lại như đọc Kindle/Apple Books: chạm hai bên để lật, chạm giữa trang để hiện thanh đọc (mục lục, thanh kéo trang, ẩn/hiện lời nhắn). Lề sách rộng hơn. Nút thích và chia sẻ chuyển xuống góc dưới bên phải, cạnh "Để lại lời nhắn".
