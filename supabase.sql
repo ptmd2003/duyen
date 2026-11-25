@@ -119,3 +119,9 @@ revoke insert, update on public.loi_nhan from authenticated;
 revoke update, delete on public.loi_nhan from anon;
 grant select, delete on public.loi_nhan to authenticated;
 grant update (da_duyet, cong_khai, tra_loi, tra_loi_luc) on public.loi_nhan to authenticated;
+
+-- ---------- Dọn quyền gọi hàm (chạy lại được nhiều lần) ----------
+-- Hàm chống spam chỉ chạy qua trigger, không ai gọi thẳng qua API.
+revoke all on function public.loi_nhan_chan_spam() from public, anon, authenticated;
+-- thich() chỉ dành cho người đọc (anon); tài khoản đăng nhập không cần.
+revoke execute on function public.thich(text, integer) from authenticated;
