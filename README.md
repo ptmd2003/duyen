@@ -26,9 +26,12 @@ Trang chạy tại https://ptmd2003.github.io/duyen/. Đẩy lên nhánh `main` 
 
 ## Thêm ảnh hoặc lời đề từ
 - Ảnh trong bài: thêm `"img":"art/ten-anh.webp","alt":"mô tả"` vào bài trong `POSTS`.
+- Video YouTube: để link YouTube thành một đoạn riêng trong `p` (vd. `"https://youtu.be/…"`), trang sẽ hiện khung video, bấm mới tải.
+- Link trong bài: viết `[chữ hiện ra](https://…)`; link để trần `https://…` cũng tự bấm được.
 - Lời đề từ của một cuốn: thêm `de:"..."` vào cuốn đó trong `SKIN`.
 
 ## Nhật ký cập nhật
+- 2026-11-17: Bài có video YouTube giờ hiện video (bấm vào mới tải, như bài "cách dọn dung lượng macbook"). Link trong bài bấm được và mở tab mới. Gắn lại các link bị rơi lúc chuyển từ WordPress: thư viện sách nói, uTorrent/OmniPlayer trong bài học tiếng Nhật, danh sách tài liệu UX/UI.
 - 2026-11-15: Mặt nước trên máy tính cũng không hiện tên bài nữa, giống điện thoại. Bỏ chế độ ban đêm, nút đổi ánh sáng nhỏ lại (chỉ còn sáng và chiều). Kéo kệ sách xuống thì thanh menu thu nhỏ và trong hơn. Thanh đọc trên điện thoại trong suốt hơn. Điện thoại: trang sách trượt sang như Kindle/Apple Books, không lật giấy nữa. Máy tính: lật trang mềm như giấy thật hơn (mép giấy nhấc lên trước, cong rồi rơi xuống, có bóng đổ theo trang).
 - 2026-11-15: Menu "bài viết" thành "bookshelf", bỏ nút "← Kệ sách". Sổ trên điện thoại lật trang lại như đọc Kindle/Apple Books: chạm hai bên để lật, chạm giữa trang để hiện thanh đọc (mục lục, thanh kéo trang, ẩn/hiện lời nhắn). Lề sách rộng hơn. Nút thích và chia sẻ chuyển xuống góc dưới bên phải, cạnh "Để lại lời nhắn".
 - 2026-11-15: "Để lại lời nhắn" giờ là một tờ giấy viết tay: viết trước, ký tên nếu muốn (không bắt buộc), ghim "dán lên trang" nếu muốn hiện lên trang. Gửi thì tờ giấy bay đi. Máy nhớ tên cho lần sau. Ctrl/⌘+Enter để gửi nhanh.

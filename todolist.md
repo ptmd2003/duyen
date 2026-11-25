@@ -92,6 +92,13 @@ H. Round 2 of Duyên's feedback ✅
 - [X] Phone: pages slide in like Kindle/Apple Books (follows the finger when dragged); no paper flip, no folded corners
 - [X] Desktop: page turn bends like paper: the edge lifts first, the sheet flops over with the edge trailing, and a shadow follows the leaf onto the pages below
 
+I. Embeds and links lost in the WordPress import ✅
+
+- [X] A paragraph that is only a YouTube link renders as a click-to-play video (thumbnail first, `youtube-nocookie` iframe on click)
+- [X] `[text](url)` and bare `https://…` in post text become links (new tab)
+- [X] Restored dropped links/video in 4 posts (macbook, thư viện sách nói, học tiếng Nhật, UX/UI resources)
+- [ ] Images inside posts were also dropped by the import (~13 across 6 posts on WordPress); bring them over if wanted
+
 ## Phase 3: Supabase does more
 
 - [ ] Move `POSTS` and `READ` into Supabase tables (keep inline copy as offline fallback)

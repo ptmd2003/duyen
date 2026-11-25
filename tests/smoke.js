@@ -35,6 +35,14 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   let p = await open(false);
   const all = await p.evaluate(() => BOOKS.map(y => (buildBook(y), flow.innerText)).join(' '));
   check('no template placeholders in any book', !/\[(LỜI|ẢNH)/.test(all), all.match(/\[[^\]]+\]/));
+  check('no raw [text](link) markup left in any book', !/\]\(https?:/.test(all), all.match(/.{20}\]\(https?:.{20}/));
+  const media = await p.evaluate(() => { const b = POSTS.find(x => x.s === 'cach-don-dung-luong-macbook'); buildBook(bookOf(b));
+    const v = document.querySelector('#p-cach-don-dung-luong-macbook [data-yt]'); const out = { yt: v && v.dataset.yt }; v && v.click();
+    const f = document.querySelector('#p-cach-don-dung-luong-macbook iframe'); out.ifr = f && f.src;
+    const n = POSTS.find(x => x.s === 'cach-nha-ngheo-hoc-tieng-nhat'); buildBook(bookOf(n));
+    out.a = [...document.querySelectorAll('#p-cach-nha-ngheo-hoc-tieng-nhat a.lien-ket')].map(a => a.textContent + '|' + a.target); return out; });
+  check('youtube link becomes a click-to-play video', media.yt === 'wee9U_bLc_4' && /youtube-nocookie\.com\/embed\/wee9U_bLc_4/.test(media.ifr), media);
+  check('links in posts are clickable and open a new tab', media.a.includes('đây|_blank') && media.a.includes('https://nyaa.land/|_blank'), media.a);
   await p.evaluate(() => openBook(bookOf(POSTS[0]), POSTS[0].s)); await p.waitForTimeout(300);
   check('reading log loads from read.js', await p.evaluate(() => READ.length > 0 && (buildBook('doc-sach'), !!document.getElementById('p-so-doc'))));
   await p.evaluate(() => openBook(bookOf(POSTS[0]), POSTS[0].s)); await p.waitForTimeout(300);
