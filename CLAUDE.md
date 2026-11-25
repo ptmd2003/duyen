@@ -4,10 +4,11 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 
 ## Layout
 - `index.html`: the whole site: CSS (top `<style>`), markup, and one `<script>` with all data and logic.
-  - Data constants near the top of the script: `POSTS` (diary posts), `READ` (reading log, loaded from `read.js` as `window.READ`), `CATS`, `VIEC` (garden projects), `CAM`, `SKIN` (book covers).
+  - The app script is `<script type="text/x-duyen" id="app">`; a small loader after it fetches `bai_viet` + `sach_doc` from Supabase REST (≤2.5s), sets `window.POSTS_SB`/`READ_SB`, then runs the app. So the app starts after DOMContentLoaded; don't rely on that event.
+  - Data constants near the top of the script: `POSTS` (`window.POSTS_SB ||` built-in fallback copy), `READ` (`READ_SB ||` `read.js`), `CATS`, `VIEC` (garden projects), `CAM`, `SKIN` (book covers).
   - Scenes: `#s-nuoc` (water), `#s-ke-sach` (bookshelf), `#s-sach` (open book), `#s-vuon` (garden, currently closed). Routing is hash-based in `route()`: `#ke-sach`, `#sach-<book>`, `#bai-<slug>`.
 - `quan-tri.html`: private admin page for notes (Supabase Auth; own client with `storageKey: "duyen-quan-tri"`, the main site stays anon with `persistSession:false`). Access = row in `quan_tri` checked by `la_quan_tri()`; never hardcode an email in the repo.
-- `read.js`: the reading log. The only place to edit books.
+- `read.js`: fallback copy of the reading log. Real data is `sach_doc`, edited in `quan-tri.html`. `tools/dong-bo.js keo` refreshes `read.js` + the inline `POSTS` from Supabase; `seed` rewrites `du-lieu-ban-dau.sql`.
 - `og.jpg` (1200×630 share preview, a screenshot of the water scene), `favicon.svg/png`, `apple-touch-icon.png`. Regenerate `og.jpg` if the home scene changes a lot.
 - `config.js`: Supabase URL + **publishable** key (safe to commit). Never put a `service_role`/secret key in the repo.
 - `supabase.sql`: schema + RLS for `loi_nhan` (guestbook notes and inbox). Idempotent; re-run in SQL Editor after edits.
@@ -19,6 +20,7 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 - Project ref `jrhaxqrfnnfesspkjaqt`. MCP server configured in `.mcp.json` (needs `/mcp` → Authenticate in a terminal).
 - `loi_nhan` rules: anon may insert only `slug, ten, loi, cong_khai`; anon may read only rows with `cong_khai and da_duyet`. Trigger `chan_spam` caps 20 inserts / 10 min site-wide and rejects duplicate text within 1 day.
 - Duyên approves notes in `quan-tri.html` (or Table Editor → `loi_nhan` → `da_duyet = true`). Authenticated admins may select/delete and update only `da_duyet, cong_khai, tra_loi, tra_loi_luc`; `tra_loi` is shown under public approved notes.
+- `bai_viet` (posts: `slug, tieu_de, ngay, muc, doan text[], cau_noi_bat, anh, anh_mo_ta, an`) and `sach_doc` (books: `ten, tac_gia, dang_doc, nam, diem, doc_lai, thu_tu`): anon reads (`an = false` only for posts), only `la_quan_tri()` writes. A post's slug never changes after creation (likes and notes key on it).
 - `luot_thich` (likes): anon can only `select`; writes go through `thich(p_slug, p_cong ±1)` (security definer, slug regex, 300 clicks/10 min via private `luot_bam` log). Client hides the like button if the table is missing.
 - Don't create test rows on the live DB unless needed; if you do, say so and tell the owner to delete them.
 
@@ -35,4 +37,4 @@ Personal website of Duyên ("hôm nay mình viết"). Live at https://ptmd2003.g
 - The intro curtain (`#rem`) is driven by rAF in JS (clip-path wave + mask), not CSS transitions. Screenshots can't capture it reliably; record a video (Playwright `recordVideo`) and pull frames with Playwright's ffmpeg.
 
 ## Workflow
-Use the `ship-update` skill for any change: edit → `cd tests && npm test` → update `todolist.md` + README changelog → commit. Use the `senior-engineer` agent for reviews and planning.
+After Duyên hides/deletes a post (or now and then), run `node tools/dong-bo.js keo` and commit, so the inline fallback copy doesn't keep it. Use the `ship-update` skill for any change: edit → `cd tests && npm test` → update `todolist.md` + README changelog → commit. Use the `senior-engineer` agent for reviews and planning.

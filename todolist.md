@@ -101,7 +101,15 @@ I. Embeds and links lost in the WordPress import ✅
 
 ## Phase 3: Supabase does more
 
-- [ ] Move `POSTS` and `READ` into Supabase tables (keep inline copy as offline fallback)
+- [X] Posts and reading log in Supabase (`bai_viet`, `sach_doc`; anon reads non-hidden, admin writes). Site waits ≤2.5s for them, else uses the built-in copy (`POSTS` in `index.html`, `read.js`)
+- [X] Admin page: "Bài viết" tab (write / edit / draft / delete posts; link made from the title, locked after first save) and "Sổ đọc" tab (add / edit / delete books)
+- [X] `du-lieu-ban-dau.sql` seeds the 23 posts + 44 books; `tools/dong-bo.js keo` pulls Supabase back into the built-in copy
+- [X] Fetch starts in `<head>` with a preconnect; page stays hidden (water colour) until the app runs, 1.5s cap
+- [ ] **Owner:** run `supabase.sql`, then `du-lieu-ban-dau.sql` in SQL Editor
+- [ ] Refresh the built-in copy now and then (`node tools/dong-bo.js keo`, commit)
+- [ ] Photo upload from the editor (Supabase Storage) instead of pasting an image link
+- [ ] Lighter loads: fetch only the post list up front, paragraphs when a book opens (today every visit loads the text twice: inline + Supabase)
+- [ ] Book form in the editor: guard unsaved edits like the post editor does
 - [ ] Notion → Supabase sync for posts/reading log (Edge Function or script)
 - [X] Private admin page `quan-tri.html` (Supabase Auth email + password, only users in `quan_tri`): tabs waiting / shown / private / all; approve, hide, reply, delete (two clicks)
 - [X] Replies (`tra_loi`) show under approved public notes on the book page

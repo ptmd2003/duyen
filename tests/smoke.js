@@ -21,11 +21,13 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
 (async () => {
   await new Promise(r => server.listen(PORT, r));
   const b = await chromium.launch(), errs = [];
-  async function open(online, setup) {
+  async function open(online, setup, rest) {
+    rest = rest || null;
     const p = await (await b.newContext()).newPage();
     p.on('pageerror', e => errs.push(e.message));
     await p.route('**/config.js', r => r.fulfill({ contentType:'text/javascript', body: online ? 'window.DUYEN_SB={url:"https://x.supabase.co",key:"k"}' : 'window.DUYEN_SB={url:"",key:""}' }));
     await p.route('**/supabase.js', r => r.fulfill({ contentType:'text/javascript', body: online ? FAKE : '' }));
+    await p.route('**/rest/v1/**', r => rest ? r.fulfill({ contentType:'application/json', body: JSON.stringify(rest(r.request().url())) }) : r.abort());
     if (setup) await p.addInitScript(setup);
     await p.goto(URL); await p.waitForTimeout(1200); return p;
   }
@@ -104,6 +106,7 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   { const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' }), m = await ctx.newPage();
     m.on('pageerror', e => errs.push(e.message));
     await m.route('**/supabase.js', r => r.fulfill({ contentType: 'text/javascript', body: '' }));
+    await m.route('**/rest/v1/**', r => r.abort());
     await m.goto(`http://localhost:${PORT}/`); await m.waitForTimeout(1000);
     const home = await m.evaluate(() => { const h = [...document.querySelectorAll('#hoa .hoa')];
       return { shown: h.filter(a => getComputedStyle(a.querySelector('.nhan')).display !== 'none').length, labelled: h.every(a => a.getAttribute('aria-label')), xs: new Set(h.map(a => a.style.left)).size }; });
@@ -133,17 +136,22 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
    {id:1,slug:'cach-don-dung-luong-macbook',ten:'Mai',loi:'<img src=x onerror=alert(1)>chờ',cong_khai:true,da_duyet:false,tao_luc:'2026-11-20T10:00:00Z',tra_loi:null,tra_loi_luc:null},
    {id:2,slug:'cach-don-dung-luong-macbook',ten:null,loi:'đang hiện',cong_khai:true,da_duyet:true,tao_luc:'2026-11-19T10:00:00Z',tra_loi:null,tra_loi_luc:null},
    {id:3,slug:null,ten:null,loi:'thư riêng',cong_khai:false,da_duyet:false,tao_luc:'2026-11-18T10:00:00Z',tra_loi:null,tra_loi_luc:null}];
-   window.__ops=[];
+   const T={loi_nhan:rows,
+    bai_viet:[{slug:'bai-cu',tieu_de:'bài cũ',ngay:'2024-03-01',muc:'diary',doan:['một','hai'],cau_noi_bat:null,anh:null,anh_mo_ta:null,an:false},
+              {slug:'nhap',tieu_de:'bài nháp',ngay:'2025-01-01',muc:'notes',doan:['x'],cau_noi_bat:null,anh:null,anh_mo_ta:null,an:true}],
+    sach_doc:[{id:10,ten:'Sách A',tac_gia:'B',dang_doc:true,nam:null,diem:null,doc_lai:false,thu_tu:0},{id:11,ten:'Sách C',tac_gia:null,dang_doc:false,nam:2025,diem:4.5,doc_lai:true,thu_tu:1}]};
+   window.__ops=[];window.__T=T;
    window.supabase={createClient(){return{
     auth:{getSession(){return Promise.resolve({data:{session:ses}})},
      signInWithPassword(c){if(c.password!=='dung')return Promise.resolve({data:{},error:{message:'Invalid login credentials',status:400}});ses={user:{email:c.email}};return Promise.resolve({data:{session:ses},error:null})},
      signOut(){ses=null;return Promise.resolve({})}},
     rpc(fn){return Promise.resolve({data:fn==='la_quan_tri'&&!!window.__admin,error:null})},
-    from(){let op='select',val=null,id=null;const q={select(){return q},order(){return q},limit(){return q},
-     update(v){op='update';val=v;return q},delete(){op='delete';return q},eq(k,v){id=v;return q},
-     then(ok,no){window.__ops.push([op,id,val]);let data=rows;
-      if(op==='update'){const r=rows.find(x=>x.id===id);Object.assign(r,val);data=[r]}
-      if(op==='delete'){const i=rows.findIndex(x=>x.id===id);data=rows.splice(i,1)}
+    from(t){const rows=T[t];let op='select',val=null,id=null,key='id';const q={select(){return q},order(){return q},limit(){return q},
+     update(v){op='update';val=v;return q},delete(){op='delete';return q},insert(v){op='insert';val=v;return q},eq(k,v){key=k;id=v;return q},
+     then(ok,no){window.__ops.push([op,id,val]);window.__bang=t;let data=rows;
+      if(op==='insert'){const r=Object.assign({id:100+rows.length},val);rows.push(r);data=[r]}
+      if(op==='update'){const r=rows.find(x=>x[key]===id);Object.assign(r,val);data=[r]}
+      if(op==='delete'){const i=rows.findIndex(x=>x[key]===id);data=rows.splice(i,1)}
       return Promise.resolve({data,error:null}).then(ok,no)}};return q}}}};})();`;
   async function admin(isAdmin) { const q = await (await b.newContext()).newPage(); q.on('pageerror', e => errs.push(e.message)); q.on('dialog', d => { errs.push('dialog: ' + d.message()); d.dismiss(); });
     await q.route('**/config.js', r => r.fulfill({ contentType:'text/javascript', body:'window.DUYEN_SB={url:"https://x.supabase.co",key:"k"}' }));
@@ -174,6 +182,62 @@ let failed = 0; const check = (name, ok, got) => { console.log(`${ok ? 'ok  ' : 
   check('admin: delete asks for a second click', (await q.evaluate(() => __ops)).pop()[0] !== 'delete' && /Chắc chưa/.test(await q.textContent('[data-id="3"]')));
   await q.click('[data-id="3"] [data-viec=xoa]'); await q.waitForTimeout(200);
   check('admin: second click deletes', JSON.stringify((await q.evaluate(() => __ops)).pop()) === '["delete",3,null]' && !(await q.$('[data-id="3"]')));
+
+  // posts + reading log from Supabase (bai_viet, sach_doc) replace the built-in copy; a hidden post isn't served by RLS so it simply isn't there
+  p = await open(true, null, u => /bai_viet/.test(u)
+    ? [{ slug:'bai-moi', tieu_de:'bài mới từ supabase', ngay:'2026-11-25', muc:'diary', doan:['đoạn một <b>x</b>', 'đoạn hai'], cau_noi_bat:'đoạn hai', anh:null, anh_mo_ta:null },
+       { slug:'cach-don-dung-luong-macbook', tieu_de:'macbook (đã sửa)', ngay:'2026-02-20', muc:'notes', doan:['sửa rồi'], cau_noi_bat:null, anh:null, anh_mo_ta:null }]
+    : [{ ten:'Sách A', tac_gia:'Ai đó', dang_doc:true, nam:null, diem:null, doc_lai:false }, { ten:'Sách B', tac_gia:'', dang_doc:false, nam:2026, diem:4.5, doc_lai:true }]);
+  const sb = await p.evaluate(() => ({ n: POSTS.length, t: POSTS.map(x => x.t), read: READ.map(b => b.t + (b.st || '') + (b.y || '') + (b.r || '') + (b.lai || '')), books: BOOKS }));
+  check('posts come from Supabase when it answers', sb.n === 2 && sb.t.includes('macbook (đã sửa)') && sb.books.includes('nk-2026'), sb);
+  check('reading log comes from Supabase', JSON.stringify(sb.read) === JSON.stringify(['Sách Adoc', 'Sách B20264.51']), sb.read);
+  await p.evaluate(() => { location.hash = '#bai-bai-moi'; }); await p.waitForTimeout(600);
+  check('a new post from Supabase opens by its link, text escaped', await p.evaluate(() => { const a = document.getElementById('p-bai-moi'); return !!a && /đoạn một <b>x<\/b>/.test(a.textContent) && !a.querySelector('p b') && !!a.querySelector('mark.hl'); }));
+  check('built-in copy is still there as a fallback', await p.evaluate(() => /const POSTS = window\.POSTS_SB \|\| \[/.test(document.getElementById('app').textContent)));
+
+  // admin: post editor + reading log
+  const last = () => q.evaluate(() => [__bang].concat(__ops[__ops.length - 1]));
+  await q.click('[data-khu=bai]'); await q.waitForTimeout(200);
+  check('editor: posts listed, drafts marked', (await q.$$('#bai-ds .mo-qt')).length === 2 && /nháp/.test(await q.textContent('#bai-ds')), await q.textContent('#bai-ds'));
+  await q.click('#bai-moi'); await q.fill('#s-tieu-de', 'Ngày mưa đầu đông!');
+  check('editor: link made from a Vietnamese title', (await q.inputValue('#s-slug')) === 'ngay-mua-dau-dong', await q.inputValue('#s-slug'));
+  await q.fill('#s-noi-dung', 'đoạn một\ncòn dòng này\n\n\nđoạn hai'); await q.fill('#s-noi-bat', 'không có trong bài'); await q.click('#soan button[type=submit]'); await q.waitForTimeout(100);
+  check('editor: highlight must be in the text', /Câu tô màu/.test(await q.textContent('#bao-soan')) && (await last())[1] !== 'insert');
+  await q.fill('#s-noi-bat', 'đoạn hai'); await q.click('#soan button[type=submit]'); await q.waitForTimeout(200);
+  const ins2 = await last();
+  check('editor: new post saved with paragraphs', ins2[0] === 'bai_viet' && ins2[1] === 'insert' && ins2[3].slug === 'ngay-mua-dau-dong' && JSON.stringify(ins2[3].doan) === '["đoạn một","còn dòng này","đoạn hai"]' && ins2[3].an === false && /Đã lưu/.test(await q.textContent('#bao-soan')), ins2);
+  check('editor: after the first save the link is locked and "view" shows', await q.evaluate(() => document.getElementById('s-slug').readOnly && !document.getElementById('s-xem').hidden && /#bai-ngay-mua-dau-dong$/.test(document.getElementById('s-xem').href)));
+  await q.fill('#s-tieu-de', 'đổi tên'); await q.click('#soan-ve'); await q.waitForTimeout(50);
+  check('editor: unsaved changes need a second click to leave', !(await q.isHidden('#soan')) && /chưa lưu/.test(await q.textContent('#bao-soan')));
+  await q.click('#soan button[type=submit]'); await q.waitForTimeout(200);
+  const up = await last();
+  check('editor: editing updates by link', up[1] === 'update' && up[2] === 'ngay-mua-dau-dong' && up[3].tieu_de === 'đổi tên', up);
+  await q.click('#soan-ve'); await q.waitForTimeout(50);
+  check('editor: back to the list once saved', await q.isHidden('#soan') && (await q.$$('#bai-ds .mo-qt')).length === 3);
+  await q.click('#bai-ds [data-slug=nhap]'); await q.click('#s-xoa'); await q.click('#s-xoa'); await q.waitForTimeout(200);
+  check('editor: delete takes two clicks', JSON.stringify(await last()) === '["bai_viet","delete","nhap",null]' && (await q.$$('#bai-ds .mo-qt')).length === 2);
+  await q.click('[data-khu=so]'); await q.waitForTimeout(200);
+  check('reading log: books listed', (await q.$$('#so-ds .mo-qt')).length === 2 && /4\.5\/5/.test(await q.textContent('#so-ds')), await q.textContent('#so-ds'));
+  await q.click('#sach-moi'); await q.fill('#so-ds [name=ten]', 'Sách mới'); await q.fill('#so-ds [name=nam]', '2026'); await q.fill('#so-ds [name=diem]', '4'); await q.click('#so-ds button[type=submit]'); await q.waitForTimeout(200);
+  const bk = await last();
+  check('reading log: new book goes on top', bk[0] === 'sach_doc' && bk[1] === 'insert' && bk[3].ten === 'Sách mới' && bk[3].nam === 2026 && bk[3].diem === 4 && bk[3].thu_tu === -1 && /Sách mới/.test(await q.textContent('#so-ds li:first-child')), bk);
+  await q.click('#so-ds [data-id="11"]'); await q.fill('#so-ds [name=diem]', '9'); await q.click('#so-ds button[type=submit]'); await q.waitForTimeout(100);
+  check('reading log: score is checked', /0 đến 5/.test(await q.textContent('#so-ds form')));
+  await q.fill('#so-ds [name=diem]', '5'); await q.click('#so-ds button[type=submit]'); await q.waitForTimeout(200);
+  check('reading log: edit saves', JSON.stringify((await last()).slice(0, 3)) === '["sach_doc","update",11]' && (await last())[3].diem === 5);
+
+  // slow Supabase: the page stays hidden (water colour only) instead of showing a half-built page, then opens with the curtain
+  { const sp = await (await b.newContext()).newPage(); sp.on('pageerror', e => errs.push(e.message));
+    await sp.route('**/config.js', r => r.fulfill({ contentType:'text/javascript', body:'window.DUYEN_SB={url:"https://x.supabase.co",key:"k"}' }));
+    await sp.route('**/supabase.js', r => r.fulfill({ contentType:'text/javascript', body: FAKE }));
+    await sp.route('**/rest/v1/**', async r => { await new Promise(z => setTimeout(z, 900)); r.fulfill({ contentType:'application/json', body:'[]' }).catch(() => {}); });
+    await sp.goto(`http://localhost:${PORT}/`, { waitUntil: 'domcontentloaded' }); await sp.waitForTimeout(300);
+    const early = await sp.evaluate(() => ({ cho: document.documentElement.classList.contains('cho'), vis: getComputedStyle(document.querySelector('main, header, #s-nuoc') || document.body.firstElementChild).visibility }));
+    await sp.waitForTimeout(1600);
+    const late = await sp.evaluate(() => ({ cho: document.documentElement.classList.contains('cho'), pads: document.querySelectorAll('#hoa .hoa').length, posts: POSTS.length }));
+    check('slow Supabase: page hidden until the app is ready', early.cho && early.vis === 'hidden', early);
+    check('slow Supabase: empty answer falls back to the built-in posts', !late.cho && late.pads > 0 && late.posts > 20, late);
+    await sp.context().close(); }
 
   check('no page errors', errs.length === 0, errs);
   await b.close(); server.close();

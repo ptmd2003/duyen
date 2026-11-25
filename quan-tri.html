@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>lời nhắn · duyên</title>
+<title>góc của mình · duyên</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +50,31 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 .viet-qt textarea{width:100%;min-height:80px;padding:10px 12px;border:1px solid #6B7C5E;background:#fff;border-radius:3px;resize:vertical;font-size:15px}
 .viet-qt div{display:flex;gap:8px}
 .trong-qt{padding:30px 18px;text-align:center;color:var(--muted);background:rgba(251,248,236,.5)}
+.khu-qt{display:flex;gap:4px;margin:0 0 18px;padding:4px;background:rgba(251,248,236,.45);border-radius:999px;width:max-content;max-width:100%}
+.khu-qt button{min-height:38px;background:transparent;color:var(--ink)}
+.khu-qt button[aria-pressed="true"]{background:var(--ink);color:var(--paper-2)}
+.dong-qt{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
+.dong-qt input{flex:1 1 160px;min-height:40px;padding:0 12px;border:1px solid #6B7C5E;border-radius:999px;background:var(--paper-2)}
+.ds-gon{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.ds-gon > li{background:var(--paper-2);box-shadow:0 4px 10px rgba(50,95,70,.16);border-radius:2px}
+.ds-gon .mo-qt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;min-height:52px;padding:10px 14px;border-radius:2px;background:transparent;color:var(--ink);text-align:left}
+.ds-gon .mo-qt b{font-family:var(--f-display);font-size:19px;font-weight:500;line-height:1.25}
+.ds-gon .mo-qt span{font-size:12px;color:var(--muted)}
+.ds-gon .mo-qt:hover{background:rgba(185,168,230,.12)}
+.soan-qt,.sach-qt{display:flex;flex-direction:column;gap:6px;padding:18px;background:var(--paper-2);box-shadow:0 10px 22px rgba(50,95,70,.22)}
+.soan-qt label,.sach-qt label{font-size:13px;font-weight:500;margin-top:6px}
+.soan-qt input:not([type=checkbox]),.soan-qt select,.soan-qt textarea,.sach-qt input:not([type=checkbox]){width:100%;min-height:42px;padding:8px 12px;border:1px solid #6B7C5E;border-radius:3px;background:#fff;font-size:16px}
+.soan-qt textarea{min-height:320px;line-height:1.6;resize:vertical;font-family:var(--f-display);font-size:18px}
+#s-tieu-de{font-family:var(--f-display);font-size:22px}
+.hang-qt{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hang-qt > div{display:flex;flex-direction:column;gap:6px}
+.ghi-qt{font-size:12px;font-weight:400;color:var(--muted)}
+.chon-qt{display:flex!important;align-items:center;gap:8px;min-height:40px;font-weight:400!important}
+.chon-qt input{width:20px;height:20px;accent-color:var(--leaf)}
+.nut-lk{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(31,51,35,.35);text-decoration:none;font-size:15px}
+.sach-qt{margin:0;box-shadow:none}
+.sao-qt{color:#B07A9A}
+@media (max-width:520px){.hang-qt{grid-template-columns:1fr}}
 [hidden]{display:none!important}
 @media (prefers-reduced-motion: reduce){#dang-nhap{transform:none}}
 </style>
@@ -57,9 +82,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
 <body>
 <main>
   <div class="dau-qt">
-    <div><h1>lời nhắn</h1><p><a href="./">← về trang chính</a></p></div>
+    <div><h1 id="ten-khu">góc của mình</h1><p><a href="./">← về trang chính</a></p></div>
     <p id="toi" hidden><span id="toi-email"></span> <button type="button" class="nhe" id="dang-xuat">Đăng xuất</button></p>
   </div>
+
+  <nav id="khu" class="khu-qt" hidden aria-label="Chọn phần">
+    <button type="button" data-khu="hop" aria-pressed="true">Lời nhắn</button>
+    <button type="button" data-khu="bai" aria-pressed="false">Bài viết</button>
+    <button type="button" data-khu="so" aria-pressed="false">Sổ đọc</button>
+  </nav>
 
   <form id="dang-nhap" hidden novalidate>
     <label for="email">Email</label><input id="email" type="email" autocomplete="username" required>
@@ -78,6 +109,42 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{
     <p class="bao-qt" id="bao" role="status"></p>
     <ul id="ds"></ul>
   </section>
+  <section id="bai" hidden>
+    <div id="bai-ds-khung">
+      <div class="dong-qt"><button type="button" id="bai-moi">+ Viết bài mới</button><input id="bai-tim" type="search" placeholder="tìm bài…" aria-label="Tìm bài"></div>
+      <p class="bao-qt" id="bao-bai" role="status"></p>
+      <ul id="bai-ds" class="ds-gon"></ul>
+    </div>
+    <form id="soan" class="soan-qt" hidden novalidate>
+      <p class="dong-qt"><button type="button" class="nhe" id="soan-ve">← Danh sách bài</button></p>
+      <label for="s-tieu-de">Tiêu đề</label><input id="s-tieu-de" maxlength="200" required>
+      <div class="hang-qt">
+        <div><label for="s-ngay">Ngày</label><input id="s-ngay" type="date" required></div>
+        <div><label for="s-muc">Cuốn sổ</label><select id="s-muc"></select></div>
+      </div>
+      <label for="s-slug">Đường dẫn</label>
+      <input id="s-slug" maxlength="120" pattern="[a-z0-9\-]+" autocapitalize="off" spellcheck="false" required aria-describedby="s-slug-ghi">
+      <small class="ghi-qt" id="s-slug-ghi"></small>
+      <label for="s-noi-dung">Nội dung</label>
+      <textarea id="s-noi-dung" rows="16" aria-describedby="s-nd-ghi"></textarea>
+      <small class="ghi-qt" id="s-nd-ghi">Mỗi lần xuống dòng là một đoạn mới. Link YouTube để riêng một đoạn sẽ thành video. Gắn link: [chữ](https://…).</small>
+      <label for="s-noi-bat">Câu tô màu <span class="ghi-qt">(không bắt buộc, chép y một câu trong bài)</span></label><input id="s-noi-bat" maxlength="300">
+      <div class="hang-qt">
+        <div><label for="s-anh">Ảnh <span class="ghi-qt">(link, không bắt buộc)</span></label><input id="s-anh" type="url" placeholder="https://… hoặc art/ten-anh.webp"></div>
+        <div><label for="s-anh-mt">Mô tả ảnh</label><input id="s-anh-mt" maxlength="200"></div>
+      </div>
+      <label class="chon-qt"><input type="checkbox" id="s-an"> Ẩn bài này (để nháp, chưa ai thấy)</label>
+      <p class="bao-qt" id="bao-soan" role="alert"></p>
+      <div class="nut-qt"><button type="submit">Lưu</button><a id="s-xem" class="nut-lk" target="_blank" rel="noopener" hidden>Xem trên trang ↗</a><button type="button" class="nhe" id="s-xoa" hidden>Xoá bài</button></div>
+    </form>
+  </section>
+
+  <section id="so" hidden>
+    <div class="dong-qt"><button type="button" id="sach-moi">+ Thêm sách</button></div>
+    <p class="bao-qt" id="bao-so" role="status"></p>
+    <ul id="so-ds" class="ds-gon"></ul>
+  </section>
+
   <p class="bao-qt" id="bao-cau-hinh" hidden>Chưa có config.js nên chưa vào được.</p>
 </main>
 <script src="config.js"></script>
@@ -154,12 +221,149 @@ $("#ds").addEventListener("click", async e => {
 });
 $$(".tab-qt button").forEach(b => b.onclick = () => { loc = b.dataset.loc; xoaCho = null; bao(""); ve(); });
 
+/* ---------- phần: lời nhắn / bài viết / sổ đọc ---------- */
+let khu = "hop";
+const TEN_KHU = {hop: "lời nhắn", bai: "bài viết", so: "sổ đọc"};
+function an(){ ["#hop", "#bai", "#so", "#toi", "#khu"].forEach(id => $(id).hidden = true); }
+function moKhu(k, dau){
+  if (!dau && k !== khu && !boQua()) return;
+  khu = k; ["hop", "bai", "so"].forEach(x => $("#" + x).hidden = x !== k);
+  $$(".khu-qt button").forEach(b => b.setAttribute("aria-pressed", b.dataset.khu === k)); $("#ten-khu").textContent = TEN_KHU[k];
+  if (k === "hop") tai(); if (k === "bai"){ dongSoan(); taiBai(); } if (k === "so") taiSach();
+}
+$$(".khu-qt button").forEach(b => b.onclick = () => moKhu(b.dataset.khu));
+
+/* ---------- bài viết ---------- */
+const MUC = {diary: "nhật ký (sổ theo năm)", notes: "ghi chú", japanese: "tiếng Nhật", marketing: "marketing", growth: "lớn lên", books: "sách"};
+const COT_BAI = "slug,tieu_de,ngay,muc,doan,cau_noi_bat,anh,anh_mo_ta,an,sua_luc";
+let BAI = [], dangSua = null, ban = false, boCho = false, xoaBai = false;
+$("#s-muc").innerHTML = Object.entries(MUC).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join("");
+const homNay = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
+const taoSlug = t => String(t).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[đĐ]/g, "d").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80);
+const thanhDoan = t => t.replace(/\r/g, "").split("\n").map(x => x.trim()).filter(Boolean);
+function boQua(){ if (!ban) return true; if (boCho) { boCho = false; ban = false; return true; }
+  boCho = true; baoSoan("Bài chưa lưu. Bấm lần nữa để bỏ thay đổi."); setTimeout(() => { boCho = false; }, 4000); return false; }
+function baoSoan(t){ $("#bao-soan").textContent = t || ""; }
+window.addEventListener("beforeunload", e => { if (ban){ e.preventDefault(); e.returnValue = ""; } });
+
+async function taiBai(){
+  $("#bao-bai").textContent = "Đang tải…";
+  const {data, error} = await SB.from("bai_viet").select(COT_BAI).order("ngay", {ascending:false}).order("tao_luc", {ascending:false}).limit(2000);
+  if (error){ $("#bao-bai").textContent = /bai_viet/.test(error.message || "") ? "Chưa có bảng bài viết. Chạy supabase.sql và du-lieu-ban-dau.sql trước nha." : "Chưa tải được: " + error.message; return; }
+  BAI = data || []; $("#bao-bai").textContent = BAI.length ? "" : "Chưa có bài nào."; veBai();
+}
+function veBai(){
+  const k = taoSlug($("#bai-tim").value).replace(/-/g, " ").trim();
+  const list = BAI.filter(b => !k || taoSlug(b.tieu_de + " " + b.muc).replace(/-/g, " ").includes(k));
+  $("#bai-ds").innerHTML = list.map(b => `<li><button type="button" class="mo-qt" data-slug="${esc(b.slug)}"><b>${esc(b.tieu_de)}</b><span>${esc(b.ngay)} · ${esc(MUC[b.muc] || b.muc)}${b.an ? ` · <span class="nhan-qt cho">nháp</span>` : ""}</span></button></li>`).join("");
+}
+$("#bai-tim").addEventListener("input", veBai);
+$("#bai-ds").addEventListener("click", e => { const b = e.target.closest("[data-slug]"); if (b) moSoan(BAI.find(x => x.slug === b.dataset.slug)); });
+$("#bai-moi").onclick = () => moSoan(null);
+
+function moSoan(b){
+  dangSua = b || null; ban = false; xoaBai = false; baoSoan("");
+  $("#s-tieu-de").value = b ? b.tieu_de : ""; $("#s-ngay").value = b ? b.ngay : homNay(); $("#s-muc").value = b ? b.muc : "diary";
+  $("#s-slug").value = b ? b.slug : ""; $("#s-slug").readOnly = !!b;
+  $("#s-slug-ghi").textContent = b ? "Đường dẫn giữ nguyên để link cũ, lượt thích và lời nhắn không bị mất." : "Tự tạo từ tiêu đề; sửa được trước khi lưu lần đầu.";
+  $("#s-noi-dung").value = b ? (b.doan || []).join("\n\n") : ""; $("#s-noi-bat").value = b && b.cau_noi_bat || "";
+  $("#s-anh").value = b && b.anh || ""; $("#s-anh-mt").value = b && b.anh_mo_ta || ""; $("#s-an").checked = b ? b.an : false;
+  $("#s-xoa").hidden = !b; $("#s-xoa").textContent = "Xoá bài"; veXem();
+  $("#bai-ds-khung").hidden = true; $("#soan").hidden = false; $("#ten-khu").textContent = b ? "sửa bài" : "bài mới"; window.scrollTo(0, 0); $("#s-tieu-de").focus();
+}
+function veXem(){ const b = dangSua, x = $("#s-xem"); x.hidden = !b || b.an; if (b) x.href = "./#bai-" + encodeURIComponent(b.slug); }
+function dongSoan(){ $("#soan").hidden = true; $("#bai-ds-khung").hidden = false; dangSua = null; ban = false; if (khu === "bai") $("#ten-khu").textContent = TEN_KHU.bai; }
+$("#soan-ve").onclick = () => { if (boQua()){ dongSoan(); veBai(); } };
+$("#soan").addEventListener("input", e => { ban = true; boCho = false;
+  if (e.target.id === "s-tieu-de" && !dangSua && !$("#s-slug").dataset.tay) $("#s-slug").value = taoSlug(e.target.value);
+  if (e.target.id === "s-slug") $("#s-slug").dataset.tay = $("#s-slug").value ? "1" : ""; });
+$("#s-noi-dung").addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)){ e.preventDefault(); $("#soan").requestSubmit(); } });
+
+$("#soan").addEventListener("submit", async e => {
+  e.preventDefault(); const btn = e.target.querySelector("button[type=submit]");
+  const row = { tieu_de: $("#s-tieu-de").value.trim(), ngay: $("#s-ngay").value, muc: $("#s-muc").value, doan: thanhDoan($("#s-noi-dung").value),
+    cau_noi_bat: $("#s-noi-bat").value.trim() || null, anh: $("#s-anh").value.trim() || null, anh_mo_ta: $("#s-anh-mt").value.trim() || null, an: $("#s-an").checked };
+  const slug = dangSua ? dangSua.slug : $("#s-slug").value.trim();
+  if (!row.tieu_de){ baoSoan("Bài cần có tiêu đề."); $("#s-tieu-de").focus(); return; }
+  if (!row.ngay){ baoSoan("Chọn ngày cho bài nha."); $("#s-ngay").focus(); return; }
+  if (!/^[a-z0-9-]{1,120}$/.test(slug)){ baoSoan("Đường dẫn chỉ gồm chữ thường không dấu, số và dấu gạch (-)."); $("#s-slug").focus(); return; }
+  if (!dangSua && slug === "so-doc"){ baoSoan("Đường dẫn này trùng với sổ đọc sách, đổi một chút nha."); $("#s-slug").focus(); return; }
+  if (!dangSua && BAI.some(b => b.slug === slug)){ baoSoan("Đã có bài dùng đường dẫn này, đổi một chút nha."); $("#s-slug").focus(); return; }
+  if (!row.doan.length){ baoSoan("Bài chưa có chữ nào."); $("#s-noi-dung").focus(); return; }
+  if (row.cau_noi_bat && !row.doan.some(d => d.includes(row.cau_noi_bat))){ baoSoan("Câu tô màu phải chép y từ trong bài (đang không tìm thấy)."); $("#s-noi-bat").focus(); return; }
+  btn.disabled = true; baoSoan("Đang lưu…");
+  const q = dangSua ? SB.from("bai_viet").update(row).eq("slug", slug).select(COT_BAI) : SB.from("bai_viet").insert(Object.assign({slug}, row)).select(COT_BAI);
+  const {data, error} = await q; btn.disabled = false;
+  if (error || !data || !data.length){ baoSoan("Chưa lưu được" + (error ? ": " + error.message : ".")); return; }
+  const moi = data[0]; BAI = BAI.filter(b => b.slug !== moi.slug).concat(moi).sort((a, b) => a.ngay < b.ngay ? 1 : -1);
+  dangSua = moi; ban = false; $("#s-slug").readOnly = true; $("#s-xoa").hidden = false; $("#ten-khu").textContent = "sửa bài"; veXem();
+  baoSoan(moi.an ? "Đã lưu, bài đang ẩn. (Nếu bài từng hiện, bản dự phòng trong trang vẫn còn tới khi Claude chạy dong-bo keo.)" : "Đã lưu. Trang sẽ hiện bản mới khi tải lại.");
+});
+$("#s-xoa").onclick = async () => {
+  if (!dangSua) return; if (!xoaBai){ xoaBai = true; $("#s-xoa").textContent = "Chắc chưa? Bấm lần nữa để xoá hẳn"; return; }
+  const slug = dangSua.slug, {data, error} = await SB.from("bai_viet").delete().eq("slug", slug).select("slug");
+  if (error || !data || !data.length){ baoSoan("Chưa xoá được" + (error ? ": " + error.message : ".")); return; }
+  BAI = BAI.filter(b => b.slug !== slug); ban = false; dongSoan(); veBai(); $("#bao-bai").textContent = "Đã xoá bài. (Bản dự phòng trong trang vẫn còn bài này tới khi Claude chạy dong-bo keo.)";
+};
+
+/* ---------- sổ đọc ---------- */
+const COT_SACH = "id,ten,tac_gia,dang_doc,nam,diem,doc_lai,thu_tu";
+let SACH = [], suaSach = null, xoaSach = null;
+async function taiSach(){
+  $("#bao-so").textContent = "Đang tải…";
+  const {data, error} = await SB.from("sach_doc").select(COT_SACH).order("thu_tu", {ascending:true}).order("id", {ascending:true}).limit(2000);
+  if (error){ $("#bao-so").textContent = /sach_doc/.test(error.message || "") ? "Chưa có bảng sổ đọc. Chạy supabase.sql và du-lieu-ban-dau.sql trước nha." : "Chưa tải được: " + error.message; return; }
+  SACH = data || []; $("#bao-so").textContent = ""; veSach();
+}
+const moTaSach = b => [b.dang_doc ? "đang đọc" : b.nam ? "đọc xong " + b.nam : "đã đọc", b.diem != null ? `<span class="sao-qt">${Number(b.diem)}/5</span>` : "", b.doc_lai ? "muốn đọc lại ↺" : ""].filter(Boolean).join(" · ");
+function formSach(b){ const v = b || {}, id = b ? b.id : "moi";
+  return `<form class="sach-qt" data-sach="${id}" novalidate>
+    <label for="sa-ten-${id}">Tên sách</label><input id="sa-ten-${id}" name="ten" maxlength="200" value="${esc(v.ten || "")}" required>
+    <label for="sa-tg-${id}">Tác giả</label><input id="sa-tg-${id}" name="tac_gia" maxlength="200" value="${esc(v.tac_gia || "")}">
+    <label class="chon-qt"><input type="checkbox" name="dang_doc" ${v.dang_doc ? "checked" : ""}> Đang đọc</label>
+    <div class="hang-qt"><div><label for="sa-nam-${id}">Năm đọc xong</label><input id="sa-nam-${id}" name="nam" type="number" inputmode="numeric" min="1900" max="2100" value="${v.nam || ""}"></div>
+      <div><label for="sa-diem-${id}">Điểm /5</label><input id="sa-diem-${id}" name="diem" type="number" inputmode="decimal" min="0" max="5" step="0.1" value="${v.diem != null ? Number(v.diem) : ""}"></div></div>
+    <label class="chon-qt"><input type="checkbox" name="doc_lai" ${v.doc_lai ? "checked" : ""}> Muốn đọc lại</label>
+    <p class="bao-qt" role="alert"></p>
+    <div class="nut-qt"><button type="submit">Lưu</button><button type="button" class="nhe" data-viec="huy">Huỷ</button>${b ? `<button type="button" class="nhe" data-viec="xoa">${xoaSach === b.id ? "Chắc chưa? Bấm lần nữa để xoá" : "Xoá"}</button>` : ""}</div>
+  </form>`; }
+function veSach(){
+  const dau = suaSach === "moi" ? `<li>${formSach(null)}</li>` : "";
+  $("#so-ds").innerHTML = dau + SACH.map(b => `<li>${suaSach === b.id ? formSach(b) : `<button type="button" class="mo-qt" data-id="${b.id}"><b>${esc(b.ten)}</b><span>${esc(b.tac_gia || "")}${b.tac_gia ? " · " : ""}${moTaSach(b)}</span></button>`}</li>`).join("");
+  const f = $("#so-ds form"); if (f) f.querySelector("input").focus();
+}
+$("#sach-moi").onclick = () => { suaSach = "moi"; xoaSach = null; $("#bao-so").textContent = ""; veSach(); };
+$("#so-ds").addEventListener("click", async e => {
+  const mo = e.target.closest("button.mo-qt"); if (mo){ suaSach = Number(mo.dataset.id); xoaSach = null; veSach(); return; }
+  const b = e.target.closest("button[data-viec]"); if (!b) return; const f = b.closest("form");
+  if (b.dataset.viec === "huy"){ suaSach = null; xoaSach = null; veSach(); return; }
+  if (b.dataset.viec === "xoa"){ const id = Number(f.dataset.sach);
+    if (xoaSach !== id){ xoaSach = id; veSach(); return; }
+    const {data, error} = await SB.from("sach_doc").delete().eq("id", id).select("id");
+    if (error || !data || !data.length){ f.querySelector(".bao-qt").textContent = "Chưa xoá được" + (error ? ": " + error.message : "."); return; }
+    SACH = SACH.filter(x => x.id !== id); suaSach = xoaSach = null; veSach(); $("#bao-so").textContent = "Đã xoá sách."; }
+});
+$("#so-ds").addEventListener("submit", async e => {
+  e.preventDefault(); const f = e.target, v = n => f.elements[n], bao = f.querySelector(".bao-qt");
+  const nam = v("nam").value ? Number(v("nam").value) : null, diem = v("diem").value !== "" ? Number(v("diem").value) : null;
+  const row = { ten: v("ten").value.trim(), tac_gia: v("tac_gia").value.trim() || null, dang_doc: v("dang_doc").checked, nam, diem, doc_lai: v("doc_lai").checked };
+  if (!row.ten){ bao.textContent = "Sách cần có tên."; v("ten").focus(); return; }
+  if (nam != null && !(Number.isInteger(nam) && nam >= 1900 && nam <= 2100)){ bao.textContent = "Năm chưa đúng."; v("nam").focus(); return; }
+  if (diem != null && !(diem >= 0 && diem <= 5)){ bao.textContent = "Điểm từ 0 đến 5 thôi."; v("diem").focus(); return; }
+  const moi = f.dataset.sach === "moi"; if (moi) row.thu_tu = SACH.length ? Math.min(...SACH.map(x => x.thu_tu || 0)) - 1 : 0;
+  bao.textContent = "Đang lưu…"; f.querySelector("button[type=submit]").disabled = true;
+  const q = moi ? SB.from("sach_doc").insert(row).select(COT_SACH) : SB.from("sach_doc").update(row).eq("id", Number(f.dataset.sach)).select(COT_SACH);
+  const {data, error} = await q;
+  if (error || !data || !data.length){ bao.textContent = "Chưa lưu được" + (error ? ": " + error.message : "."); f.querySelector("button[type=submit]").disabled = false; return; }
+  SACH = moi ? [data[0]].concat(SACH) : SACH.map(x => x.id === data[0].id ? data[0] : x); suaSach = null; veSach(); $("#bao-so").textContent = "Đã lưu “" + data[0].ten + "”.";
+});
+
 async function vao(session){
-  if (!session){ $("#hop").hidden = $("#toi").hidden = true; $("#dang-nhap").hidden = false; return; }
+  if (!session){ an(); $("#dang-nhap").hidden = false; return; }
   const {data: la, error} = await SB.rpc("la_quan_tri");
-  if (error || la !== true){ await SB.auth.signOut(); $("#dang-nhap").hidden = false; $("#hop").hidden = $("#toi").hidden = true;
+  if (error || la !== true){ await SB.auth.signOut(); an(); $("#dang-nhap").hidden = false;
     $("#bao-dn").textContent = error ? "Chưa kiểm tra được quyền: " + error.message : "Tài khoản này không phải tài khoản quản trị."; return; }
-  $("#toi-email").textContent = session.user.email || ""; $("#dang-nhap").hidden = true; $("#hop").hidden = $("#toi").hidden = false; tai();
+  $("#toi-email").textContent = session.user.email || ""; $("#dang-nhap").hidden = true; $("#toi").hidden = $("#khu").hidden = false; moKhu(khu, true);
 }
 
 $("#dang-nhap").addEventListener("submit", async e => {
@@ -171,7 +375,7 @@ $("#dang-nhap").addEventListener("submit", async e => {
   if (error){ $("#bao-dn").textContent = error.status === 400 ? "Sai email hoặc mật khẩu." : "Chưa đăng nhập được: " + error.message; return; }
   $("#mat-khau").value = ""; vao(data.session);
 });
-$("#dang-xuat").onclick = async () => { await SB.auth.signOut(); DS = []; $("#ds").innerHTML = ""; vao(null); };
+$("#dang-xuat").onclick = async () => { if (!boQua()) return; await SB.auth.signOut(); DS = []; BAI = []; SACH = []; $("#ds").innerHTML = $("#bai-ds").innerHTML = $("#so-ds").innerHTML = ""; vao(null); };
 
 (async function(){
   const c = window.DUYEN_SB || {};

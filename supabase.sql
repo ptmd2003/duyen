@@ -125,3 +125,57 @@ grant update (da_duyet, cong_khai, tra_loi, tra_loi_luc) on public.loi_nhan to a
 revoke all on function public.loi_nhan_chan_spam() from public, anon, authenticated;
 -- thich() chỉ dành cho người đọc (anon); tài khoản đăng nhập không cần.
 revoke execute on function public.thich(text, integer) from authenticated;
+
+-- ---------- Bài viết và sổ đọc sách (chạy lại được nhiều lần) ----------
+-- Trang đọc bài từ đây; nếu Supabase không trả lời thì dùng bản có sẵn trong index.html / read.js.
+create table if not exists public.bai_viet (
+  slug text primary key check (slug ~ '^[a-z0-9-]{1,120}$'),
+  tieu_de text not null check (char_length(tieu_de) between 1 and 200),
+  ngay date not null default current_date,
+  muc text not null default 'diary' check (muc in ('diary','notes','japanese','marketing','growth','books')),
+  doan text[] not null default '{}',          -- các đoạn văn
+  cau_noi_bat text,                           -- câu được tô màu (phải nằm trong một đoạn)
+  anh text, anh_mo_ta text,                   -- ảnh minh hoạ (không bắt buộc)
+  an boolean not null default false,          -- true = nháp / ẩn khỏi trang
+  tao_luc timestamptz not null default now(),
+  sua_luc timestamptz not null default now()
+);
+alter table public.bai_viet enable row level security;
+
+create table if not exists public.sach_doc (
+  id bigint generated always as identity primary key,
+  ten text not null check (char_length(ten) between 1 and 200),
+  tac_gia text check (char_length(tac_gia) <= 200),
+  dang_doc boolean not null default false,
+  nam integer check (nam between 1900 and 2100),   -- năm đọc xong
+  diem numeric(2,1) check (diem between 0 and 5),
+  doc_lai boolean not null default false,
+  thu_tu integer not null default 0,               -- nhỏ hơn đứng trước
+  sua_luc timestamptz not null default now()
+);
+alter table public.sach_doc enable row level security;
+
+-- Ai cũng đọc được bài không ẩn và cả sổ đọc; chỉ quản trị mới thêm/sửa/xoá.
+drop policy if exists "doc bai viet" on public.bai_viet;
+create policy "doc bai viet" on public.bai_viet for select to anon using (an = false);
+drop policy if exists "quan tri bai viet" on public.bai_viet;
+create policy "quan tri bai viet" on public.bai_viet for all to authenticated using ((select public.la_quan_tri())) with check ((select public.la_quan_tri()));
+revoke all on public.bai_viet from anon, authenticated;
+grant select on public.bai_viet to anon;
+grant select, insert, update, delete on public.bai_viet to authenticated;
+
+drop policy if exists "doc sach doc" on public.sach_doc;
+create policy "doc sach doc" on public.sach_doc for select to anon using (true);
+drop policy if exists "quan tri sach doc" on public.sach_doc;
+create policy "quan tri sach doc" on public.sach_doc for all to authenticated using ((select public.la_quan_tri())) with check ((select public.la_quan_tri()));
+revoke all on public.sach_doc from anon, authenticated;
+grant select on public.sach_doc to anon;
+grant select, insert, update, delete on public.sach_doc to authenticated;
+
+create or replace function public.dat_sua_luc() returns trigger language plpgsql set search_path = public as $$
+begin new.sua_luc = now(); return new; end $$;
+revoke all on function public.dat_sua_luc() from public, anon, authenticated;
+drop trigger if exists sua_luc on public.bai_viet;
+create trigger sua_luc before update on public.bai_viet for each row execute function public.dat_sua_luc();
+drop trigger if exists sua_luc on public.sach_doc;
+create trigger sua_luc before update on public.sach_doc for each row execute function public.dat_sua_luc();
